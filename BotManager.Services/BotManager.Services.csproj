@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BotManager.Bot\BotManager.Bot.csproj" />
+      <ProjectReference Include="..\BotManager.Db\BotManager.Db.csproj" />
+    </ItemGroup>
+
+</Project>

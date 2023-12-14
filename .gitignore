@@ -1,0 +1,6 @@
+# Rider and Debug files
+**/.idea/**
+**/bin/**
+**/obj/**
+
+*main.db*
