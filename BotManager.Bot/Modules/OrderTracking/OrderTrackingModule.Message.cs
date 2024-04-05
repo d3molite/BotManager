@@ -11,13 +11,13 @@ public partial class OrderTrackingModule
 {
 	private async Task UpdateOrderMessage(Order order, IUserMessage message)
 	{
-		var embed = CreateOrderEmbed(order);
+		var embeds = CreateOrderEmbed(order);
 		var components = CreateOrderButtons(order);
 
 		await message.ModifyAsync(
 			msg =>
 			{
-				msg.Embed = embed;
+				msg.Embeds = embeds.ToArray();
 				msg.Components = components;
 			}
 		);
@@ -71,8 +71,10 @@ public partial class OrderTrackingModule
 									.Build();
 	}
 
-	private Embed CreateOrderEmbed(Order order)
+	private IEnumerable<Embed> CreateOrderEmbed(Order order)
 	{
+		List<Embed> ret = new();
+		
 		string status;
 
 		if (!order.IsOpen)
@@ -83,8 +85,9 @@ public partial class OrderTrackingModule
 		{
 			status = "Offen";
 		}
+		
 
-		var builder = new EmbedBuilder().WithTitle("Bestellung")
+		var statusBuilder = new EmbedBuilder().WithTitle("Bestellung")
 										.AddField("Besteller", $"<@{order.OwnerId}>")
 										.AddField("Restaurant", order.RestaurantName)
 										.AddField("Bestellung wird abgeschickt um", order.OrderTime)
@@ -92,9 +95,17 @@ public partial class OrderTrackingModule
 										.AddField("Paypal:", $"[klicke hier!]({ProcessLink(order.PaypalLink)})")
 										.AddField("Status:", status);
 
-		AddOrderEmbedData(builder, order);
+		if (order.OrderItems.Any())
+		{
+			statusBuilder.AddField("Total:", $"({order.OrderItems.Sum(x => x.TotalPrice):0.00}€)");
+		}
+										
+		
+		ret.Add(statusBuilder.Build());
+		
+		ret.AddRange(AddOrderEmbedData(order));
 
-		return builder.Build();
+		return ret;
 	}
 	
 	private string ProcessLink(string input)
@@ -108,28 +119,39 @@ public partial class OrderTrackingModule
 		return input;
 	}
 
-	private void AddOrderEmbedData(EmbedBuilder builder, Order? order)
+	private IEnumerable<Embed> AddOrderEmbedData(Order? order)
 	{
 		if (order?.OrderItems is null)
-			return;
+			return new List<Embed>();
 
 		if (!order.OrderItems.Any())
-			return;
+			return new List<Embed>();
+		
+		var ret = new List<Embed>();
 		
 		var grouped = order.OrderItems.GroupBy(x => x.UserId);
 
-		foreach (var group in grouped)
+		foreach (var chunk in grouped.Chunk(20))
 		{
-			var sb = new StringBuilder();
-
-			foreach (var item in group.OrderBy(x => x.ItemNumber))
+			var builder = new EmbedBuilder();
+			
+			foreach (var group in chunk)
 			{
-				sb.AppendLine($"{item.ItemAmount}x - {item.ItemNumber}{item.ItemName} - {item.ItemPrice}€");
-			}
+				var sb = new StringBuilder();
 
-			var user = client.GetUser(group.Key);
-			builder.AddField($"{user.Username} ({group.Sum(x => x.TotalPrice):0.00}€)", sb.ToString());
+				foreach (var item in group.OrderBy(x => x.ItemNumber))
+				{
+					sb.AppendLine($"{item.ItemAmount}x - {item.ItemNumber}{item.ItemName} - {item.ItemPrice}€");
+				}
+
+				var user = client.GetUser(group.Key);
+				builder.AddField($"{user.Username} ({group.Sum(x => x.TotalPrice):0.00}€)", sb.ToString());
+			}
+			
+			ret.Add(builder.Build());
 		}
+
+		return ret;
 	}
 
 	private async Task SendOrderDeliveredMessage(Order order, ISocketMessageChannel componentChannel)
