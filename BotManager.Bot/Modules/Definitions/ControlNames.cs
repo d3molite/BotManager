@@ -8,6 +8,7 @@ public static class ControlNames
 	public const string OrderButtonAdd = nameof(OrderButtonAdd);
 	public const string OrderButtonRemove = nameof(OrderButtonRemove);
 	public const string OrderButtonArrived = nameof(OrderButtonArrived);
+	public const string OrderButtonReload = nameof(OrderButtonReload);
 
 	public const string OrderRemoveSelectMenu = nameof(OrderRemoveSelectMenu);
 }
