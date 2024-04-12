@@ -9,7 +9,7 @@ public class OrderItem : DbItem<string>
 
 	public string ItemName { get; set; } = "";
 	
-	public string ItemNumber { get; set; } = "";
+	public string? ItemNumber { get; set; } = "";
 
 	public int ItemAmount { get; set; } = 1;
 	

@@ -55,6 +55,10 @@ public partial class OrderTrackingModule
 										disabled: (order.IsOpen || order.IsDelivered),
 										row: 1
 									)
+									.WithButton("Reload Embed", 
+										ControlNames.OrderButtonReload,
+										ButtonStyle.Secondary,
+										row:1)
 									.WithButton(
 										"Bestellung schließen",
 										ControlNames.OrderButtonClose,
@@ -97,7 +101,7 @@ public partial class OrderTrackingModule
 
 		if (order.OrderItems.Any())
 		{
-			statusBuilder.AddField("Total:", $"({order.OrderItems.Sum(x => x.TotalPrice):0.00}€)");
+			statusBuilder.AddField("Total:", $"**{order.OrderItems.Sum(x => x.TotalPrice):0.00} €**");
 		}
 										
 		
@@ -131,7 +135,7 @@ public partial class OrderTrackingModule
 		
 		var grouped = order.OrderItems.GroupBy(x => x.UserId);
 
-		foreach (var chunk in grouped.Chunk(20))
+		foreach (var chunk in grouped.Chunk(18))
 		{
 			var builder = new EmbedBuilder();
 			
@@ -141,7 +145,7 @@ public partial class OrderTrackingModule
 
 				foreach (var item in group.OrderBy(x => x.ItemNumber))
 				{
-					sb.AppendLine($"{item.ItemAmount}x - {item.ItemNumber}{item.ItemName} - {item.ItemPrice}€");
+					sb.AppendLine($"**{item.ItemAmount}x** - {item.ItemNumber} {item.ItemName} - {item.ItemPrice}€");
 				}
 
 				var user = client.GetUser(group.Key);

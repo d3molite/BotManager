@@ -78,7 +78,7 @@ public partial class OrderTrackingModule
 			OperationType = Operation.Created,
 			ItemName = data.Get(ModalFields.OrderModalAddName).Value,
 			ItemPrice = ParseModalDecimal(data.Get(ModalFields.OrderModalAddPrice).Value),
-			ItemNumber = data.Get(ModalFields.OrderModalAddNumber).Value,
+			ItemNumber = data.GetString(ModalFields.OrderModalAddNumber),
 			ItemAmount = ParseModalInt(data.Get(ModalFields.OrderModalAddAmount).Value),
 			UserId = modal.User.Id,
 		};
@@ -145,7 +145,8 @@ public partial class OrderTrackingModule
 										.AddTextInput(
 											"Nummer auf Speisekarte",
 											ModalFields.OrderModalAddNumber,
-											placeholder: ""
+											required: false,
+											placeholder: "Optional"
 										)
 										.AddTextInput(
 											"Name auf der Speisekarte",

@@ -34,7 +34,21 @@ public partial class OrderTrackingModule
 			case ControlNames.OrderButtonRemove:
 				await RemoveFromOrder(component);
 				break;
+			
+			case ControlNames.OrderButtonReload:
+				await RegenerateEmbed(component);
+				break;
 		}
+	}
+
+	private async Task RegenerateEmbed(SocketMessageComponent component)
+	{
+		var order = await CheckForOwner(component);
+		if (order is null) return;
+		
+		await UpdateOrderMessage(order, component.Message);
+
+		await component.RespondAsync("Embed neu generiert.", ephemeral: true);
 	}
 	
 	private async Task DeleteOrder(SocketMessageComponent component)
