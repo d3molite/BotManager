@@ -2,6 +2,7 @@
 using BotManager.Db.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotManager.Db.Migrations
 {
     [DbContext(typeof(BotManagerContext))]
-    partial class BotManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20240329111349_Added Order")]
+    partial class AddedOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -70,80 +73,6 @@ namespace BotManager.Db.Migrations
                     b.ToTable("GuildConfigs");
                 });
 
-            modelBuilder.Entity("BotManager.Db.Models.Modules.Order.Order", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasColumnOrder(0);
-
-                    b.Property<bool>("IsDelivered")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsOpen")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("MenuLink")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("MessageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("OrderTime")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("OwnerId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("PaypalLink")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RestaurantName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("BotManager.Db.Models.Modules.Order.OrderItem", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasColumnOrder(0);
-
-                    b.Property<int>("ItemAmount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ItemNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("ItemPrice")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OrderId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems");
-                });
-
             modelBuilder.Entity("BotManager.Db.Models.Modules.Order.OrderTrackingConfig", b =>
                 {
                     b.Property<string>("Id")
@@ -169,21 +98,9 @@ namespace BotManager.Db.Migrations
                     b.Navigation("OrderTrackingConfig");
                 });
 
-            modelBuilder.Entity("BotManager.Db.Models.Modules.Order.OrderItem", b =>
-                {
-                    b.HasOne("BotManager.Db.Models.Modules.Order.Order", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
-                });
-
             modelBuilder.Entity("BotManager.Db.Models.BotConfig", b =>
                 {
                     b.Navigation("GuildConfigs");
-                });
-
-            modelBuilder.Entity("BotManager.Db.Models.Modules.Order.Order", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

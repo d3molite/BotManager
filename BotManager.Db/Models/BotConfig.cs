@@ -13,4 +13,6 @@ public class BotConfig : DbItem<string>
 	public bool Active { get; set; }
 	
 	public bool Debug { get; set; }
+	
+	public IEnumerable<GuildConfig> GuildConfigs { get; set; }
 }

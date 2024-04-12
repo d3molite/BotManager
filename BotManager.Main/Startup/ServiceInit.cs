@@ -1,11 +1,12 @@
 ﻿using BotManager.Db.Context;
 using BotManager.Db.Interfaces;
 using BotManager.Db.Repositories;
+using BotManager.DI;
+using BotManager.Interfaces.Services.Bot;
+using BotManager.Interfaces.Services.Data;
+using BotManager.Main.Components;
 using BotManager.Services.Implementation.Bot;
 using BotManager.Services.Implementation.Data;
-using BotManager.Services.Interfaces;
-using BotManager.Services.Interfaces.Bot;
-using BotManager.Services.Interfaces.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -33,8 +34,14 @@ public static class ServiceInit
 	{
 		var factory = app.Services.GetService<IDbContextFactory<BotManagerContext>>();
 		var db = await factory.CreateDbContextAsync();
-		
+
+		await db.Database.EnsureCreatedAsync();
 		await db.Database.MigrateAsync();
+	}
+
+	public static void SetContainer(WebApplication app)
+	{
+		DependencyManager.Provider = app.Services;
 	}
 
 	public static async Task StartBots(WebApplication app)
@@ -45,8 +52,12 @@ public static class ServiceInit
 
 	private static void AddDatabaseServices(WebApplicationBuilder builder)
 	{
-		var appConnectionString = builder.Configuration.GetConnectionString("BotManagerDb");
-		builder.Services.AddDbContextFactory<BotManagerContext>(options => options.UseSqlite(appConnectionString));
+		foreach (var file in Directory.GetFiles("./dbdata"))
+		{
+			Log.Debug("{File}", file);
+		}
+		
+		builder.Services.AddDbContextFactory<BotManagerContext>(options => options.UseSqlite("DataSource=./dbdata/main.db"));
 		builder.Services.AddDbContext<BotManagerContext>();
 
 		var identityConnectionString = "";
@@ -57,5 +68,9 @@ public static class ServiceInit
 		collection.AddSingleton<IBotConfigRepository, BotConfigRepository>();
 		collection.AddSingleton<IBotConfigService, BotConfigService>();
 		collection.AddSingleton<IBotService, BotService>();
+
+		collection.AddSingleton<IOrderItemRepository, OrderItemRepository>();
+		collection.AddSingleton<IOrderRepository, OrderRepository>();
+		collection.AddSingleton<IOrderService, OrderService>();
 	}
 }

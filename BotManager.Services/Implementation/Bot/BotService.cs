@@ -1,9 +1,7 @@
 ﻿using BotManager.Bot.Core;
-using BotManager.Bot.Interfaces;
-using BotManager.Bot.Interfaces.Core;
-using BotManager.Services.Interfaces;
-using BotManager.Services.Interfaces.Bot;
-using BotManager.Services.Interfaces.Data;
+using BotManager.Interfaces.Core;
+using BotManager.Interfaces.Services.Bot;
+using BotManager.Interfaces.Services.Data;
 using Serilog;
 
 namespace BotManager.Services.Implementation.Bot;
@@ -14,6 +12,7 @@ public class BotService(IBotConfigService botConfigService) : IBotService
 
 	public async Task Initialize()
 	{
+		botConfigService.Load();
 		Log.Debug("Found {BotCount} Bots", botConfigService.Items.Count());
 		
 		foreach (var config in botConfigService.Items)
@@ -26,14 +25,14 @@ public class BotService(IBotConfigService botConfigService) : IBotService
 		
 		foreach (var bot in Bots.Where(x => x.Debug))
 		{
-			await bot.StartAsync();
+			Task.Run(async () => await bot.StartAsync());
 		}
 		
 		#elif RELEASE
 		
 		foreach (var bot in Bots.Where(x => x.AutoStart))
 		{
-			await bot.StartAsync();
+			Task.Run(async () => await bot.StartAsync());
 		}
 		
 		#endif

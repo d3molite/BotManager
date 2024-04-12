@@ -1,4 +1,4 @@
-﻿namespace BotManager.Bot.Interfaces.Core;
+﻿namespace BotManager.Interfaces.Core;
 
 public interface IBotEntity
 {

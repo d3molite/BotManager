@@ -1,4 +1,4 @@
-﻿namespace BotManager.Services.Core;
+﻿namespace BotManager.Interfaces.Services.Core;
 
 public interface IDataService<T>
 {

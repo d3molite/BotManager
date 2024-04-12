@@ -2,6 +2,7 @@
 using BotManager.Db.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotManager.Db.Migrations
 {
     [DbContext(typeof(BotManagerContext))]
-    partial class BotManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20240329115600_Added Order To Db")]
+    partial class AddedOrderToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -77,9 +80,6 @@ namespace BotManager.Db.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnOrder(0);
 
-                    b.Property<bool>("IsDelivered")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("IsOpen")
                         .HasColumnType("INTEGER");
 
@@ -97,10 +97,6 @@ namespace BotManager.Db.Migrations
                     b.Property<ulong>("OwnerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PaypalLink")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("RestaurantName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -116,9 +112,6 @@ namespace BotManager.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnOrder(0);
-
-                    b.Property<int>("ItemAmount")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ItemName")
                         .IsRequired()

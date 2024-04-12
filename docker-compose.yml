@@ -1,0 +1,16 @@
+﻿version: "3.3"
+services:
+  discordv2:
+    image: hub.demolite.de/demoreg/discordv2
+    container_name: discordv2
+    restart: always
+    env_file:
+      - e.env
+    build:
+      context: .
+      dockerfile: BotManager.Main/Dockerfile
+    ports:
+      - "8085:80"
+      - "8086:443"
+    volumes:
+      - "./dbdata/:/app/dbdata/"

@@ -1,7 +1,7 @@
 ﻿using BotManager.Db.Models;
-using BotManager.Services.Core;
+using BotManager.Interfaces.Services.Core;
 
-namespace BotManager.Services.Interfaces.Data;
+namespace BotManager.Interfaces.Services.Data;
 
 public interface IBotConfigService : IDataService<BotConfig>
 {

@@ -1,7 +1,6 @@
 ﻿using BotManager.Db.Interfaces;
 using BotManager.Db.Models;
-using BotManager.Services.Interfaces;
-using BotManager.Services.Interfaces.Data;
+using BotManager.Interfaces.Services.Data;
 
 namespace BotManager.Services.Implementation.Data;
 

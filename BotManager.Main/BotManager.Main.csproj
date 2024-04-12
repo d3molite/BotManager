@@ -25,14 +25,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BotManager.Db\BotManager.Db.csproj" />
+      <ProjectReference Include="..\BotManager.Services\BotManager.Services.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BotManager.Db\BotManager.Db.csproj" />
-      <ProjectReference Include="..\BotManager.Services\BotManager.Services.csproj" />
+      <Folder Include="dbdata\" />
     </ItemGroup>
-
 </Project>
