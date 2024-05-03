@@ -34,16 +34,9 @@ public class BotEntity : IBotEntity
 		);
 
 		_commandService = new CommandService(_config, _client);
-
-		_client.Ready += OnReady;
+		
 		_client.Log += LogClientEvent;
-	}
-
-	private async Task OnReady()
-	{
-		
-		await CommandService.BuildCommands();
-		
+		_client.Ready += CommandService.BuildCommands;
 		_client.SlashCommandExecuted += CommandService.ExecuteCommand;
 		_client.ModalSubmitted += CommandService.ExecuteModalResponse;
 		_client.ButtonExecuted += CommandService.ExecuteButtonResponse;
@@ -61,7 +54,6 @@ public class BotEntity : IBotEntity
 			
 			case LogSeverity.Warning:
 				Log.Error(arg.Exception, "{BotName}: {LogMessage}", Name, arg.Message);
-
 				break;
 			
 			case LogSeverity.Info:

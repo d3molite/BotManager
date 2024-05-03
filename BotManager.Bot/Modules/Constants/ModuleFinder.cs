@@ -1,17 +1,11 @@
-﻿using BotManager.Bot.Modules.Definitions;
+﻿using System.Reflection;
+using BotManager.Bot.Modules.Definitions;
+using BotManager.Bot.Modules.Models;
 
 namespace BotManager.Bot.Modules.Constants;
 
 public static class ModuleFinder
 {
-    private static readonly Dictionary<string, ModuleType> _commandTypes = new()
-    {
-        { Commands.Order, ModuleType.Order },
-        { Commands.Waaw, ModuleType.Image },
-        { Commands.Woow, ModuleType.Image },
-        { Commands.Haah, ModuleType.Image },
-        { Commands.Hooh, ModuleType.Image },
-    };
 
     private static readonly Dictionary<string, ModuleType> _modalTypes = new()
     {
@@ -34,8 +28,13 @@ public static class ModuleFinder
         { ControlNames.OrderRemoveSelectMenu, ModuleType.Order },
     };
 
-    public static ModuleType GetModuleByCommand(string command) 
-        => _commandTypes.GetValueOrDefault(command, ModuleType.None);
+    public static ModuleType GetModuleByCommand(string command)
+    {
+        var field = typeof(Commands).GetField(command, BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.Public);
+        var attribute = field?.GetCustomAttribute<ModuleTypeAttribute>();
+        return attribute?.ModuleType ?? ModuleType.None;
+    }
+
 
     public static ModuleType GetModuleByButton(string buttonName)
         => _buttonTypes.GetValueOrDefault(buttonName, ModuleType.None);

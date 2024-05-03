@@ -12,6 +12,8 @@ public partial class ImageModule
         await BuildHaahCommand(guildId);
         await BuildWoowCommand(guildId);
         await BuildHoohCommand(guildId);
+        await BuildReverseCommand(guildId);
+        await BuildJpegCommand(guildId);
     }
 
     private async Task BuildWaawCommand(ulong guildId)
@@ -61,4 +63,18 @@ public partial class ImageModule
 
         await guild.CreateApplicationCommandAsync(command.Build());
     }
+    
+    private async Task BuildReverseCommand(ulong guildId)
+    {
+        var guild = client.GetGuild(guildId);
+
+        var command = new SlashCommandBuilder()
+            .WithName(Commands.Reverse)
+            .WithDescription("Reverse a gif.")
+            .AddDescriptionLocalization("de", "Spiele das letzte Gif rückwärts ab");
+
+        await guild.CreateApplicationCommandAsync(command.Build());
+    }
+
+    
 }

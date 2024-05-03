@@ -15,7 +15,7 @@ public class ImageModel
     public string Extension { get; set; }
     public string Folder { get; set; }
 
-    public bool IsManipulated { get; set; }
+    public int ManipulationCount { get; set; }
 
     public string SubFolder => Path.Combine(Folder, FileName);
 
@@ -25,7 +25,17 @@ public class ImageModel
 
     public string SourcePath => Path.Combine(SubFolder, $"{FileName}.{Extension}");
 
-    public string TargetPath => Path.Combine(SubFolder, $"{FileName}{(IsManipulated ? 0 : "")}.{Extension}");
+    public string TargetPath
+    {
+        get
+        {
+            ManipulationCount++;
+            var total = Path.Combine(SubFolder, $"{FileName}{ManipulationCount}.{Extension}");
+            return total;
+        }
+    }
+
+    public string FinalPath => Path.Combine(SubFolder, $"{FileName}{ManipulationCount}.{Extension}");
 
     public int Frames { get; set; }
 

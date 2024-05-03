@@ -15,6 +15,14 @@ public partial class ImageModule
             case Commands.Hooh:
                 await ExecuteMirrorCommand(command);
                 break;
+            
+            case Commands.Reverse:
+                await ExecuteReverseCommand(command);
+                break;
+            
+            case Commands.NeedsMoreJpeg:
+                await ExecuteMoreJpegCommand(command);
+                break;
         }
     }
 }

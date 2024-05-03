@@ -71,7 +71,7 @@ public partial class ImageModule
     {
         try
         {
-            await interaction.FollowupWithFileAsync(imageModel.TargetPath);
+            await interaction.FollowupWithFileAsync(imageModel.FinalPath);
         }
         catch (Exception ex)
         {

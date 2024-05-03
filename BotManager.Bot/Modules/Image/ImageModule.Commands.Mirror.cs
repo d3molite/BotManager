@@ -12,9 +12,9 @@ public partial class ImageModule
     {
         var result = await DeferAndTryGet(command);
 
-        if (result.Item1)
+        if (result is not null)
         {
-            var file = result.Item2!.ImageModel!;
+            var file = result.ImageModel!;
             
             var direction = command.CommandName switch
             {
@@ -30,14 +30,11 @@ public partial class ImageModule
         }
     }
     
-    private async Task<Tuple<bool, ImageResult?>> DeferAndTryGet(SocketInteraction command)
+    private async Task<ImageResult?> DeferAndTryGet(SocketInteraction command)
     {
         await command.DeferAsync();
         var file = await TryGetImage(command);
         
-        if (file is { Success: true, ImageModel: not null })
-            return new (true, file);
-
-        return new(false, file);
+        return file is { Success: true, ImageModel: not null } ? file : null;
     }
 }

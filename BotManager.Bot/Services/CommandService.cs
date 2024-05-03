@@ -1,4 +1,4 @@
-﻿using BotManager.Bot.Interfaces.Services;
+﻿
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Image;
 using BotManager.Bot.Modules.Models;
@@ -17,6 +17,11 @@ public class CommandService(BotConfig config, DiscordSocketClient client)
 	private ulong ClientId => client.Rest.CurrentUser.Id;
 	
 	public async Task BuildCommands()
+	{
+		await Task.Run(async () => await BuildCommandsInternal());
+	}
+
+	private async Task BuildCommandsInternal()
 	{
 		foreach (var guildConfig in config.GuildConfigs)
 		{

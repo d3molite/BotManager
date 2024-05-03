@@ -5,3 +5,6 @@
 
 *main.db*
 e.env
+
+*.DotSettings
+*.DotSettings.user
