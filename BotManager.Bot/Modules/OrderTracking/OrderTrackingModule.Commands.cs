@@ -1,4 +1,5 @@
-﻿using BotManager.Db.Models.Modules.Order;
+﻿using BotManager.Bot.Modules.Definitions;
+using BotManager.Db.Models.Modules.Order;
 using Discord;
 using Discord.WebSocket;
 
@@ -11,6 +12,7 @@ public partial class OrderTrackingModule
 		await BuildOrderCommand(guildId);
 	}
 
+
 	public async Task ExecuteCommands(SocketSlashCommand command)
 	{
 		await ExecuteOrderCommand(command);
@@ -21,7 +23,7 @@ public partial class OrderTrackingModule
 		var guild = client.GetGuild(guildId);
 
 		var command = new SlashCommandBuilder();
-		command.WithName("order");
+		command.WithName(Commands.Order);
 		command.WithDescription("Create an Order");
 		command.AddDescriptionLocalization("de", "Erfasse eine Bestellung!");
 

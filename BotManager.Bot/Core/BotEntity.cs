@@ -12,6 +12,12 @@ public class BotEntity : IBotEntity
 	private readonly DiscordSocketClient _client;
 	private readonly CancellationTokenSource _tokenSource = new();
 	private readonly BotConfig _config;
+	private readonly CommandService _commandService;
+
+	private CommandService CommandService
+	{
+		get => _commandService;
+	}
 
 	public BotEntity(BotConfig config)
 	{
@@ -27,14 +33,21 @@ public class BotEntity : IBotEntity
 			}
 		);
 
-		var commandService = new CommandService(_config, _client);
+		_commandService = new CommandService(_config, _client);
 
-		_client.Ready += commandService.BuildCommands;
+		_client.Ready += OnReady;
 		_client.Log += LogClientEvent;
-		_client.SlashCommandExecuted += commandService.ExecuteCommand;
-		_client.ModalSubmitted += commandService.ExecuteModalResponse;
-		_client.ButtonExecuted += commandService.ExecuteButtonResponse;
-		_client.SelectMenuExecuted += commandService.ExecuteSelectResponse;
+	}
+
+	private async Task OnReady()
+	{
+		
+		await CommandService.BuildCommands();
+		
+		_client.SlashCommandExecuted += CommandService.ExecuteCommand;
+		_client.ModalSubmitted += CommandService.ExecuteModalResponse;
+		_client.ButtonExecuted += CommandService.ExecuteButtonResponse;
+		_client.SelectMenuExecuted += CommandService.ExecuteSelectResponse;
 	}
 
 	private async Task LogClientEvent(LogMessage arg)

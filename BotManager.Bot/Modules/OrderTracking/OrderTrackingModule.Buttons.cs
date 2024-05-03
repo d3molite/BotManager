@@ -9,7 +9,7 @@ namespace BotManager.Bot.Modules.OrderTracking;
 
 public partial class OrderTrackingModule
 {
-	public async Task ExecuteOrderButton(SocketMessageComponent component)
+	public async Task ExecuteButton(SocketMessageComponent component)
 	{
 		var id = component.Data.CustomId;
 

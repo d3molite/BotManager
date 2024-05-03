@@ -6,7 +6,7 @@ namespace BotManager.Bot.Modules.OrderTracking;
 
 public partial class OrderTrackingModule
 {
-	public async Task ExecuteOrderSelect(SocketMessageComponent component)
+	public async Task ExecuteSelect(SocketMessageComponent component)
 	{
 		var message = await component.Channel.GetMessageAsync(component.Message.Reference.MessageId.Value);
 		

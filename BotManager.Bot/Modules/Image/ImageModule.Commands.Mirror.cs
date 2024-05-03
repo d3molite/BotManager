@@ -1,0 +1,43 @@
+﻿using BotManager.Bot.Modules.Definitions;
+using BotManager.ImageProcessing.Commands;
+using BotManager.ImageProcessing.Enum;
+using BotManager.ImageProcessing.Model;
+using Discord.WebSocket;
+
+namespace BotManager.Bot.Modules.Image;
+
+public partial class ImageModule
+{
+    private async Task ExecuteMirrorCommand(SocketSlashCommand command)
+    {
+        var result = await DeferAndTryGet(command);
+
+        if (result.Item1)
+        {
+            var file = result.Item2!.ImageModel!;
+            
+            var direction = command.CommandName switch
+            {
+                Commands.Waaw => MirrorDirection.LeftToRight,
+                Commands.Woow => MirrorDirection.RightToLeft,
+                Commands.Haah => MirrorDirection.TopToBottom,
+                Commands.Hooh => MirrorDirection.BottomToTop,
+                _ => MirrorDirection.LeftToRight
+            };
+            
+            await MirrorCommands.ExecuteMirror(file, direction);
+            await SendAndDelete(file, command);
+        }
+    }
+    
+    private async Task<Tuple<bool, ImageResult?>> DeferAndTryGet(SocketInteraction command)
+    {
+        await command.DeferAsync();
+        var file = await TryGetImage(command);
+        
+        if (file is { Success: true, ImageModel: not null })
+            return new (true, file);
+
+        return new(false, file);
+    }
+}

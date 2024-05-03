@@ -14,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BotManager.Db\BotManager.Db.csproj" />
       <ProjectReference Include="..\BotManager.DI\BotManager.DI.csproj" />
+      <ProjectReference Include="..\BotManager.ImageProcessing\BotManager.ImageProcessing.csproj" />
       <ProjectReference Include="..\BotManager.Interfaces\BotManager.Interfaces.csproj" />
     </ItemGroup>
 

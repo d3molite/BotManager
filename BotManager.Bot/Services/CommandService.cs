@@ -1,5 +1,7 @@
 ﻿using BotManager.Bot.Interfaces.Services;
-using BotManager.Bot.Modules.Definitions;
+using BotManager.Bot.Modules.Constants;
+using BotManager.Bot.Modules.Image;
+using BotManager.Bot.Modules.Models;
 using BotManager.Bot.Modules.OrderTracking;
 using BotManager.Db.Models;
 using BotManager.DI;
@@ -10,9 +12,9 @@ using Serilog;
 
 namespace BotManager.Bot.Services;
 
-public class CommandService(BotConfig config, DiscordSocketClient client) : ICommandService
+public class CommandService(BotConfig config, DiscordSocketClient client)
 {
-	private OrderTrackingModule _orderTrackingModule;
+	private ulong ClientId => client.Rest.CurrentUser.Id;
 	
 	public async Task BuildCommands()
 	{
@@ -20,9 +22,28 @@ public class CommandService(BotConfig config, DiscordSocketClient client) : ICom
 		{
 			if (guildConfig.OrderTrackingConfig != null)
 			{
+				Log.Debug("Found Order Module for {BotName} in {Guild}", client.Rest.CurrentUser.GlobalName, guildConfig.GuildId);
+				
 				var service = DependencyManager.Provider.GetRequiredService<IOrderService>();
-				_orderTrackingModule = new OrderTrackingModule(service, client);
-				await _orderTrackingModule.BuildCommands(guildConfig.OrderTrackingConfig, guildConfig.GuildId);
+				var module = new OrderTrackingModule(service, client);
+				
+				await module.BuildCommands(guildConfig.OrderTrackingConfig, guildConfig.GuildId);
+
+				var key = new ModuleData(ModuleType.Order, ClientId, guildConfig.GuildId);
+				
+				ModuleRegister.Modules[key] = module;
+			}
+
+			if (guildConfig.ImageConfig != null)
+			{
+				Log.Debug("Found Image Module for {BotName} in {Guild}", client.Rest.CurrentUser.GlobalName, guildConfig.GuildId);
+				var module = new ImageModule(client);
+				
+				await module.BuildCommands(guildConfig.ImageConfig, guildConfig.GuildId);
+
+				var key = new ModuleData(ModuleType.Image, ClientId, guildConfig.GuildId);
+
+				ModuleRegister.Modules[key] = module;
 			}
 		}
 	}
@@ -33,11 +54,15 @@ public class CommandService(BotConfig config, DiscordSocketClient client) : ICom
 
 		try
 		{
-			switch (command.CommandName)
+			var module = ModuleRegister.TryGetFromCommand(command.CommandName, ClientId, command.GuildId!.Value);
+
+			if (module != null)
 			{
-				case "order":
-					await _orderTrackingModule.ExecuteCommands(command);
-					break;
+				await module.ExecuteCommands(command);
+			}
+			else
+			{
+				Log.Debug("Module for command {CommandName} was not found", command.CommandName);
 			}
 		}
 		catch (Exception ex)
@@ -50,20 +75,38 @@ public class CommandService(BotConfig config, DiscordSocketClient client) : ICom
 	{
 		var data = modal.Data.CustomId;
 
-		if (data.StartsWith(ModalFields.OrderModal))
-			await _orderTrackingModule.ProcessModal(modal);
+		var module = ModuleRegister.TryGetFromModal(data, ClientId, modal.GuildId!.Value);
 		
+		if (module != null)
+			await module.ExecuteModal(modal);
+
+		else
+			Log.Debug("Module for modal {ModalName} was not found", data);
 	}
 
 	public async Task ExecuteButtonResponse(SocketMessageComponent component)
 	{
-		if (component.Data.CustomId.StartsWith(ControlNames.Order))
-			await _orderTrackingModule.ExecuteOrderButton(component);
+		var data = component.Data.CustomId;
+
+		var module = ModuleRegister.TryGetFromButton(data, ClientId, component.GuildId!.Value);
+		
+		if (module != null)
+			await module.ExecuteButton(component);
+
+		else
+			Log.Debug("Module for button {ButtonName} was not found", data);
 	}
 
 	public async Task ExecuteSelectResponse(SocketMessageComponent component)
 	{
-		if (component.Data.CustomId.StartsWith(ControlNames.Order))
-			await _orderTrackingModule.ExecuteOrderSelect(component);
+		var data = component.Data.CustomId;
+
+		var module = ModuleRegister.TryGetFromSelect(data, ClientId,component.GuildId!.Value);
+		
+		if (module != null)
+			await module.ExecuteButton(component);
+
+		else
+			Log.Debug("Module for button {ButtonName} was not found", data);
 	}
 }

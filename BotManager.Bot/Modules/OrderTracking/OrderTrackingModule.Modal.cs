@@ -11,7 +11,7 @@ namespace BotManager.Bot.Modules.OrderTracking;
 
 public partial class OrderTrackingModule
 {
-	public async Task ProcessModal(SocketModal modal)
+	public async Task ExecuteModal (SocketModal modal)
 	{
 		var id = modal.Data.CustomId;
 
