@@ -1,4 +1,5 @@
-﻿using BotManager.Db.Models.Modules.Image;
+﻿using BotManager.Db.Models.Modules.Birthdays;
+using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Voice;
 using EfExtensions.Items.Model;
@@ -14,4 +15,6 @@ public class GuildConfig : DbItem<string>
 	public VoiceChannelConfig? VoiceChannelConfig { get; set; }
 	
 	public ImageConfig? ImageConfig { get; set; }
+	
+	public BirthdayConfig? BirthdayConfig { get; set; }
 }

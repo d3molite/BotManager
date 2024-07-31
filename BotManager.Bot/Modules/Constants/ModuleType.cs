@@ -5,4 +5,5 @@ public enum ModuleType
     None,
     Order,
     Image,
+    Birthdays
 }

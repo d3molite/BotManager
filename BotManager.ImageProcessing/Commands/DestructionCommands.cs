@@ -19,17 +19,19 @@ public static class DestructionCommands
                 ProcessJpeg(frame);
                 image.Frames.InsertFrame(i, frame.Frames.RootFrame);
             }
-        }
-        
-        else
-            ProcessJpeg(image);
 
-        imageModel.Extension = "jpg";
-        
-        await image.SaveAsJpegAsync(imageModel.TargetPath, new JpegEncoder()
+            await image.SaveAsync(imageModel.TargetPath);
+        }
+
+        else
         {
-            Quality = 1,
-        });
+            ProcessJpeg(image);
+            imageModel.Extension = "jpg";
+            await image.SaveAsJpegAsync(imageModel.TargetPath, new JpegEncoder()
+            {
+                Quality = 1,
+            });
+        }
         
         image.Dispose();
     }
@@ -37,7 +39,7 @@ public static class DestructionCommands
     private static void ProcessJpeg(Image image)
     {
         var height = image.Height;
-        var newHeight = image.Height / 3;
+        var newHeight = image.Height / 4;
         
         image.Mutate(context => context.Resize(height: newHeight, width:0));
         

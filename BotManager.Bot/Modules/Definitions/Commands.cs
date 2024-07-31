@@ -8,6 +8,12 @@ public static class Commands
     [ModuleType(ModuleType.Order)]
     public const string Order = "order";
 
+    [ModuleType(ModuleType.Birthdays)] 
+    public const string Birthday = "birthday";
+
+    [ModuleType(ModuleType.Birthdays)] 
+    public const string ClearBirthday = "clearbirthday";
+
     [ModuleType(ModuleType.Image)]
     public const string Waaw = "waaw";
 

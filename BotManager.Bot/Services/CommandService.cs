@@ -1,4 +1,5 @@
 ﻿
+using BotManager.Bot.Modules.Birthdays;
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Image;
 using BotManager.Bot.Modules.Models;
@@ -23,11 +24,13 @@ public class CommandService(BotConfig config, DiscordSocketClient client)
 
 	private async Task BuildCommandsInternal()
 	{
+		var user = client.Rest.CurrentUser.GlobalName;
+		
 		foreach (var guildConfig in config.GuildConfigs)
 		{
 			if (guildConfig.OrderTrackingConfig != null)
 			{
-				Log.Debug("Found Order Module for {BotName} in {Guild}", client.Rest.CurrentUser.GlobalName, guildConfig.GuildId);
+				Log.Debug("Found Order Module for {BotName} in {Guild}", user, guildConfig.GuildId);
 				
 				var service = DependencyManager.Provider.GetRequiredService<IOrderService>();
 				var module = new OrderTrackingModule(service, client);
@@ -41,7 +44,7 @@ public class CommandService(BotConfig config, DiscordSocketClient client)
 
 			if (guildConfig.ImageConfig != null)
 			{
-				Log.Debug("Found Image Module for {BotName} in {Guild}", client.Rest.CurrentUser.GlobalName, guildConfig.GuildId);
+				Log.Debug("Found Image Module for {BotName} in {Guild}", user, guildConfig.GuildId);
 				var module = new ImageModule(client);
 				
 				await module.BuildCommands(guildConfig.ImageConfig, guildConfig.GuildId);
@@ -49,6 +52,20 @@ public class CommandService(BotConfig config, DiscordSocketClient client)
 				var key = new ModuleData(ModuleType.Image, ClientId, guildConfig.GuildId);
 
 				ModuleRegister.Modules[key] = module;
+			}
+
+			if (guildConfig.BirthdayConfig != null)
+			{
+				Log.Debug("Found Birthdays Module for {BotName} in {Guild}", user, guildConfig.GuildId);
+				var service = DependencyManager.Provider.GetRequiredService<IBirthdayService>();
+				var module = new BirthdaysModule(client, service);
+				
+				await module.BuildCommands(guildConfig.BirthdayConfig, guildConfig.GuildId);
+
+				var key = new ModuleData(ModuleType.Birthdays, ClientId, guildConfig.GuildId);
+				ModuleRegister.Modules[key] = module;
+				
+				Task.Run(async() => await module.StartCheckTask());
 			}
 		}
 	}

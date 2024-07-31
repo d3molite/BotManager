@@ -1,4 +1,5 @@
 ﻿using BotManager.Db.Models;
+using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Order;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<Order>().Navigation(x => x.OrderItems).AutoInclude();
 
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.ImageConfig).AutoInclude();
+
+		modelBuilder.Entity<GuildConfig>().Navigation(x => x.BirthdayConfig).AutoInclude();
 	}
 
 	public DbSet<BotConfig> Configs { get; set; } = null!;
@@ -34,4 +37,8 @@ public class BotManagerContext : DbContext
 	public DbSet<OrderItem> OrderItems { get; set; } = null!;
 
 	public DbSet<ImageConfig> ImageConfigs { get; set; } = null!;
+
+	public DbSet<BirthdayConfig> BirthdayConfigs { get; set; } = null!;
+
+	public DbSet<Birthday> Birthdays { get; set; } = null!;
 }

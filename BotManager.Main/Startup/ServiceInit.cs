@@ -72,5 +72,8 @@ public static class ServiceInit
 		collection.AddSingleton<IOrderItemRepository, OrderItemRepository>();
 		collection.AddSingleton<IOrderRepository, OrderRepository>();
 		collection.AddSingleton<IOrderService, OrderService>();
+
+		collection.AddSingleton<IBirthdayRepository, BirthdayRepository>();
+		collection.AddSingleton<IBirthdayService, BirthdayService>();
 	}
 }
