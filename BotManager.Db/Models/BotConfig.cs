@@ -20,5 +20,5 @@ public class BotConfig : AbstractDbItem
 	
 	public bool Debug { get; set; }
 
-	public IEnumerable<GuildConfig> GuildConfigs { get; set; } = [];
+	public IEnumerable<GuildConfig> GuildConfigs { get; set; }
 }

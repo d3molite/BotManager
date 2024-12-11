@@ -1,14 +1,15 @@
-﻿version: "3.3"
-services:
-  discordv2:
-    image: hub.demolite.de/demoreg/discordv2
-    container_name: discordv2
+﻿services:
+  botmanager:
+    image: hub.demolite.de/demoreg/botmanager
+    container_name: botmanager
     restart: always
     env_file:
-      - e.env
+      - .env
     build:
       context: .
       dockerfile: BotManager.Main/Dockerfile
+      args:
+        - CERT_PASS=${cert_pass}
     ports:
       - "8085:80"
       - "8086:443"

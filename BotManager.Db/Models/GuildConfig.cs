@@ -1,4 +1,5 @@
-﻿using BotManager.Db.Models.Modules.Birthdays;
+﻿using System.ComponentModel.DataAnnotations;
+using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
@@ -9,6 +10,8 @@ namespace BotManager.Db.Models;
 
 public class GuildConfig : AbstractDbItem
 {
+	[MaxLength(50)]
+	public string GuildName { get; set; } = "";
 	public ulong GuildId { get; set; }
 	public OrderTrackingConfig? OrderTrackingConfig { get; set; }
 	

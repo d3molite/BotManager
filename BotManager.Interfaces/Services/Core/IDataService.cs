@@ -7,6 +7,8 @@ public interface IDataService<T>
 	public IEnumerable<T> Items { get; set; }
 
 	public void Load();
+	
+	public Task LoadAsync();
 
 	public bool Save();
 }

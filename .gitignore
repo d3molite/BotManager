@@ -8,3 +8,5 @@ e.env
 
 *.DotSettings
 *.DotSettings.user
+
+.env

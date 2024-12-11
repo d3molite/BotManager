@@ -3,6 +3,7 @@ using System;
 using BotManager.Db.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotManager.Db.Migrations
 {
     [DbContext(typeof(BotManagerContext))]
-    partial class BotManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20241211145113_Fixed Missing FK Link")]
+    partial class FixedMissingFKLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -62,11 +65,6 @@ namespace BotManager.Db.Migrations
 
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("GuildName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

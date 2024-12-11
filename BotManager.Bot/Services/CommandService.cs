@@ -2,6 +2,7 @@
 using BotManager.Bot.Modules.Birthdays;
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Image;
+using BotManager.Bot.Modules.Logging;
 using BotManager.Bot.Modules.Models;
 using BotManager.Bot.Modules.OrderTracking;
 using BotManager.Db.Models;
@@ -19,12 +20,12 @@ public class CommandService(BotConfig config, DiscordSocketClient client)
 	
 	public async Task BuildCommands()
 	{
-		await Task.Run(async () => await BuildCommandsInternal());
+		await BuildCommandsInternal();
 	}
 
 	private async Task BuildCommandsInternal()
 	{
-		var user = client.Rest.CurrentUser.GlobalName;
+		var user = config.Name;
 		
 		foreach (var guildConfig in config.GuildConfigs)
 		{
@@ -66,6 +67,16 @@ public class CommandService(BotConfig config, DiscordSocketClient client)
 				ModuleRegister.Modules[key] = module;
 				
 				Task.Run(async() => await module.StartCheckTask());
+			}
+
+			if (guildConfig.LoggingConfig != null)
+			{
+				Log.Debug("Found Logging Module for {BotName} in {Guild}", user, guildConfig.GuildId);
+				var module = new LoggingModule(client, guildConfig);
+				module.RegisterLogger();
+				
+				var key = new ModuleData(ModuleType.Logging, ClientId, guildConfig.GuildId);
+				ModuleRegister.Modules[key] = module;
 			}
 		}
 	}

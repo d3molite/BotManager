@@ -68,6 +68,10 @@ public class BotManagerContext : DbContext
 			.Entity<GuildConfig>()
 			.HasOne(x => x.LoggingConfig)
 			.WithOne(x => x.GuildConfig);
+		
+		modelBuilder.Entity<GuildConfig>()
+					.HasOne(x => x.VoiceChannelConfig)
+					.WithOne(x => x.GuildConfig);
 
 		// Sub Config Navigations
 		

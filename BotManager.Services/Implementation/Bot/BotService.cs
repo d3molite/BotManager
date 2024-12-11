@@ -12,7 +12,7 @@ public class BotService(IBotConfigService botConfigService) : IBotService
 
 	public async Task Initialize()
 	{
-		botConfigService.Load();
+		await botConfigService.LoadAsync();
 		Log.Debug("Found {BotCount} Bots", botConfigService.Items.Count());
 		
 		foreach (var config in botConfigService.Items)
