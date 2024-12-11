@@ -1,18 +1,18 @@
-﻿using BotManager.Db.Interfaces;
-using BotManager.Db.Models;
+﻿using BotManager.Db.Models;
 using BotManager.Interfaces.Services.Data;
+using Demolite.Db.Interfaces;
 
 namespace BotManager.Services.Implementation.Data;
 
 public class BotConfigService : IBotConfigService
 {
-	private readonly IBotConfigRepository _botConfigRepository;
+	private readonly IDbRepository<BotConfig> _botConfigRepository;
 	
 	public event EventHandler? ItemsUpdated;
 
 	public IEnumerable<BotConfig> Items { get; set; } = new List<BotConfig>();
 
-	public BotConfigService(IBotConfigRepository botConfigRepository)
+	public BotConfigService(IDbRepository<BotConfig> botConfigRepository)
 	{
 		_botConfigRepository = botConfigRepository;
 		Load();

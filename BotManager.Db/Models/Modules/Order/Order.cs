@@ -1,8 +1,10 @@
-﻿using EfExtensions.Items.Model;
+﻿using Demolite.Db.Models;
 
 namespace BotManager.Db.Models.Modules.Order;
 
-public class Order : DbItem<string>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+public class Order : AbstractDbItem
 {
 	public ulong OwnerId { get; set; }
 	public ulong MessageId { get; set; }

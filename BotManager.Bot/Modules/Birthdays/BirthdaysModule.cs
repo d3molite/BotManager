@@ -5,7 +5,6 @@ using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Interfaces.Services.Data;
 using Discord;
 using Discord.WebSocket;
-using Serilog;
 
 namespace BotManager.Bot.Modules.Birthdays;
 
@@ -17,7 +16,7 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 
 	private ulong _channelId;
 
-	private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromHours(1));
+	private readonly PeriodicTimer _timer = new (TimeSpan.FromHours(1));
 	
 	public async Task BuildCommands(BirthdayConfig config, ulong guildId)
 	{
@@ -37,7 +36,7 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 		command.WithName(Commands.Birthday);
 		command.WithDescription("Add your birthday! (DD.MM.YYYY)");
 		command.AddDescriptionLocalization("de", "Füge deinen Geburtstag hinzu! (TT.MM.JJJJ)");
-		command.AddOption("date", ApplicationCommandOptionType.String, "Your birth date", isRequired: true);
+		command.AddOption("date", ApplicationCommandOptionType.String, "Your birth date (DD.MM.YYYY)", isRequired: true);
 
 		await guild.CreateApplicationCommandAsync(command.Build());
 	}
@@ -56,8 +55,6 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 	{
 		while (await _timer.WaitForNextTickAsync(CancellationToken.None))
 		{
-			Log.Debug("Checking");
-			
 			var birthdays = await birthdayService.GetBirthdays(_configId, _guildId);
 
 			var now = DateTime.Now;

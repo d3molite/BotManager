@@ -15,7 +15,7 @@ namespace BotManager.Db.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
             modelBuilder.Entity("BotManager.Db.Models.BotConfig", b =>
                 {
@@ -32,13 +32,16 @@ namespace BotManager.Db.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Presence")
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Token")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -54,16 +57,11 @@ namespace BotManager.Db.Migrations
                         .HasColumnOrder(0);
 
                     b.Property<string>("BotConfigId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("ImageConfigId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OrderTrackingConfigId")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("VoiceChannelConfigId")
                         .HasColumnType("TEXT");
@@ -71,10 +69,6 @@ namespace BotManager.Db.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BotConfigId");
-
-                    b.HasIndex("ImageConfigId");
-
-                    b.HasIndex("OrderTrackingConfigId");
 
                     b.HasIndex("VoiceChannelConfigId");
 
@@ -89,10 +83,8 @@ namespace BotManager.Db.Migrations
                         .HasColumnOrder(0);
 
                     b.Property<string>("BirthdayConfigId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ConfigId")
                         .IsRequired()
+                        .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("Date")
@@ -120,6 +112,7 @@ namespace BotManager.Db.Migrations
 
                     b.Property<string>("GuildConfigId")
                         .IsRequired()
+                        .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("PingChannelId")
@@ -140,9 +133,40 @@ namespace BotManager.Db.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnOrder(0);
 
+                    b.Property<string>("GuildConfigId")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("GuildConfigId")
+                        .IsUnique();
+
                     b.ToTable("ImageConfigs");
+                });
+
+            modelBuilder.Entity("BotManager.Db.Models.Modules.Logging.LoggingConfig", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("GuildConfigId")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("LoggingChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildConfigId")
+                        .IsUnique();
+
+                    b.ToTable("LoggingConfigs");
                 });
 
             modelBuilder.Entity("BotManager.Db.Models.Modules.Order.Order", b =>
@@ -225,7 +249,15 @@ namespace BotManager.Db.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnOrder(0);
 
+                    b.Property<string>("GuildConfigId")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("GuildConfigId")
+                        .IsUnique();
 
                     b.ToTable("OrderTrackingConfigs");
                 });
@@ -250,45 +282,63 @@ namespace BotManager.Db.Migrations
 
             modelBuilder.Entity("BotManager.Db.Models.GuildConfig", b =>
                 {
-                    b.HasOne("BotManager.Db.Models.BotConfig", null)
+                    b.HasOne("BotManager.Db.Models.BotConfig", "BotConfig")
                         .WithMany("GuildConfigs")
-                        .HasForeignKey("BotConfigId");
-
-                    b.HasOne("BotManager.Db.Models.Modules.Image.ImageConfig", "ImageConfig")
-                        .WithMany()
-                        .HasForeignKey("ImageConfigId");
-
-                    b.HasOne("BotManager.Db.Models.Modules.Order.OrderTrackingConfig", "OrderTrackingConfig")
-                        .WithMany()
-                        .HasForeignKey("OrderTrackingConfigId");
+                        .HasForeignKey("BotConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BotManager.Db.Models.Modules.Voice.VoiceChannelConfig", "VoiceChannelConfig")
                         .WithMany()
                         .HasForeignKey("VoiceChannelConfigId");
 
-                    b.Navigation("ImageConfig");
-
-                    b.Navigation("OrderTrackingConfig");
+                    b.Navigation("BotConfig");
 
                     b.Navigation("VoiceChannelConfig");
                 });
 
             modelBuilder.Entity("BotManager.Db.Models.Modules.Birthdays.Birthday", b =>
                 {
-                    b.HasOne("BotManager.Db.Models.Modules.Birthdays.BirthdayConfig", null)
+                    b.HasOne("BotManager.Db.Models.Modules.Birthdays.BirthdayConfig", "BirthdayConfig")
                         .WithMany("Birthdays")
-                        .HasForeignKey("BirthdayConfigId");
+                        .HasForeignKey("BirthdayConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BirthdayConfig");
                 });
 
             modelBuilder.Entity("BotManager.Db.Models.Modules.Birthdays.BirthdayConfig", b =>
                 {
-                    b.HasOne("BotManager.Db.Models.GuildConfig", "Parent")
+                    b.HasOne("BotManager.Db.Models.GuildConfig", "GuildConfig")
                         .WithOne("BirthdayConfig")
                         .HasForeignKey("BotManager.Db.Models.Modules.Birthdays.BirthdayConfig", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Parent");
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("BotManager.Db.Models.Modules.Image.ImageConfig", b =>
+                {
+                    b.HasOne("BotManager.Db.Models.GuildConfig", "GuildConfig")
+                        .WithOne("ImageConfig")
+                        .HasForeignKey("BotManager.Db.Models.Modules.Image.ImageConfig", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("BotManager.Db.Models.Modules.Logging.LoggingConfig", b =>
+                {
+                    b.HasOne("BotManager.Db.Models.GuildConfig", "GuildConfig")
+                        .WithOne("LoggingConfig")
+                        .HasForeignKey("BotManager.Db.Models.Modules.Logging.LoggingConfig", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GuildConfig");
                 });
 
             modelBuilder.Entity("BotManager.Db.Models.Modules.Order.OrderItem", b =>
@@ -296,6 +346,17 @@ namespace BotManager.Db.Migrations
                     b.HasOne("BotManager.Db.Models.Modules.Order.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId");
+                });
+
+            modelBuilder.Entity("BotManager.Db.Models.Modules.Order.OrderTrackingConfig", b =>
+                {
+                    b.HasOne("BotManager.Db.Models.GuildConfig", "GuildConfig")
+                        .WithOne("OrderTrackingConfig")
+                        .HasForeignKey("BotManager.Db.Models.Modules.Order.OrderTrackingConfig", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GuildConfig");
                 });
 
             modelBuilder.Entity("BotManager.Db.Models.BotConfig", b =>
@@ -306,6 +367,12 @@ namespace BotManager.Db.Migrations
             modelBuilder.Entity("BotManager.Db.Models.GuildConfig", b =>
                 {
                     b.Navigation("BirthdayConfig");
+
+                    b.Navigation("ImageConfig");
+
+                    b.Navigation("LoggingConfig");
+
+                    b.Navigation("OrderTrackingConfig");
                 });
 
             modelBuilder.Entity("BotManager.Db.Models.Modules.Birthdays.BirthdayConfig", b =>

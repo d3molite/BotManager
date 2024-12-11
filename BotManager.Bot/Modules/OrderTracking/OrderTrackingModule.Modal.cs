@@ -1,11 +1,10 @@
 ﻿using System.Globalization;
-using System.Security.Cryptography;
 using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models.Modules.Order;
+using Demolite.Db.Enum;
 using Discord;
 using Discord.WebSocket;
-using EfExtensions.Core.Enum;
 
 namespace BotManager.Bot.Modules.OrderTracking;
 

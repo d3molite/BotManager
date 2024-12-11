@@ -1,5 +1,5 @@
 ﻿using BotManager.Db.Models.Modules.Order;
-using EfExtensions.Core.Interfaces.Result;
+using Demolite.Db.Interfaces;
 
 namespace BotManager.Interfaces.Services.Data;
 

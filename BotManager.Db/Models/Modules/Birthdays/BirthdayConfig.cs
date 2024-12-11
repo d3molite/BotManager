@@ -1,14 +1,18 @@
-﻿using EfExtensions.Items.Model;
+﻿using System.ComponentModel.DataAnnotations;
+using Demolite.Db.Models;
 
 namespace BotManager.Db.Models.Modules.Birthdays;
 
-public class BirthdayConfig : DbItem<string>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+public class BirthdayConfig : AbstractDbItem
 {
-	public string GuildConfigId { get; set; }
-
-	public GuildConfig Parent { get; set; } = null!;
-
 	public ulong PingChannelId { get; set; }
-	
-	public List<Birthday> Birthdays { get; set; }
+
+	public List<Birthday> Birthdays { get; set; } = [];
+
+	[MaxLength(40)]
+	public string GuildConfigId { get; set; } = null!;
+
+	public GuildConfig GuildConfig { get; set; } = null!;
 }

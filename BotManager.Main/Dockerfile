@@ -1,11 +1,14 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+ARG CERT_PASS
+ENV CERT_PASS $CERT_PASS
 
 RUN mkdir https
-RUN dotnet dev-certs https -ep ./https/aspnetapp.pfx -p some45656454other12334124long566776567passwordgoeshere
+RUN dotnet dev-certs https -ep ./https/aspnetapp.pfx -p ${CERT_PASS}
 RUN dotnet dev-certs https --trust
 
 ARG BUILD_CONFIGURATION=Release
@@ -27,8 +30,11 @@ RUN dotnet publish "BotManager.Main.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 
 FROM base AS final
 WORKDIR /app
+
 COPY --chmod=0755 --from=build /https/* /https/
 COPY --from=publish /app/publish .
+
 RUN mkdir /app/dbdata
 RUN mkdir /app/image
+
 ENTRYPOINT ["dotnet", "BotManager.Main.dll"]

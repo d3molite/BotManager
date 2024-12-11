@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-namespace BotManager.DI;
+﻿namespace BotManager.DI;
 
 public static class DependencyManager
 {

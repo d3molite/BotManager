@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using EfExtensions.Core.Enum;
 
 namespace BotManager.Bot.Modules.OrderTracking;
 

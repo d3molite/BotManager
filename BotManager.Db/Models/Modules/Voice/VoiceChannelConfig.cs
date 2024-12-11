@@ -1,8 +1,10 @@
-﻿using EfExtensions.Items.Model;
+﻿using Demolite.Db.Models;
 
 namespace BotManager.Db.Models.Modules.Voice;
 
-public class VoiceChannelConfig : DbItem<string>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+public class VoiceChannelConfig : AbstractDbItem
 {
     public ulong CommandChannelId { get; set; }
     

@@ -1,13 +1,12 @@
-﻿using BotManager.Db.Interfaces;
-using BotManager.Db.Models.Modules.Order;
+﻿using BotManager.Db.Models.Modules.Order;
 using BotManager.Interfaces.Services.Data;
-using EfExtensions.Core.Enum;
-using EfExtensions.Core.Interfaces.Result;
-using EfExtensions.Items.Result;
+using Demolite.Db.Enum;
+using Demolite.Db.Interfaces;
+using Demolite.Db.Result;
 
 namespace BotManager.Services.Implementation.Data;
 
-public class OrderService(IOrderRepository orderRepository, IOrderItemRepository orderItemRepository) : IOrderService
+public class OrderService(IDbRepository<Order> orderRepository, IDbRepository<OrderItem> orderItemRepository) : IOrderService
 {
 	public async Task<Order?> GetOrderAsync(ulong messageId)
 	{

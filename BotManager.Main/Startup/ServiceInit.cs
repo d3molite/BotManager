@@ -1,12 +1,14 @@
 ﻿using BotManager.Db.Context;
-using BotManager.Db.Interfaces;
+using BotManager.Db.Models;
+using BotManager.Db.Models.Modules.Birthdays;
+using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Repositories;
 using BotManager.DI;
 using BotManager.Interfaces.Services.Bot;
 using BotManager.Interfaces.Services.Data;
-using BotManager.Main.Components;
 using BotManager.Services.Implementation.Bot;
 using BotManager.Services.Implementation.Data;
+using Demolite.Db.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -65,15 +67,15 @@ public static class ServiceInit
 
 	private static void AddDataServices(IServiceCollection collection)
 	{
-		collection.AddSingleton<IBotConfigRepository, BotConfigRepository>();
+		collection.AddSingleton<IDbRepository<BotConfig>, BotConfigRepository>();
 		collection.AddSingleton<IBotConfigService, BotConfigService>();
 		collection.AddSingleton<IBotService, BotService>();
 
-		collection.AddSingleton<IOrderItemRepository, OrderItemRepository>();
-		collection.AddSingleton<IOrderRepository, OrderRepository>();
+		collection.AddSingleton<IDbRepository<OrderItem>, OrderItemRepository>();
+		collection.AddSingleton<IDbRepository<Order>, OrderRepository>();
 		collection.AddSingleton<IOrderService, OrderService>();
 
-		collection.AddSingleton<IBirthdayRepository, BirthdayRepository>();
+		collection.AddSingleton<IDbRepository<Birthday>, BirthdayRepository>();
 		collection.AddSingleton<IBirthdayService, BirthdayService>();
 	}
 }

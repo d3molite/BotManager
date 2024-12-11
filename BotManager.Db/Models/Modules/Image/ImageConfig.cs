@@ -1,8 +1,13 @@
-﻿using EfExtensions.Items.Model;
+﻿using System.ComponentModel.DataAnnotations;
+using Demolite.Db.Models;
 
 namespace BotManager.Db.Models.Modules.Image;
 
-public class ImageConfig : DbItem<string>
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+public class ImageConfig : AbstractDbItem
 {
-    
+	[MaxLength(40)]
+	public string GuildConfigId { get; set; } = null!;
+	public virtual GuildConfig GuildConfig { get; set; } = null!;
 }

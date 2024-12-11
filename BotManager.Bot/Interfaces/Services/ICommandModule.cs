@@ -1,5 +1,4 @@
-﻿using BotManager.Db.Interfaces;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 
 namespace BotManager.Bot.Interfaces.Services;
 
