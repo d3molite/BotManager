@@ -11,8 +11,8 @@
       args:
         - CERT_PASS=${cert_pass}
     ports:
-      - "8085:80"
-      - "8086:443"
+      - "8087:80"
+      - "8088:443"
     volumes:
       - "./dbdata/:/app/dbdata/"
       - "./image/:/app/image/"
