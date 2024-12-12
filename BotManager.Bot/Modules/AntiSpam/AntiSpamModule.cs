@@ -14,7 +14,7 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 
 	private Dictionary<IUser, MessageQueue> _userMessages = [];
 	
-	private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+	private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromMinutes(4));
 
 	private AntiSpamConfig Config => config.AntiSpamConfig!;
 

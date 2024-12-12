@@ -9,7 +9,7 @@ public class MessageQueue(int maxMessages)
 {
 	private TimeSpan LifeTimeMinutes => TimeSpan.FromMinutes(5);
 	
-	public List<IMessage> Queue { get; } = [];
+	public List<IMessage> Queue { get; private set; } = [];
 
 	public bool IsEmpty => !Queue.Any();
 
@@ -57,9 +57,8 @@ public class MessageQueue(int maxMessages)
 	{
 		try
 		{
-			var oldMessages = Queue.Where(message => DateTime.Now - message.Timestamp > LifeTimeMinutes);
-
-			foreach (var message in oldMessages) Queue.Remove(message);
+			var keepMessages = Queue.Where(message => DateTime.Now - message.Timestamp < LifeTimeMinutes);
+			Queue = keepMessages.ToList();
 		}
 		catch (InvalidOperationException ex)
 		{
