@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using BotManager.Main.Components;
-using BotManager.Main.Components.Account;
-using BotManager.Main.Data;
 using BotManager.Main.Startup;
 using MudBlazor.Services;
 
@@ -15,36 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 # if DEBUG
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
-
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityUserAccessor>();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
-builder.Services.AddAuthentication(
-			options =>
-			{
-				options.DefaultScheme = IdentityConstants.ApplicationScheme;
-				options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-			}
-		)
-		.AddIdentityCookies();
-
 # endif
 
 ServiceInit.RegisterServices(builder);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("DataSource=./dbdata/app.db"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 # if DEBUG
-
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-		.AddEntityFrameworkStores<ApplicationDbContext>()
-		.AddSignInManager()
-		.AddDefaultTokenProviders();
-
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 builder.Services.AddMudServices();
 
@@ -76,8 +48,6 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
-// // Add additional endpoints required by the Identity /Account Razor components.
-app.MapAdditionalIdentityEndpoints();
 # endif
 
 Task.Run(async () => await ServiceInit.StartBots(app));

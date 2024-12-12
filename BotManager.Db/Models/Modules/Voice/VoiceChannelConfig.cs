@@ -1,18 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Demolite.Db.Models;
+﻿using BotManager.Db.Models.Abstract;
 
 namespace BotManager.Db.Models.Modules.Voice;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
-public class VoiceChannelConfig : AbstractDbItem
+public class VoiceChannelConfig : AbstractGuildConfig
 {
-    public ulong CommandChannelId { get; set; }
-    
-    public ulong VoiceCategoryId { get; set; }
+	public ulong CommandChannelId { get; set; }
 
-    [MaxLength(40)]
-    public string GuildConfigId { get; set; }
-
-    public virtual GuildConfig GuildConfig { get; set; } = null!;
+	public ulong VoiceCategoryId { get; set; }
 }

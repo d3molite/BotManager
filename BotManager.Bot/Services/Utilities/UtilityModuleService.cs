@@ -1,4 +1,5 @@
 ﻿using BotManager.Bot.Interfaces.Modules;
+using BotManager.Bot.Modules.AntiSpam;
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Logging;
 using BotManager.Bot.Modules.Models;
@@ -26,6 +27,9 @@ public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 		{
 			if (guildConfig.HasLoggingModule)
 				await SetupLoggingModule(guildConfig);
+			
+			if (guildConfig.HasAntiSpamModule)
+				await SetupAntiSpamModule(guildConfig);
 		}
 	}
 
@@ -35,6 +39,14 @@ public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 		await module.RegisterModuleAsync();
 
 		RegisterModule(guildConfig, module, ModuleType.Logging);
+	}
+	
+	private async Task SetupAntiSpamModule(GuildConfig guildConfig)
+	{
+		var module = new AntiSpamModule(client, guildConfig);
+		await module.RegisterModuleAsync();
+		
+		RegisterModule(guildConfig, module, ModuleType.AntiSpam);
 	}
 
 	private void RegisterModule(GuildConfig guildConfig, IUtilityModule module, ModuleType moduleType)

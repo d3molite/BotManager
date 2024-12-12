@@ -1,16 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Demolite.Db.Models;
+﻿using BotManager.Db.Models.Abstract;
 
 namespace BotManager.Db.Models.Modules.Logging;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
-public class LoggingConfig : AbstractDbItem
+public class LoggingConfig : AbstractGuildConfig
 {
 	public ulong LoggingChannelId { get; set; }
-	
-	public virtual GuildConfig GuildConfig { get; set; } = null!;
-
-	[MaxLength(40)]
-	public string GuildConfigId { get; set; } = null!;
 }

@@ -7,4 +7,5 @@ public enum ModuleType
     Image,
     Birthdays,
     Logging,
+    AntiSpam,
 }

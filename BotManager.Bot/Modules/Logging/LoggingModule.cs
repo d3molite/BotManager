@@ -15,6 +15,11 @@ public class LoggingModule(DiscordSocketClient client, GuildConfig guildConfig) 
 		client.UserLeft += LogUserLeft;
 	}
 
+	public async Task LogUserTimedOut(IUser user)
+	{
+		await SendLogEmbed(UserTimeoutEmbed(user));
+	}
+	
 	private async Task LogMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel)
 	{
 		var channelObject = await channel.GetOrDownloadAsync();
@@ -84,6 +89,13 @@ public class LoggingModule(DiscordSocketClient client, GuildConfig guildConfig) 
 				"A message was deleted but the content could not be retrieved from cache."
 			);
 
+		return builder.Build();
+	}
+
+	private static Embed UserTimeoutEmbed(IUser user)
+	{
+		var builder = GetLoggingEmbedBuilder();
+		builder.AddField("User timed out.", $"User {user.GetEmbedInfo()} has been timed out for spamming.");
 		return builder.Build();
 	}
 

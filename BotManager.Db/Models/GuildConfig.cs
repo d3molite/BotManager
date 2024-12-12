@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BotManager.Db.Models.Modules.AntiSpam;
 using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
@@ -27,6 +28,8 @@ public class GuildConfig : AbstractDbItem
 	public BirthdayConfig? BirthdayConfig { get; set; }
 
 	public LoggingConfig? LoggingConfig { get; set; }
+	
+	public AntiSpamConfig? AntiSpamConfig { get; set; }
 
 	[NotMapped]
 	public bool HasOrderTrackingModule => OrderTrackingConfig != null;
@@ -42,6 +45,9 @@ public class GuildConfig : AbstractDbItem
 	
 	[NotMapped]
 	public bool HasLoggingModule => LoggingConfig != null;
+	
+	[NotMapped]
+	public bool HasAntiSpamModule => AntiSpamConfig != null;
 
 	public virtual BotConfig BotConfig { get; set; } = null!;
 
