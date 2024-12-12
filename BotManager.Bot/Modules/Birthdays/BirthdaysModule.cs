@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using BotManager.Bot.Interfaces.Services;
+using BotManager.Bot.Interfaces.Modules;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Interfaces.Services.Data;

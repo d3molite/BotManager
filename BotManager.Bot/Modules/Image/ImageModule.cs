@@ -1,4 +1,4 @@
-﻿using BotManager.Bot.Interfaces.Services;
+﻿using BotManager.Bot.Interfaces.Modules;
 using BotManager.Db.Models.Modules.Image;
 using Discord.WebSocket;
 

@@ -1,8 +1,8 @@
 ﻿using Discord.WebSocket;
 
-namespace BotManager.Bot.Interfaces.Services;
+namespace BotManager.Bot.Interfaces.Modules;
 
-public interface ICommandModule<TConfig> : ICommandModule
+public interface ICommandModule<in TConfig> : ICommandModule
 {
 	public Task BuildCommands(TConfig config, ulong guildId);
 	

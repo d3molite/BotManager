@@ -1,4 +1,6 @@
 ﻿using BotManager.Bot.Services;
+using BotManager.Bot.Services.Commands;
+using BotManager.Bot.Services.Utilities;
 using BotManager.Db.Models;
 using BotManager.Interfaces.Core;
 using Discord;
@@ -12,12 +14,10 @@ public class BotEntity : IBotEntity
 	private readonly DiscordSocketClient _client;
 	private readonly CancellationTokenSource _tokenSource = new();
 	private readonly BotConfig _config;
-	private readonly CommandService _commandService;
 
-	private CommandService CommandService
-	{
-		get => _commandService;
-	}
+	private CommandModuleService CommandModuleService { get; }
+	private UtilityModuleService UtilityModuleService { get; }
+	
 
 	public BotEntity(BotConfig config)
 	{
@@ -26,7 +26,7 @@ public class BotEntity : IBotEntity
 		_client = new DiscordSocketClient(
 			new DiscordSocketConfig()
 			{
-				GatewayIntents = GatewayIntents.All,
+				GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.MessageContent,
 				MessageCacheSize = 100,
 				#if DEBUG
 				UseInteractionSnowflakeDate = false,
@@ -34,14 +34,21 @@ public class BotEntity : IBotEntity
 			}
 		);
 
-		_commandService = new CommandService(_config, _client);
+		CommandModuleService = new CommandModuleService(_config, _client);
+		UtilityModuleService = new UtilityModuleService(_config, _client);
 		
 		_client.Log += LogClientEvent;
-		_client.Ready += CommandService.BuildCommands;
-		_client.SlashCommandExecuted += CommandService.ExecuteCommand;
-		_client.ModalSubmitted += CommandService.ExecuteModalResponse;
-		_client.ButtonExecuted += CommandService.ExecuteButtonResponse;
-		_client.SelectMenuExecuted += CommandService.ExecuteSelectResponse;
+		_client.Ready += OnClientReady;
+		_client.SlashCommandExecuted += CommandModuleService.ExecuteCommand;
+		_client.ModalSubmitted += CommandModuleService.ExecuteModalResponse;
+		_client.ButtonExecuted += CommandModuleService.ExecuteButtonResponse;
+		_client.SelectMenuExecuted += CommandModuleService.ExecuteSelectResponse;
+	}
+
+	private async Task OnClientReady()
+	{
+		Task.Run(async () => await CommandModuleService.BuildCommands());
+		Task.Run(async () => await UtilityModuleService.InitializeAsync());
 	}
 
 	private async Task LogClientEvent(LogMessage arg)

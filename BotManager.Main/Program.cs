@@ -52,6 +52,7 @@ ServiceInit.SetContainer(app);
 if (app.Environment.IsDevelopment())
 {
 	app.UseMigrationsEndPoint();
+	app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 }
 else
 {
@@ -66,12 +67,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-
-app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
-
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
 Task.Run(async () => await ServiceInit.StartBots(app));
 
-app.Run();
+await app.RunAsync();
