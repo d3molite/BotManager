@@ -12,7 +12,7 @@ namespace BotManager.Bot.Services.Utilities;
 public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 {
 	private string User => config.Name;
-	
+
 	private ulong ClientId => client.Rest.CurrentUser.Id;
 
 	public async Task InitializeAsync()
@@ -33,13 +33,23 @@ public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 	{
 		var module = new LoggingModule(client, guildConfig);
 		await module.RegisterModuleAsync();
-		
+
 		RegisterModule(guildConfig, module, ModuleType.Logging);
 	}
 
 	private void RegisterModule(GuildConfig guildConfig, IUtilityModule module, ModuleType moduleType)
 	{
-		Log.Debug("Registering {ModuleName} for {BotName} in {Guild}", module.GetType().Name, User, guildConfig.GuildId);
+		var guildName = client.GetGuild(guildConfig.GuildId)
+							?.Name ?? guildConfig.GuildId.ToString();
+
+		Log.Debug(
+			"Registering {ModuleName} for {BotName} in Guild {Guild}",
+			module.GetType()
+				.Name,
+			User,
+			guildName
+		);
+
 		var key = new ModuleData(moduleType, ClientId, guildConfig.GuildId);
 		ModuleRegister.UtilityModules[key] = module;
 	}

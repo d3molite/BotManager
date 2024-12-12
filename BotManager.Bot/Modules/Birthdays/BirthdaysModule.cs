@@ -8,7 +8,8 @@ using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.Birthdays;
 
-public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthdayService) : ICommandModule<BirthdayConfig>
+public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthdayService)
+	: ICommandModule<BirthdayConfig>
 {
 	private string _configId;
 
@@ -16,32 +17,38 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 
 	private ulong _channelId;
 
-	private readonly PeriodicTimer _timer = new (TimeSpan.FromHours(1));
-	
+	private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(1));
+
 	public async Task BuildCommands(BirthdayConfig config, ulong guildId)
 	{
 		_configId = config.Id;
 		_guildId = guildId;
 		_channelId = config.PingChannelId;
-		
+
 		var guild = client.GetGuild(_guildId);
 
 		await BuildAddCommand(guild);
 		await BuildRemoveCommand(guild);
 	}
 
-	private async Task BuildAddCommand(SocketGuild guild)
+	private static async Task BuildAddCommand(SocketGuild guild)
 	{
 		var command = new SlashCommandBuilder();
 		command.WithName(Commands.Birthday);
 		command.WithDescription("Add your birthday! (DD.MM.YYYY)");
 		command.AddDescriptionLocalization("de", "Füge deinen Geburtstag hinzu! (TT.MM.JJJJ)");
-		command.AddOption("date", ApplicationCommandOptionType.String, "Your birth date (DD.MM.YYYY)", isRequired: true);
+
+		command.AddOption(
+			"date",
+			ApplicationCommandOptionType.String,
+			"Your birth date (DD.MM.YYYY)",
+			isRequired: true
+		);
 
 		await guild.CreateApplicationCommandAsync(command.Build());
 	}
 
-	private async Task BuildRemoveCommand(SocketGuild guild)
+	private static async Task BuildRemoveCommand(SocketGuild guild)
 	{
 		var command = new SlashCommandBuilder();
 		command.WithName(Commands.ClearBirthday);
@@ -55,13 +62,11 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 	{
 		while (await _timer.WaitForNextTickAsync(CancellationToken.None))
 		{
-			var birthdays = await birthdayService.GetBirthdays(_configId, _guildId);
-
 			var now = DateTime.Now;
-			
 			if (now.Hour != 13) continue;
 
-			var birthday = birthdays.FirstOrDefault(x => x.Date == DateOnly.FromDateTime(now));
+			var birthdays = await birthdayService.GetBirthdays(_configId, _guildId);
+			var birthday = birthdays.FirstOrDefault(x => x.Date.Month == now.Month && x.Date.Day == now.Day);
 
 			if (birthday is null) continue;
 
@@ -80,7 +85,7 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 			case Commands.Birthday:
 				await ExecuteBirthdayCommand(command);
 				break;
-			
+
 			case Commands.ClearBirthday:
 				await ExecuteClearBirthdayCommand(command);
 				break;
@@ -95,7 +100,9 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 
 	private async Task ExecuteBirthdayCommand(SocketSlashCommand command)
 	{
-		var date = command.Data.Options.First().Value.ToString();
+		var date = command
+					.Data.Options.First()
+					.Value.ToString();
 
 		try
 		{
@@ -104,15 +111,14 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 
 			await birthdayService.Upsert(_configId, command.GuildId!.Value, command.User.Id, dateOnly);
 
-			await command.RespondAsync($"Added your birthday! ({dateOnly.ToString("dd.MM.yyyy")})", ephemeral:true);
+			await command.RespondAsync($"Added your birthday! ({dateOnly.ToString("dd.MM.yyyy")})", ephemeral: true);
 		}
 		catch
 		{
-			await command.RespondAsync($"Error while parsing: {date}", ephemeral:true);
+			await command.RespondAsync($"Error while parsing: {date}", ephemeral: true);
 		}
-		
 	}
-	
+
 	private async Task ExecuteClearBirthdayCommand(SocketSlashCommand command)
 	{
 		var result = await birthdayService.Delete(_configId, command.GuildId!.Value, command.User.Id);

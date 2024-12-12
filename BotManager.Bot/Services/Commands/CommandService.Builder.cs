@@ -16,23 +16,21 @@ namespace BotManager.Bot.Services.Commands;
 public partial class CommandModuleService
 {
 	private string User => config.Name;
-	
+
 	private ulong ClientId => client.Rest.CurrentUser.Id;
-	
+
 	private async Task BuildCommandsInternal()
 	{
-		var user = config.Name;
-
 		foreach (var guildConfig in config.GuildConfigs)
 		{
 			if (guildConfig.HasOrderTrackingModule)
 				await SetupOrderModule(guildConfig);
 			
-			if (guildConfig.HasImageModule)
-				SetupImageModule(guildConfig);
-
 			if (guildConfig.HasBirthdayModule)
 				await SetupBirthdayModule(guildConfig);
+
+			if (guildConfig.HasImageModule)
+				SetupImageModule(guildConfig);
 		}
 	}
 
@@ -49,7 +47,7 @@ public partial class CommandModuleService
 	{
 		var module = new ImageModule(client);
 
-		Task.Run(async() => await module.BuildCommands(guildConfig.ImageConfig!, guildConfig.GuildId));
+		Task.Run(async () => await module.BuildCommands(guildConfig.ImageConfig!, guildConfig.GuildId));
 		RegisterModule(guildConfig, module, ModuleType.Image);
 	}
 
@@ -69,7 +67,17 @@ public partial class CommandModuleService
 
 	private void RegisterModule(GuildConfig guildConfig, ICommandModule module, ModuleType moduleType)
 	{
-		Log.Debug("Registering {ModuleName} for {BotName} in {Guild}", module.GetType().Name, User, guildConfig.GuildId);
+		var guildName = client.GetGuild(guildConfig.GuildId)
+							?.Name ?? guildConfig.GuildId.ToString();
+
+		Log.Debug(
+			"Registering {ModuleName} for {BotName} in Guild {Guild}",
+			module.GetType()
+				.Name,
+			User,
+			guildName
+		);
+
 		var key = new ModuleData(moduleType, ClientId, guildConfig.GuildId);
 		ModuleRegister.CommandModules[key] = module;
 	}

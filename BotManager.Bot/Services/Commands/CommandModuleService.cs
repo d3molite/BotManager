@@ -7,8 +7,6 @@ namespace BotManager.Bot.Services.Commands;
 
 public partial class CommandModuleService(BotConfig config, DiscordSocketClient client)
 {
-	
-
 	public async Task BuildCommands()
 	{
 		await BuildCommandsInternal();

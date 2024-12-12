@@ -24,7 +24,7 @@ public class BirthdayService(IDbRepository<Birthday> repository) : IBirthdayServ
 				UserId = userId,
 				GuildId = guildId,
 				Date = date,
-				OperationType = Operation.Created
+				OperationType = Operation.Created,
 			};
 
 			return (await repository.CrudAsync(insert)).Success;

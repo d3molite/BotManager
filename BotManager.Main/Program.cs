@@ -12,7 +12,9 @@ ServiceInit.ConfigureLogging();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+# if DEBUG
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -28,10 +30,14 @@ builder.Services.AddAuthentication(
 		)
 		.AddIdentityCookies();
 
+# endif
+
 ServiceInit.RegisterServices(builder);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("DataSource=./dbdata/app.db"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+# if DEBUG
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
 		.AddEntityFrameworkStores<ApplicationDbContext>()
@@ -42,6 +48,7 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 
 builder.Services.AddMudServices();
 
+#endif
 
 var app = builder.Build();
 
@@ -52,7 +59,7 @@ ServiceInit.SetContainer(app);
 if (app.Environment.IsDevelopment())
 {
 	app.UseMigrationsEndPoint();
-	app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+	
 }
 else
 {
@@ -62,13 +69,16 @@ else
 	app.UseHsts();
 }
 
+# if DEBUG
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Add additional endpoints required by the Identity /Account Razor components.
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+// // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+# endif
 
 Task.Run(async () => await ServiceInit.StartBots(app));
 
