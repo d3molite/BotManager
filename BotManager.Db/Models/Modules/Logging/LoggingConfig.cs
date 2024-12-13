@@ -7,4 +7,6 @@ namespace BotManager.Db.Models.Modules.Logging;
 public class LoggingConfig : AbstractGuildConfig
 {
 	public ulong LoggingChannelId { get; set; }
+	
+	public ulong? CriticalMessageChannelId { get; set; }
 }

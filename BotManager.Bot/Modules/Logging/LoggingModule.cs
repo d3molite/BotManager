@@ -1,129 +1,80 @@
 ﻿using BotManager.Bot.Extensions;
 using BotManager.Bot.Interfaces.Modules;
 using BotManager.Db.Models;
+using BotManager.Db.Models.Modules.Logging;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
+using Serilog;
 
 namespace BotManager.Bot.Modules.Logging;
 
-public class LoggingModule(DiscordSocketClient client, GuildConfig guildConfig) : IUtilityModule
+public partial class LoggingModule(DiscordSocketClient client, GuildConfig guildConfig) : IUtilityModule
 {
-	public async Task RegisterModuleAsync()
+	private LoggingConfig Config => guildConfig.LoggingConfig!;
+
+	private static readonly Color CriticalColor = Color.Red;
+
+	private static readonly Color WarningColor = Color.Orange;
+
+	private static readonly Color InfoColor = Color.Blue;
+	
+	public Task RegisterModuleAsync()
 	{
 		client.MessageDeleted += LogMessageDeleted;
 		client.UserJoined += LogUserJoined;
 		client.UserLeft += LogUserLeft;
+		client.UserBanned += LogUserBanned;
+		client.MessageUpdated += LogMessageEdited;
+
+		return Task.CompletedTask;
 	}
 
-	public async Task LogUserTimedOut(IUser user)
-	{
-		await SendLogEmbed(UserTimeoutEmbed(user));
-	}
-	
-	private async Task LogMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel)
-	{
-		var channelObject = await channel.GetOrDownloadAsync();
-
-		if (((IGuildChannel)channelObject).GuildId != guildConfig.GuildId)
-			return;
-
-		var messageObject = await message.GetOrDownloadAsync();
-
-		if (messageObject is null)
-		{
-			await SendLogEmbed(MessageDeletedEmbed());
-			return;
-		}
-
-		if (messageObject.Author.Id == client.CurrentUser.Id)
-			return;
-
-		var guildId = ((SocketGuildChannel)message.Value.Channel).Guild.Id;
-
-		if (guildId != guildConfig.GuildId)
-			return;
-
-		await SendLogEmbed(MessageDeletedEmbed(messageObject));
-	}
-
-	private async Task LogUserJoined(SocketGuildUser user)
-	{
-		if (user.Guild.Id != guildConfig.GuildId)
-			return;
-
-		await SendLogEmbed(UserJoinedEmbed(user));
-	}
-
-	private async Task LogUserLeft(SocketGuild guild, SocketUser user)
-	{
-		if (guild.Id != guildConfig.GuildId)
-			return;
-
-		await SendLogEmbed(UserLeftEmbed(user));
-	}
-
-	private async Task SendLogEmbed(Embed embed)
+	private async Task SendLogEmbed(Embed embed, bool isCritical = false)
 	{
 		var guild = client.GetGuild(guildConfig.GuildId);
-		var loggingChannel = guild.GetTextChannel(guildConfig.LoggingConfig!.LoggingChannelId);
+
+		var loggingChannelId = Config.LoggingChannelId;
+		
+		if (isCritical)
+		{
+			if (Config.CriticalMessageChannelId.HasValue)
+				loggingChannelId = Config.CriticalMessageChannelId.Value;
+		}
+		
+		var loggingChannel = guild.GetTextChannel(loggingChannelId);
 
 		await loggingChannel.SendMessageAsync(embed: embed);
 	}
 
-	private static Embed MessageDeletedEmbed(IMessage? message = null)
-	{
-		var builder = GetLoggingEmbedBuilder();
-
-		if (message != null)
-		{
-			builder.AddField(
-				"Message deleted",
-				$"Message by user {message.Author.GetEmbedInfo()} has been deleted from the server."
-			);
-
-			builder.AddField("Content:", message.Content);
-		}
-		else
-			builder.AddField(
-				"Message deleted",
-				"A message was deleted but the content could not be retrieved from cache."
-			);
-
-		return builder.Build();
-	}
-
-	private static Embed UserTimeoutEmbed(IUser user)
-	{
-		var builder = GetLoggingEmbedBuilder();
-		builder.AddField("User timed out.", $"User {user.GetEmbedInfo()} has been timed out for spamming.");
-		return builder.Build();
-	}
-
-	private static Embed UserLeftEmbed(IUser user)
-	{
-		var builder = GetLoggingEmbedBuilder();
-		builder.AddField("User left", $"User {user.GetEmbedInfo()} has left the server.");
-		return builder.Build();
-	}
-
-	private static Embed UserJoinedEmbed(SocketGuildUser user)
-	{
-		var builder = GetLoggingEmbedBuilder();
-
-		builder.AddField("User joined", $"User {user.GetEmbedInfo()} joined the server.");
-
-		var ageString = (DateTime.Now - user.CreatedAt).ToHumanFriendlyString();
-		builder.AddField("Account age:", ageString);
-
-		return builder.Build();
-	}
-
-	private static EmbedBuilder GetLoggingEmbedBuilder()
+	private static EmbedBuilder GetLoggingEmbedBuilder(bool critical = false)
 	{
 		var builder = new EmbedBuilder();
 
 		builder.WithTitle($"Log - {DateTime.UtcNow:HH:mm:ss}");
 
+		if (critical)
+			builder.WithColor(CriticalColor);
+		
 		return builder;
 	}
+
+	private bool IsCorrectGuild(SocketGuildUser user)
+		=> user.Guild.Id == guildConfig.GuildId;
+	
+	private bool IsCorrectGuild(SocketGuild guild)
+		=> guild.Id == guildConfig.GuildId;
+	
+	private bool IsCorrectGuild(IGuildChannel channel)
+		=> channel.GuildId == guildConfig.GuildId;
+
+	private async Task<bool> IsChannelInCorrectGuild(Cacheable<IMessageChannel, ulong> channel)
+	{
+		var channelObject = await channel.GetOrDownloadAsync();
+		
+		return channelObject is IGuildChannel guildChannel && IsCorrectGuild(guildChannel);
+	}
+
+	private bool IsChannelInCorrectGuild(ISocketMessageChannel channel)
+		=> channel is IGuildChannel guildChannel && IsCorrectGuild(guildChannel);
 }

@@ -65,17 +65,7 @@ public class MessageQueue(int maxMessages)
 			Log.Error("Error while removing from queue: {Exception}", ex.Message);
 		}
 	}
-
-	/// <summary>
-	///     Groups all queued messages by their channel
-	/// </summary>
-	/// <returns>A dictionary of grouped messages.</returns>
-	public Dictionary<SocketTextChannel, List<IMessage>> GetGroupedByChannels()
-	{
-		return Queue
-				.GroupBy(x => (SocketTextChannel)x.Channel)
-				.ToDictionary(g => g.Key, g => g.ToList());
-	}
+	
 
 	/// <summary>
 	///     Lists all messages in the queue.

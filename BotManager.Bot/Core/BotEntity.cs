@@ -27,7 +27,7 @@ public class BotEntity : IBotEntity
 			new DiscordSocketConfig()
 			{
 				GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.MessageContent,
-				MessageCacheSize = 100,
+				MessageCacheSize = 200,
 				#if DEBUG
 				UseInteractionSnowflakeDate = false,
 				#endif
