@@ -32,32 +32,34 @@ public partial class LoggingModule
 
 	private async Task LogMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel)
 	{
-		if (!await IsChannelInCorrectGuild(channel))
-			return;
+		var guildChannel = await IsChannelInCorrectGuild(channel);
 
+		if (guildChannel is null)
+			return;
+		
 		var messageObject = await message.GetOrDownloadAsync();
 
 		if (messageObject is null)
 		{
-			await SendLogEmbed(MessageDeletedEmbed(), true);
+			await SendLogEmbed(MessageDeletedEmbed(guildChannel), true);
 			return;
 		}
 
 		if (messageObject.Author.Id == client.CurrentUser.Id)
 			return;
 
-		await SendLogEmbed(MessageDeletedEmbed(messageObject), true);
+		await SendLogEmbed(MessageDeletedEmbed(guildChannel, messageObject), true);
 	}
 
-	private static Embed MessageDeletedEmbed(IMessage? message = null)
+	private static Embed MessageDeletedEmbed(IGuildChannel guildChannel, IMessage? message = null)
 	{
 		var builder = GetLoggingEmbedBuilder();
-
+		
 		if (message != null)
 		{
 			builder.AddField(
 				"Message deleted",
-				$"Message by user {message.Author.GetEmbedInfo()} has been deleted from the server."
+				$"A message by user {message.Author.GetEmbedInfo()} has been deleted in <#{guildChannel.Id}>."
 			);
 
 			builder.AddField("Content:", message.Content);
@@ -65,7 +67,7 @@ public partial class LoggingModule
 		else
 			builder.AddField(
 				"Message deleted",
-				"A message was deleted but the content could not be retrieved from cache."
+				$"A message was deleted in <#{guildChannel.Id}> but the content could not be retrieved from cache."
 			);
 
 		builder.WithColor(WarningColor);

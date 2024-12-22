@@ -68,11 +68,14 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig guild
 	private bool IsCorrectGuild(IGuildChannel channel)
 		=> channel.GuildId == guildConfig.GuildId;
 
-	private async Task<bool> IsChannelInCorrectGuild(Cacheable<IMessageChannel, ulong> channel)
+	private async Task<IGuildChannel?> IsChannelInCorrectGuild(Cacheable<IMessageChannel, ulong> channel)
 	{
 		var channelObject = await channel.GetOrDownloadAsync();
 		
-		return channelObject is IGuildChannel guildChannel && IsCorrectGuild(guildChannel);
+		if (channelObject is IGuildChannel guildChannel && IsCorrectGuild(guildChannel))
+			return guildChannel;
+
+		return null;
 	}
 
 	private bool IsChannelInCorrectGuild(ISocketMessageChannel channel)
