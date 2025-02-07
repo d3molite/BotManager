@@ -16,6 +16,7 @@
       <ProjectReference Include="..\BotManager.DI\BotManager.DI.csproj" />
       <ProjectReference Include="..\BotManager.ImageProcessing\BotManager.ImageProcessing.csproj" />
       <ProjectReference Include="..\BotManager.Interfaces\BotManager.Interfaces.csproj" />
+      <ProjectReference Include="..\BotManager.Resources\BotManager.Resources.csproj" />
     </ItemGroup>
 
 </Project>

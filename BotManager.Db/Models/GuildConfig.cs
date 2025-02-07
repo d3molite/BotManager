@@ -17,6 +17,9 @@ public class GuildConfig : AbstractDbItem
 	[MaxLength(50)]
 	public string GuildName { get; set; } = "";
 
+	[MaxLength(5)]
+	public string GuildLocale { get; set; } = "";
+
 	public ulong GuildId { get; set; }
 
 	public OrderTrackingConfig? OrderTrackingConfig { get; set; }

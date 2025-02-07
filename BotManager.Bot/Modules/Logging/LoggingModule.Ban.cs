@@ -1,4 +1,6 @@
 ﻿using BotManager.Bot.Extensions;
+using BotManager.Resources;
+using BotManager.Resources.Manager;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -17,15 +19,15 @@ public partial class LoggingModule
 	{
 		if (guild.Id != guildConfig.GuildId)
 			return;
-		
+
 		// wait for discord to send the user ban to the audit log
 		Thread.Sleep(500);
-		
+
 		var reason = await TryFetchAuditLogBan(guild, user);
-		
+
 		await SendLogEmbed(UserBannedEmbed(user, reason), true);
 	}
-	
+
 	/// <summary>
 	/// Will try to fetch the last ban entry from the audit log.
 	/// </summary>
@@ -52,15 +54,21 @@ public partial class LoggingModule
 	/// <param name="user">The banned user.</param>
 	/// <param name="reason">A <see cref="RestAuditLogEntry"/> related to the ban. Can be null.</param>
 	/// <returns>A formatted embed.</returns>
-	private static Embed UserBannedEmbed(IUser user, string? reason = null)
+	private Embed UserBannedEmbed(IUser user, string? reason = null)
 	{
 		var builder = GetLoggingEmbedBuilder(critical: true);
-		
-		builder.AddField("User banned.", $"User {user.GetEmbedInfo()} has been banned from the server.");
 
-		builder.AddField("Ban reason:", reason ?? "Could not fetch ban reason.");
+		builder.AddField(
+			Resolver.GetString(_ => LoggingResource.Header_UserBanned, Locale),
+			Resolver.GetString(_ => LoggingResource.Body_UserBanned, Locale).Insert(user)
+		);
+
+		builder.AddField(
+			Resolver.GetString(_ => LoggingResource.Header_UserBanned_Reason, Locale),
+			reason ?? 
+			Resolver.GetString(_ => LoggingResource.Body_UserBanned_ReasonNotFound, Locale)
+		);
 
 		return builder.Build();
 	}
-	
 }

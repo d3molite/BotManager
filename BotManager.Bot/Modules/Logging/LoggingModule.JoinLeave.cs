@@ -1,4 +1,6 @@
 ﻿using BotManager.Bot.Extensions;
+using BotManager.Resources;
+using BotManager.Resources.Manager;
 using Discord;
 using Discord.WebSocket;
 
@@ -30,22 +32,34 @@ public partial class LoggingModule
 
 		await SendLogEmbed(UserLeftEmbed(user));
 	}
-	
-	private static Embed UserLeftEmbed(IUser user)
+
+	private Embed UserLeftEmbed(IUser user)
 	{
 		var builder = GetLoggingEmbedBuilder();
-		builder.AddField("User left", $"User {user.GetEmbedInfo()} has left the server.");
+
+		builder.AddField(
+			Resolver.GetString(_ => LoggingResource.Header_UserLeft, Locale),
+			Resolver.GetString(_ => LoggingResource.Body_UserLeft, Locale).Insert(user)
+		);
+
 		return builder.Build();
 	}
-	
-	private static Embed UserJoinedEmbed(SocketGuildUser user)
+
+	private Embed UserJoinedEmbed(SocketGuildUser user)
 	{
 		var builder = GetLoggingEmbedBuilder();
 
-		builder.AddField("User joined", $"User {user.GetEmbedInfo()} joined the server.");
+		builder.AddField(
+			Resolver.GetString(_ => LoggingResource.Header_UserJoined, Locale),
+			Resolver.GetString(_ => LoggingResource.Body_UserJoined, Locale).Insert(user)
+		);
 
 		var ageString = (DateTime.Now - user.CreatedAt).ToHumanFriendlyString();
-		builder.AddField("Account age:", ageString);
+
+		builder.AddField(
+			Resolver.GetString(_ => LoggingResource.Header_UserJoined_Age, Locale),
+			ageString
+		);
 
 		return builder.Build();
 	}

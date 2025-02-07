@@ -13,12 +13,14 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig guild
 {
 	private LoggingConfig Config => guildConfig.LoggingConfig!;
 
+	private string Locale => guildConfig.GuildLocale;
+
 	private static readonly Color CriticalColor = Color.Red;
 
 	private static readonly Color WarningColor = Color.Orange;
 
 	private static readonly Color InfoColor = Color.Blue;
-	
+
 	public Task RegisterModuleAsync()
 	{
 		client.MessageDeleted += LogMessageDeleted;
@@ -35,13 +37,12 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig guild
 		var guild = client.GetGuild(guildConfig.GuildId);
 
 		var loggingChannelId = Config.LoggingChannelId;
-		
-		if (isCritical)
+
+		if (isCritical && Config.CriticalMessageChannelId.HasValue)
 		{
-			if (Config.CriticalMessageChannelId.HasValue)
-				loggingChannelId = Config.CriticalMessageChannelId.Value;
+			loggingChannelId = Config.CriticalMessageChannelId.Value;
 		}
-		
+
 		var loggingChannel = guild.GetTextChannel(loggingChannelId);
 
 		await loggingChannel.SendMessageAsync(embed: embed);
@@ -55,23 +56,23 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig guild
 
 		if (critical)
 			builder.WithColor(CriticalColor);
-		
+
 		return builder;
 	}
 
 	private bool IsCorrectGuild(SocketGuildUser user)
 		=> user.Guild.Id == guildConfig.GuildId;
-	
+
 	private bool IsCorrectGuild(SocketGuild guild)
 		=> guild.Id == guildConfig.GuildId;
-	
+
 	private bool IsCorrectGuild(IGuildChannel channel)
 		=> channel.GuildId == guildConfig.GuildId;
 
 	private async Task<IGuildChannel?> IsChannelInCorrectGuild(Cacheable<IMessageChannel, ulong> channel)
 	{
 		var channelObject = await channel.GetOrDownloadAsync();
-		
+
 		if (channelObject is IGuildChannel guildChannel && IsCorrectGuild(guildChannel))
 			return guildChannel;
 

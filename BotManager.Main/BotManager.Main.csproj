@@ -39,10 +39,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="dbdata\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Account\Pages\ConfirmEmail.razor" />
       <_ContentIncludedByDefault Remove="Components\Account\Pages\ConfirmEmailChange.razor" />
       <_ContentIncludedByDefault Remove="Components\Account\Pages\ExternalLogin.razor" />

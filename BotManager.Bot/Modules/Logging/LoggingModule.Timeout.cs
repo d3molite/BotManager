@@ -1,5 +1,7 @@
 ﻿using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.AntiSpam;
+using BotManager.Resources;
+using BotManager.Resources.Manager;
 using Discord;
 
 namespace BotManager.Bot.Modules.Logging;
@@ -20,10 +22,15 @@ public partial class LoggingModule
 	/// </summary>
 	/// <param name="user">The user which was timed out.</param>
 	/// <returns>A formatted embed.</returns>
-	private static Embed UserTimedOutEmbed(IUser user)
+	private Embed UserTimedOutEmbed(IUser user)
 	{
 		var builder = GetLoggingEmbedBuilder(critical: true);
-		builder.AddField("User timed out.", $"User {user.GetEmbedInfo()} has been timed out for spamming.");
+
+		builder.AddField(
+			Resolver.GetString(_ => LoggingResource.Header_UserTimedOut, Locale),
+			Resolver.GetString(_ => LoggingResource.Body_UserTimedOut, Locale).Insert(user)
+		);
+
 		return builder.Build();
 	}
 }

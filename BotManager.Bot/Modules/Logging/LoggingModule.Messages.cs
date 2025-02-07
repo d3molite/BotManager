@@ -1,5 +1,8 @@
 ﻿using System.Text;
 using BotManager.Bot.Extensions;
+using BotManager.Db.Models;
+using BotManager.Resources;
+using BotManager.Resources.Manager;
 using Discord;
 using Discord.WebSocket;
 
@@ -26,7 +29,7 @@ public partial class LoggingModule
 
 		if (originalMessageObject.Content == editedMessage.Content)
 			return;
-		
+
 		await SendLogEmbed(MessageEditedEmbed(editedMessage, originalMessageObject), true);
 	}
 
@@ -36,7 +39,7 @@ public partial class LoggingModule
 
 		if (guildChannel is null)
 			return;
-		
+
 		var messageObject = await message.GetOrDownloadAsync();
 
 		if (messageObject is null)
@@ -51,23 +54,31 @@ public partial class LoggingModule
 		await SendLogEmbed(MessageDeletedEmbed(guildChannel, messageObject), true);
 	}
 
-	private static Embed MessageDeletedEmbed(IGuildChannel guildChannel, IMessage? message = null)
+	private Embed MessageDeletedEmbed(IGuildChannel guildChannel, IMessage? message = null)
 	{
 		var builder = GetLoggingEmbedBuilder();
-		
+
+		var header = Resolver.GetString(_ => LoggingResource.Header_MessageDeleted, Locale);
+
 		if (message != null)
 		{
-			builder.AddField(
-				"Message deleted",
-				$"A message by user {message.Author.GetEmbedInfo()} has been deleted in <#{guildChannel.Id}>."
-			);
+			var messageString = Resolver
+								.GetString(_ => LoggingResource.Body_MessageDeleted, Locale)
+								.Insert(message, guildChannel);
 
-			builder.AddField("Content:", message.Content);
+			builder.AddField(header, messageString);
+
+			builder.AddField(
+				Resolver.GetString(_ => LoggingResource.Header_Content, Locale),
+				message.Content
+			);
 		}
 		else
 			builder.AddField(
-				"Message deleted",
-				$"A message was deleted in <#{guildChannel.Id}> but the content could not be retrieved from cache."
+				header,
+				Resolver
+					.GetString(_ => LoggingResource.Body_MessageDeleted_NotFound, Locale)
+					.Insert(guildChannel)
 			);
 
 		builder.WithColor(WarningColor);
@@ -75,32 +86,47 @@ public partial class LoggingModule
 		return builder.Build();
 	}
 
-	private static Embed MessageEditedEmbed(IMessage editedMessage, IMessage? originalMessage = null)
+	private Embed MessageEditedEmbed(IMessage editedMessage, IMessage? originalMessage = null)
 	{
 		var builder = GetLoggingEmbedBuilder();
 		builder.WithColor(InfoColor);
 
+		var headerOriginalMessage = Resolver.GetString(
+			_ => LoggingResource.Header_MessageEdited_OriginalMessage,
+			Locale
+		);
+
+		var headerNewMessage = Resolver.GetString(
+			_ => LoggingResource.Header_MessageEdited_NewMessage,
+			Locale
+		);
+
 		builder.AddField(
-			"Message edited.",
-			$"A message by user {editedMessage.Author.GetEmbedInfo()} has been edited."
+			Resolver.GetString(_ => LoggingResource.Header_MessageEdited, Locale),
+			Resolver.GetString(_ => LoggingResource.Body_MessageEdited, Locale).Insert(editedMessage)
 		);
 
 		if (originalMessage != null)
 		{
-			builder.AddField("Original message:", originalMessage.Content);
-			builder.AddField("New message:", GetChangesForNewMessage(originalMessage.Content, editedMessage.Content));
+			builder.AddField(headerOriginalMessage, originalMessage.Content);
+
+			builder.AddField(headerNewMessage, GetChangesForNewMessage(originalMessage.Content, editedMessage.Content));
 		}
 		else
 		{
-			builder.AddField("Original message:", "The content could not be retrieved from the cache.");
-			builder.AddField("New message:", editedMessage.Content);
+			builder.AddField(
+				headerOriginalMessage,
+				Resolver.GetString(_ => LoggingResource.Body_MessageEdited_NotFound, Locale)
+			);
+
+			builder.AddField(headerNewMessage, editedMessage.Content);
 		}
 
 		builder.AddField(
-			"Actions:",
-			$"[Link to Message](https://discord.com/channels/{((SocketGuildChannel)editedMessage.Channel).Guild.Id}/{editedMessage.Channel.Id}/{editedMessage.Id})"
+			Resolver.GetString(_ => LoggingResource.Header_Actions, Locale),
+			$"[{Resolver.GetString(_ => LoggingResource.Body_Actions_LinkToMessage, Locale)}]({editedMessage.ToMessageLink()})"
 		);
-		
+
 		return builder.Build();
 	}
 
@@ -111,7 +137,13 @@ public partial class LoggingModule
 
 		var newWords = new List<string>();
 
-		foreach (var item in modifiedWords.Select((x, i) => new { Word = x, Index = i }))
+		foreach (var item in modifiedWords.Select(
+					(x, i) => new
+					{
+						Word = x,
+						Index = i
+					}
+				))
 		{
 			var word = item.Word;
 			var index = item.Index;
