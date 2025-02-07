@@ -4,6 +4,7 @@ using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
+using BotManager.Db.Models.Modules.Reactions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotManager.Db.Context;
@@ -53,6 +54,11 @@ public class BotManagerContext : DbContext
 			.Navigation(x => x.AntiSpamConfig)
 			.AutoInclude();
 
+		modelBuilder
+			.Entity<GuildConfig>()
+			.Navigation(x => x.ReactionConfig)
+			.AutoInclude();
+
 		// Guild Config Model Configurations
 
 		modelBuilder
@@ -79,10 +85,15 @@ public class BotManagerContext : DbContext
 			.Entity<GuildConfig>()
 			.HasOne(x => x.VoiceChannelConfig)
 			.WithOne(x => x.GuildConfig);
-		
+
 		modelBuilder
 			.Entity<GuildConfig>()
 			.HasOne(x => x.AntiSpamConfig)
+			.WithOne(x => x.GuildConfig);
+
+		modelBuilder
+			.Entity<GuildConfig>()
+			.HasOne(x => x.ReactionConfig)
 			.WithOne(x => x.GuildConfig);
 
 		// Sub Config Navigations
@@ -93,9 +104,21 @@ public class BotManagerContext : DbContext
 			.AutoInclude();
 
 		modelBuilder
+			.Entity<ReactionConfig>()
+			.Navigation(x => x.Reactions)
+			.AutoInclude();
+		
+		// Sub config model configurations
+
+		modelBuilder
 			.Entity<BirthdayConfig>()
 			.HasMany(x => x.Birthdays)
 			.WithOne(x => x.BirthdayConfig);
+
+		modelBuilder
+			.Entity<ReactionConfig>()
+			.HasMany(x => x.Reactions)
+			.WithOne(x => x.ReactionConfig);
 	}
 
 	public DbSet<BotConfig> Configs { get; set; } = null!;
@@ -117,4 +140,8 @@ public class BotManagerContext : DbContext
 	public DbSet<LoggingConfig> LoggingConfigs { get; set; } = null!;
 
 	public DbSet<AntiSpamConfig> AntiSpamConfigs { get; set; } = null!;
+	
+	public DbSet<ReactionConfig> ReactionConfigs { get; set; } = null!;
+	
+	public DbSet<ReactionItem> ReactionItems { get; set; } = null!;
 }

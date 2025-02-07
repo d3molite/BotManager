@@ -5,6 +5,7 @@ using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
+using BotManager.Db.Models.Modules.Reactions;
 using BotManager.Db.Models.Modules.Voice;
 using Demolite.Db.Models;
 
@@ -33,6 +34,8 @@ public class GuildConfig : AbstractDbItem
 	public LoggingConfig? LoggingConfig { get; set; }
 	
 	public AntiSpamConfig? AntiSpamConfig { get; set; }
+	
+	public ReactionConfig? ReactionConfig { get; set; }
 
 	[NotMapped]
 	public bool HasOrderTrackingModule => OrderTrackingConfig != null;
