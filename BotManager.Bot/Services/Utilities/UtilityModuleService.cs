@@ -3,6 +3,7 @@ using BotManager.Bot.Modules.AntiSpam;
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Logging;
 using BotManager.Bot.Modules.Models;
+using BotManager.Bot.Modules.Reactions;
 using BotManager.Bot.Services.Register;
 using BotManager.Db.Models;
 using Discord.WebSocket;
@@ -30,6 +31,9 @@ public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 			
 			if (guildConfig.HasAntiSpamModule)
 				await SetupAntiSpamModule(guildConfig);
+			
+			if (guildConfig.HasReactionModule)
+				await SetupReactionModule(guildConfig);
 		}
 	}
 
@@ -47,6 +51,14 @@ public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 		await module.RegisterModuleAsync();
 		
 		RegisterModule(guildConfig, module, ModuleType.AntiSpam);
+	}
+	
+	private async Task SetupReactionModule(GuildConfig guildConfig)
+	{
+		var module = new ReactionModule(client, guildConfig);
+		await module.RegisterModuleAsync();
+		
+		RegisterModule(guildConfig, module, ModuleType.Reactions);
 	}
 
 	private void RegisterModule(GuildConfig guildConfig, IUtilityModule module, ModuleType moduleType)

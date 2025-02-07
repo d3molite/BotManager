@@ -8,4 +8,5 @@ public enum ModuleType
     Birthdays,
     Logging,
     AntiSpam,
+    Reactions,
 }

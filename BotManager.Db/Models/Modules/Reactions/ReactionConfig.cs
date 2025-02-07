@@ -5,5 +5,5 @@ namespace BotManager.Db.Models.Modules.Reactions;
 
 public class ReactionConfig : AbstractGuildConfig
 {
-	public List<ReactionItem> Reactions { get; set; }
+	public List<ReactionItem> Reactions { get; set; } = [];
 }

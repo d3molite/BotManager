@@ -54,6 +54,9 @@ public class GuildConfig : AbstractDbItem
 	
 	[NotMapped]
 	public bool HasAntiSpamModule => AntiSpamConfig != null;
+	
+	[NotMapped]
+	public bool HasReactionModule => ReactionConfig != null;
 
 	public virtual BotConfig BotConfig { get; set; } = null!;
 
