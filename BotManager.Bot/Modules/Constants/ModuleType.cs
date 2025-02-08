@@ -9,4 +9,5 @@ public enum ModuleType
     Logging,
     AntiSpam,
     Reactions,
+    Voice,
 }

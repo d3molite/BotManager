@@ -31,4 +31,7 @@ public static class Commands
 
     [ModuleType(ModuleType.Image)]
     public const string NeedsMoreJpeg = "needsmorejpeg";
+
+    [ModuleType(ModuleType.Voice)]
+    public const string Voice = "voice";
 }

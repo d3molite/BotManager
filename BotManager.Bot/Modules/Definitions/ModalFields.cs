@@ -16,4 +16,7 @@ public static class ModalFields
 	public const string OrderModalAddAmount = nameof(OrderModalAddAmount);
 
 	public const string OrderModalRemoveId = nameof(OrderModalRemoveId);
+	
+	public const string VoiceModalId = nameof(VoiceModalId);
+	public const string VoiceModalName = nameof(VoiceModalName);
 }

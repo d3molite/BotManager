@@ -84,4 +84,22 @@
     <data name="Body_UserTimedOut" xml:space="preserve">
         <value>User {0} has been timed out for spamming.</value>
     </data>
+    <data name="Header_VoiceDeleted" xml:space="preserve">
+        <value>Channel deleted</value>
+    </data>
+    <data name="Body_VoiceDeleted" xml:space="preserve">
+        <value>Channel {0} has been deleted due to inactivity.</value>
+    </data>
+    <data name="Header_VoiceDeleted_TimeOpen" xml:space="preserve">
+        <value>Time open:</value>
+    </data>
+    <data name="Header_VoiceCreated" xml:space="preserve">
+        <value>Channel created</value>
+    </data>
+    <data name="Body_VoiceCreated" xml:space="preserve">
+        <value>Voice channel {0} has been created.</value>
+    </data>
+    <data name="Body_Actions_LinkToVoiceChannel" xml:space="preserve">
+        <value>Click here to join: &lt;#{0}&gt;</value>
+    </data>
 </root>

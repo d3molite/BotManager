@@ -69,6 +69,15 @@ namespace BotManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click here to join: &lt;#{0}&gt;.
+        /// </summary>
+        public static string Body_Actions_LinkToVoiceChannel {
+            get {
+                return ResourceManager.GetString("Body_Actions_LinkToVoiceChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A message by user {0} has been deleted in &lt;#{1}&gt;..
         /// </summary>
         public static string Body_MessageDeleted {
@@ -146,6 +155,24 @@ namespace BotManager.Resources {
         public static string Body_UserTimedOut {
             get {
                 return ResourceManager.GetString("Body_UserTimedOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice channel {0} has been created..
+        /// </summary>
+        public static string Body_VoiceCreated {
+            get {
+                return ResourceManager.GetString("Body_VoiceCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel {0} has been deleted due to inactivity..
+        /// </summary>
+        public static string Body_VoiceDeleted {
+            get {
+                return ResourceManager.GetString("Body_VoiceDeleted", resourceCulture);
             }
         }
         
@@ -254,6 +281,33 @@ namespace BotManager.Resources {
         public static string Header_UserTimedOut {
             get {
                 return ResourceManager.GetString("Header_UserTimedOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel created.
+        /// </summary>
+        public static string Header_VoiceCreated {
+            get {
+                return ResourceManager.GetString("Header_VoiceCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel deleted.
+        /// </summary>
+        public static string Header_VoiceDeleted {
+            get {
+                return ResourceManager.GetString("Header_VoiceDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time open:.
+        /// </summary>
+        public static string Header_VoiceDeleted_TimeOpen {
+            get {
+                return ResourceManager.GetString("Header_VoiceDeleted_TimeOpen", resourceCulture);
             }
         }
     }

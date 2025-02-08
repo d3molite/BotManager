@@ -16,6 +16,12 @@ public static class ResourceFormatExtensions
 
 	public static string Insert(this string modifiable, IUser user)
 		=> string.Format(modifiable, user.GetEmbedInfo());
+	
+	public static string Insert(this string modifiable, ulong id)
+		=> string.Format(modifiable, id);
+	
+	public static string Insert(this string modifiable, string name)
+		=> string.Format(modifiable, name);
 
 	public static string ToMessageLink(this IMessage message)
 		=> $"https://discord.com/channels/{((SocketGuildChannel)message.Channel).Guild.Id}/{message.Channel.Id}/{message.Id}";

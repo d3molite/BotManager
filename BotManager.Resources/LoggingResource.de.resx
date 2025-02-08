@@ -77,4 +77,22 @@
     <data name="Body_UserTimedOut" xml:space="preserve">
         <value>{0} wurde für Spam in den Timeout versetzt.</value>
     </data>
+    <data name="Header_VoiceDeleted" xml:space="preserve">
+        <value>Sprachkanal gelöscht</value>
+    </data>
+    <data name="Body_VoiceDeleted" xml:space="preserve">
+        <value>{0} wurde wegen Inaktivität gelöscht.</value>
+    </data>
+    <data name="Header_VoiceDeleted_TimeOpen" xml:space="preserve">
+        <value>Channel existierte:</value>
+    </data>
+    <data name="Header_VoiceCreated" xml:space="preserve">
+        <value>Sprachkanal erstellt</value>
+    </data>
+    <data name="Body_VoiceCreated" xml:space="preserve">
+        <value>Sprachkanal {0} wurde erstellt.</value>
+    </data>
+    <data name="Body_Actions_LinkToVoiceChannel" xml:space="preserve">
+        <value>Klicke hier zum Beitreten: &lt;#{0}&gt;</value>
+    </data>
 </root>

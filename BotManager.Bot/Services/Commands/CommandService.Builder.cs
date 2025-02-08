@@ -4,6 +4,7 @@ using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Image;
 using BotManager.Bot.Modules.Models;
 using BotManager.Bot.Modules.OrderTracking;
+using BotManager.Bot.Modules.VoiceChannel;
 using BotManager.Bot.Services.Register;
 using BotManager.Db.Models;
 using BotManager.DI;
@@ -31,6 +32,9 @@ public partial class CommandModuleService
 
 			if (guildConfig.HasImageModule)
 				SetupImageModule(guildConfig);
+			
+			if (guildConfig.HasVoiceChannelModule)
+				SetupVoiceChannelModule(guildConfig);
 		}
 	}
 
@@ -49,6 +53,13 @@ public partial class CommandModuleService
 
 		Task.Run(async () => await module.BuildCommands(guildConfig.ImageConfig!, guildConfig.GuildId));
 		RegisterModule(guildConfig, module, ModuleType.Image);
+	}
+	
+	private void SetupVoiceChannelModule(GuildConfig guildConfig)
+	{
+		var module = new VoiceChannelModule(client, guildConfig);
+		Task.Run(async() => await module.BuildCommands(guildConfig.VoiceChannelConfig!, guildConfig.GuildId));
+		RegisterModule(guildConfig, module, ModuleType.Voice);
 	}
 
 	private async Task SetupBirthdayModule(GuildConfig guildConfig)
@@ -81,4 +92,6 @@ public partial class CommandModuleService
 		var key = new ModuleData(moduleType, ClientId, guildConfig.GuildId);
 		ModuleRegister.CommandModules[key] = module;
 	}
+
+	
 }
