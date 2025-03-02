@@ -62,8 +62,9 @@ public partial class VoiceChannelModule
 		};
 
 		CurrentChannels.Add(state);
-
-		await _loggingModule.LogVoiceChannelCreated(modal, state);
+		
+		TryGetLogger();
+		await _loggingModule!.LogVoiceChannelCreated(modal, state);
 	}
 
 	private Modal CreateVoiceModal()

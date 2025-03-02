@@ -12,7 +12,7 @@ public partial class VoiceChannelModule : ICommandModule<VoiceChannelConfig>
 	private readonly DiscordSocketClient _client;
 	private readonly GuildConfig _guildConfig;
 	private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(1));
-	private readonly LoggingModule _loggingModule;
+	private LoggingModule? _loggingModule;
 
 	private string Locale => _guildConfig.GuildLocale;
 
@@ -25,8 +25,6 @@ public partial class VoiceChannelModule : ICommandModule<VoiceChannelConfig>
 		_client = client;
 		_guildConfig = guildConfig;
 
-		_loggingModule = (LoggingModule)ModuleRegister.TryGetLogger(client.CurrentUser.Id, guildConfig.GuildId)!;
-
 		Task.Run(async () => await PollChannels());
 	}
 
@@ -35,4 +33,9 @@ public partial class VoiceChannelModule : ICommandModule<VoiceChannelConfig>
 
 	public Task ExecuteSelect(SocketMessageComponent component)
 		=> throw new NotImplementedException();
+
+	private void TryGetLogger()
+	{
+		_loggingModule ??= (LoggingModule)ModuleRegister.TryGetLogger(_client.CurrentUser.Id, _guildConfig.GuildId)!;
+	}
 }

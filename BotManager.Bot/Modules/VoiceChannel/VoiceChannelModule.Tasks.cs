@@ -17,11 +17,19 @@ public partial class VoiceChannelModule
 					new VoiceState
 					{
 						Channel = voiceChannel,
+						ChannelId = voiceChannel.Id,
+						ChannelName = voiceChannel.Name,
+						ChannelNumber = ParseChannelNumber(voiceChannel.Name),
 					}
 				);
 		}
 		
-		Log.Debug("Found {Count} Channels", CurrentChannels.Count);
+		Log.Debug("Found {Count} Channels for {GuildName}:", CurrentChannels.Count, _guildConfig.GuildName);
+
+		foreach (var channel in CurrentChannels)
+		{
+			Log.Debug("{ChannelName}",channel.ChannelName);
+		}
 
 		Task.Run(async () => await RunPeriodicChecks());
 	}
@@ -42,7 +50,8 @@ public partial class VoiceChannelModule
 					{
 						await voiceState.Channel!.DeleteAsync();
 						removed.Add(voiceState);
-						await _loggingModule.LogVoiceChannelDeleted(Config.CommandChannelId, voiceState);
+						TryGetLogger();
+						await _loggingModule!.LogVoiceChannelDeleted(Config.CommandChannelId, voiceState);
 					}
 					catch (Exception ex)
 					{
