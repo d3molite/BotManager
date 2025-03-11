@@ -10,7 +10,8 @@ public static class ModuleFinder
 	{
 		{ ModalFields.OrderModalId, ModuleType.Order },
 		{ ModalFields.OrderModalAddId, ModuleType.Order },
-		{ ModalFields.VoiceModalId, ModuleType.Voice }, 
+		{ ModalFields.VoiceModalId, ModuleType.Voice },
+		{ ModalFields.RoleRequestModalId, ModuleType.RoleRequest },
 	};
 
 	private static readonly Dictionary<string, ModuleType> _buttonTypes = new()
@@ -21,6 +22,8 @@ public static class ModuleFinder
 		{ ControlNames.OrderButtonArrived, ModuleType.Order },
 		{ ControlNames.OrderButtonRemove, ModuleType.Order },
 		{ ControlNames.OrderButtonReload, ModuleType.Order },
+		{ ControlNames.RoleRequestButtonAccept, ModuleType.RoleRequest },
+		{ ControlNames.RoleRequestButtonDeny, ModuleType.RoleRequest },
 	};
 
 	private static readonly Dictionary<string, ModuleType> _selectTypes = new()

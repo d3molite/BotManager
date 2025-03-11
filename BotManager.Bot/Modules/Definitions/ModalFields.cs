@@ -19,4 +19,7 @@ public static class ModalFields
 	
 	public const string VoiceModalId = nameof(VoiceModalId);
 	public const string VoiceModalName = nameof(VoiceModalName);
+	
+	public const string RoleRequestModalId = nameof(RoleRequestModalId);
+	public const string RoleRequestEmail = nameof(RoleRequestEmail);
 }

@@ -6,6 +6,7 @@ using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Reactions;
+using BotManager.Db.Models.Modules.RoleRequest;
 using BotManager.Db.Models.Modules.Voice;
 using Demolite.Db.Models;
 
@@ -36,6 +37,8 @@ public class GuildConfig : AbstractDbItem
 	public AntiSpamConfig? AntiSpamConfig { get; set; }
 	
 	public ReactionConfig? ReactionConfig { get; set; }
+	
+	public RoleRequestConfig? RoleRequestConfig { get; set; }
 
 	[NotMapped]
 	public bool HasOrderTrackingModule => OrderTrackingConfig != null;
@@ -57,6 +60,9 @@ public class GuildConfig : AbstractDbItem
 	
 	[NotMapped]
 	public bool HasReactionModule => ReactionConfig != null;
+	
+	[NotMapped]
+	public bool HasRoleRequestModule => RoleRequestConfig != null;
 
 	public virtual BotConfig BotConfig { get; set; } = null!;
 

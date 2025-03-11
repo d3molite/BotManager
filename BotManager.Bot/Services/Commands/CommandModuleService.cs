@@ -52,7 +52,9 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 	{
 		var data = component.Data.CustomId;
 
-		var module = ModuleRegister.TryGetFromButton(data, ClientId, component.GuildId!.Value);
+		var guildId = component.GuildId ?? ulong.Parse(component.Message.Embeds.First().Fields.First(f => f.Name == "Guild").Value);
+		
+		var module = ModuleRegister.TryGetFromButton(data, ClientId, guildId);
 
 		if (module != null)
 			await module.ExecuteButton(component);

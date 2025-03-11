@@ -34,4 +34,7 @@ public static class Commands
 
     [ModuleType(ModuleType.Voice)]
     public const string Voice = "voice";
+
+    [ModuleType(ModuleType.RoleRequest)]
+    public const string LanRolle = "lanrolle";
 }

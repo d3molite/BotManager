@@ -10,4 +10,5 @@ public enum ModuleType
     AntiSpam,
     Reactions,
     Voice,
+    RoleRequest,
 }

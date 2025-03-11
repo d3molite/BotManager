@@ -4,6 +4,7 @@ using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Image;
 using BotManager.Bot.Modules.Models;
 using BotManager.Bot.Modules.OrderTracking;
+using BotManager.Bot.Modules.RoleRequest;
 using BotManager.Bot.Modules.VoiceChannel;
 using BotManager.Bot.Services.Register;
 using BotManager.Db.Models;
@@ -35,6 +36,9 @@ public partial class CommandModuleService
 			
 			if (guildConfig.HasVoiceChannelModule)
 				SetupVoiceChannelModule(guildConfig);
+			
+			if (guildConfig.HasRoleRequestModule)
+				await SetupRoleRequestModule(guildConfig);
 		}
 	}
 
@@ -74,6 +78,14 @@ public partial class CommandModuleService
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 		Task.Run(async () => await module.StartCheckTask());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+	}
+
+	private async Task SetupRoleRequestModule(GuildConfig guildConfig)
+	{
+		var module = new RoleRequestModule(client, guildConfig);
+		
+		await module.BuildCommands(guildConfig.RoleRequestConfig!, guildConfig.GuildId);
+		RegisterModule(guildConfig, module, ModuleType.RoleRequest);
 	}
 
 	private void RegisterModule(GuildConfig guildConfig, ICommandModule module, ModuleType moduleType)

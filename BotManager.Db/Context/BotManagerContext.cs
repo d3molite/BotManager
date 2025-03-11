@@ -5,6 +5,7 @@ using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Reactions;
+using BotManager.Db.Models.Modules.RoleRequest;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotManager.Db.Context;
@@ -36,6 +37,8 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.VoiceChannelConfig).AutoInclude();
 
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.ReactionConfig).AutoInclude();
+		
+		modelBuilder.Entity<GuildConfig>().Navigation(x => x.RoleRequestConfig).AutoInclude();
 
 		// Guild Config Model Configurations
 
@@ -52,6 +55,8 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.AntiSpamConfig).WithOne(x => x.GuildConfig);
 
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.ReactionConfig).WithOne(x => x.GuildConfig);
+		
+		modelBuilder.Entity<GuildConfig>().HasOne(x => x.RoleRequestConfig).WithOne(x => x.GuildConfig);
 
 		// Sub Config Navigations
 
@@ -89,4 +94,6 @@ public class BotManagerContext : DbContext
 	public DbSet<ReactionConfig> ReactionConfigs { get; set; } = null!;
 
 	public DbSet<ReactionItem> ReactionItems { get; set; } = null!;
+	
+	public DbSet<RoleRequestConfig> RoleRequestConfigs { get; set; } = null!;
 }

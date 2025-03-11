@@ -11,4 +11,7 @@ public static class ControlNames
 	public const string OrderButtonReload = nameof(OrderButtonReload);
 
 	public const string OrderRemoveSelectMenu = nameof(OrderRemoveSelectMenu);
+	
+	public const string RoleRequestButtonAccept = nameof(RoleRequestButtonAccept);
+	public const string RoleRequestButtonDeny = nameof(RoleRequestButtonDeny);
 }
