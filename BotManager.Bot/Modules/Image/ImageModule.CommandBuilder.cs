@@ -1,6 +1,7 @@
 ﻿using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models.Modules.Image;
 using Discord;
+using Serilog;
 
 namespace BotManager.Bot.Modules.Image;
 
@@ -13,7 +14,28 @@ public partial class ImageModule
         await BuildWoowCommand(guildId);
         await BuildHoohCommand(guildId);
         await BuildReverseCommand(guildId);
+        await BuildSpeedCommand(guildId);
         await BuildJpegCommand(guildId);
+    }
+
+    private async Task BuildSpeedCommand(ulong guildId)
+    {
+        var guild = client.GetGuild(guildId);
+
+        var command = new SlashCommandBuilder();
+        command.WithName(Commands.Gifspeed);
+        command.WithDescription("Set new speed of gif");
+        command.AddDescriptionLocalization("de", "Setze die neue Gif geschwindigkeit");
+        command.AddOption("factor", ApplicationCommandOptionType.Number, "factor", isRequired:true);
+
+        try
+        {
+            await guild.CreateApplicationCommandAsync(command.Build());
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to build speed command");
+        }
     }
 
     private async Task BuildWaawCommand(ulong guildId)

@@ -30,6 +30,9 @@ public static class Commands
     public const string Reverse = "reverse";
 
     [ModuleType(ModuleType.Image)]
+    public const string Gifspeed = "gifspeed";
+
+    [ModuleType(ModuleType.Image)]
     public const string NeedsMoreJpeg = "needsmorejpeg";
 
     [ModuleType(ModuleType.Voice)]

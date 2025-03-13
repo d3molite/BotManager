@@ -23,8 +23,12 @@ public partial class CommandModuleService
 
 	private async Task BuildCommandsInternal()
 	{
+		
 		foreach (var guildConfig in config.GuildConfigs)
 		{
+			// var guild = client.GetGuild(guildConfig.GuildId);
+			// await guild.DeleteApplicationCommandsAsync();
+				
 			if (guildConfig.HasOrderTrackingModule)
 				await SetupOrderModule(guildConfig);
 			

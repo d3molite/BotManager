@@ -23,6 +23,10 @@ public partial class ImageModule
             case Commands.NeedsMoreJpeg:
                 await ExecuteMoreJpegCommand(command);
                 break;
+            
+            case Commands.Gifspeed:
+                await ExecuteDelayCommand(command);
+                break;
         }
     }
 }
