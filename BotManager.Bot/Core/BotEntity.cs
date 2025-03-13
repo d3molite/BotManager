@@ -28,6 +28,7 @@ public class BotEntity : IBotEntity
 			{
 				GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.MessageContent,
 				MessageCacheSize = 200,
+				AlwaysDownloadUsers = true,
 				#if DEBUG
 				UseInteractionSnowflakeDate = false,
 				#endif
