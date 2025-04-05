@@ -40,4 +40,7 @@ public static class Commands
 
     [ModuleType(ModuleType.RoleRequest)]
     public const string LanRolle = "lanrolle";
+
+    [ModuleType(ModuleType.Feedback)]
+    public const string Feedback = "feedback";
 }

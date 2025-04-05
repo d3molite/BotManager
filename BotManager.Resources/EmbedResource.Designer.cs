@@ -21,14 +21,14 @@ namespace BotManager.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CommandResource {
+    public class EmbedResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CommandResource() {
+        internal EmbedResource() {
         }
         
         /// <summary>
@@ -38,7 +38,7 @@ namespace BotManager.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BotManager.Resources.CommandResource", typeof(CommandResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BotManager.Resources.EmbedResource", typeof(EmbedResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,56 +60,11 @@ namespace BotManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send feedback or suggestions.
+        ///   Looks up a localized string similar to Feedback by {0} on {1}.
         /// </summary>
-        public static string Feedback_Description {
+        public static string FeedbackEmbedTitle {
             get {
-                return ResourceManager.GetString("Feedback_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Feedback received!.
-        /// </summary>
-        public static string Feedback_Received {
-            get {
-                return ResourceManager.GetString("Feedback_Received", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create a new voice channel.
-        /// </summary>
-        public static string Voice_Description {
-            get {
-                return ResourceManager.GetString("Voice_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must use this command in &lt;#{0}&gt;!.
-        /// </summary>
-        public static string Voice_Error_Channel {
-            get {
-                return ResourceManager.GetString("Voice_Error_Channel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Channel name.
-        /// </summary>
-        public static string Voice_Modal_ChannelName {
-            get {
-                return ResourceManager.GetString("Voice_Modal_ChannelName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create new voice channel.
-        /// </summary>
-        public static string Voice_Modal_Title {
-            get {
-                return ResourceManager.GetString("Voice_Modal_Title", resourceCulture);
+                return ResourceManager.GetString("FeedbackEmbedTitle", resourceCulture);
             }
         }
     }

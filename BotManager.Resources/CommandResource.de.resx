@@ -23,4 +23,10 @@
     <data name="Voice_Modal_ChannelName" xml:space="preserve">
         <value>Name des Kanals</value>
     </data>
+    <data name="Feedback_Description" xml:space="preserve">
+        <value>Feedback oder Vorschläge einreichen</value>
+    </data>
+    <data name="Feedback_Received" xml:space="preserve">
+        <value>Feedback erhalten!</value>
+    </data>
 </root>

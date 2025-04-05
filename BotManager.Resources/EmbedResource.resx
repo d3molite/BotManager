@@ -18,22 +18,7 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="Voice_Description" xml:space="preserve">
-        <value>Create a new voice channel</value>
-    </data>
-    <data name="Voice_Error_Channel" xml:space="preserve">
-        <value>You must use this command in &lt;#{0}&gt;!</value>
-    </data>
-    <data name="Voice_Modal_Title" xml:space="preserve">
-        <value>Create new voice channel</value>
-    </data>
-    <data name="Voice_Modal_ChannelName" xml:space="preserve">
-        <value>Channel name</value>
-    </data>
-    <data name="Feedback_Description" xml:space="preserve">
-        <value>Send feedback or suggestions</value>
-    </data>
-    <data name="Feedback_Received" xml:space="preserve">
-        <value>Feedback received!</value>
+    <data name="FeedbackEmbedTitle" xml:space="preserve">
+        <value>Feedback by {0} on {1}</value>
     </data>
 </root>

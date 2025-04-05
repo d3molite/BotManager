@@ -1,6 +1,7 @@
 ﻿using BotManager.Bot.Interfaces.Modules;
 using BotManager.Bot.Modules.Birthdays;
 using BotManager.Bot.Modules.Constants;
+using BotManager.Bot.Modules.Feedback;
 using BotManager.Bot.Modules.Image;
 using BotManager.Bot.Modules.Models;
 using BotManager.Bot.Modules.OrderTracking;
@@ -43,7 +44,18 @@ public partial class CommandModuleService
 			
 			if (guildConfig.HasRoleRequestModule)
 				await SetupRoleRequestModule(guildConfig);
+			
+			if (guildConfig.HasFeedbackModule)
+				await SetupFeedbackModule(guildConfig);
 		}
+	}
+
+	private async Task SetupFeedbackModule(GuildConfig guildConfig)
+	{
+		var module = new FeedbackModule(client, guildConfig);
+		await module.BuildCommands(guildConfig.FeedbackConfig!, guildConfig.GuildId);
+		
+		RegisterModule(guildConfig, module, ModuleType.Feedback);
 	}
 
 	private async Task SetupOrderModule(GuildConfig guildConfig)

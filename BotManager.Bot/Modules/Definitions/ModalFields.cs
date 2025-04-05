@@ -22,4 +22,7 @@ public static class ModalFields
 	
 	public const string RoleRequestModalId = nameof(RoleRequestModalId);
 	public const string RoleRequestEmail = nameof(RoleRequestEmail);
+	
+	public const string FeedbackModalId = nameof(FeedbackModalId);
+	public const string FeedbackText = nameof(FeedbackText);
 }

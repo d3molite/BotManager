@@ -64,7 +64,7 @@ public static class GifCommands
     {
         var originalDelay = image.Frames.RootFrame.Metadata.GetGifMetadata().FrameDelay;
         
-        if (originalDelay > 0)
+        if (originalDelay > 5)
         {
             var newDelay = (int)Math.Floor(originalDelay / factor);
             
@@ -80,12 +80,16 @@ public static class GifCommands
             
             var frames = new List<ImageFrame>();
             
-            while (image.Frames.Count > 1)
+            while (image.Frames.Count > 0)
             {
                 var frame = image.Frames.ExportFrame(0);
 
-                if (count % (int)factor == 0) 
+                if (count % (int)factor == 0)
+                {
+                    var metadata = frame.Frames.RootFrame.Metadata.GetGifMetadata();
+                    metadata.FrameDelay = 0;
                     frames.Add(frame.Frames.RootFrame);
+                }
                 
                 count++;
             }

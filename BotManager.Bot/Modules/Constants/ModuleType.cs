@@ -11,4 +11,5 @@ public enum ModuleType
     Reactions,
     Voice,
     RoleRequest,
+    Feedback
 }

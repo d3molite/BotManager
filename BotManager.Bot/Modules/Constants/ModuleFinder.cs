@@ -12,6 +12,7 @@ public static class ModuleFinder
 		{ ModalFields.OrderModalAddId, ModuleType.Order },
 		{ ModalFields.VoiceModalId, ModuleType.Voice },
 		{ ModalFields.RoleRequestModalId, ModuleType.RoleRequest },
+		{ ModalFields.FeedbackModalId, ModuleType.Feedback },
 	};
 
 	private static readonly Dictionary<string, ModuleType> _buttonTypes = new()

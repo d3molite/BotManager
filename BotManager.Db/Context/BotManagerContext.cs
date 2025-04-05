@@ -1,6 +1,7 @@
 ﻿using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.AntiSpam;
 using BotManager.Db.Models.Modules.Birthdays;
+using BotManager.Db.Models.Modules.Feedback;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
@@ -39,6 +40,8 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.ReactionConfig).AutoInclude();
 		
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.RoleRequestConfig).AutoInclude();
+		
+		modelBuilder.Entity<GuildConfig>().Navigation(x => x.FeedbackConfig).AutoInclude();
 
 		// Guild Config Model Configurations
 
@@ -57,6 +60,8 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.ReactionConfig).WithOne(x => x.GuildConfig);
 		
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.RoleRequestConfig).WithOne(x => x.GuildConfig);
+		
+		modelBuilder.Entity<GuildConfig>().HasOne(x => x.FeedbackConfig).WithOne(x => x.GuildConfig);
 
 		// Sub Config Navigations
 
@@ -96,4 +101,6 @@ public class BotManagerContext : DbContext
 	public DbSet<ReactionItem> ReactionItems { get; set; } = null!;
 	
 	public DbSet<RoleRequestConfig> RoleRequestConfigs { get; set; } = null!;
+	
+	public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
 }

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using BotManager.Db.Models.Modules.AntiSpam;
 using BotManager.Db.Models.Modules.Birthdays;
+using BotManager.Db.Models.Modules.Feedback;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
@@ -39,6 +40,8 @@ public class GuildConfig : AbstractDbItem
 	public ReactionConfig? ReactionConfig { get; set; }
 	
 	public RoleRequestConfig? RoleRequestConfig { get; set; }
+	
+	public FeedbackConfig? FeedbackConfig { get; set; }
 
 	[NotMapped]
 	public bool HasOrderTrackingModule => OrderTrackingConfig != null;
@@ -63,9 +66,14 @@ public class GuildConfig : AbstractDbItem
 	
 	[NotMapped]
 	public bool HasRoleRequestModule => RoleRequestConfig != null;
+	
+	[NotMapped]
+	public bool HasFeedbackModule => FeedbackConfig != null;
 
 	public virtual BotConfig BotConfig { get; set; } = null!;
 
 	[MaxLength(40)]
 	public string BotConfigId { get; set; } = null!;
+
+	
 }

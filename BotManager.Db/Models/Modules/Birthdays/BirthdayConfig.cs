@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BotManager.Db.Models.Abstract;
-using Demolite.Db.Models;
+﻿using BotManager.Db.Models.Abstract;
 
 namespace BotManager.Db.Models.Modules.Birthdays;
 

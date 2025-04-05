@@ -19,6 +19,10 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>Units.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="EmbedResource.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>EmbedResource.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -36,6 +40,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>Units.resx</DependentUpon>
+      </Compile>
+      <Compile Update="EmbedResource.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>EmbedResource.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 
