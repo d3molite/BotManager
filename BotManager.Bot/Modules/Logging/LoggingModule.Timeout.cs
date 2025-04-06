@@ -1,6 +1,7 @@
 ﻿using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.AntiSpam;
 using BotManager.Resources;
+using BotManager.Resources.Formatting;
 using BotManager.Resources.Manager;
 using Discord;
 
@@ -27,8 +28,8 @@ public partial class LoggingModule
 		var builder = GetLoggingEmbedBuilder(critical: true);
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_UserTimedOut, Locale),
-			Resolver.GetString(_ => LoggingResource.Body_UserTimedOut, Locale).Insert(user)
+			ResourceResolver.GetString(_ => LoggingResource.Header_UserTimedOut, Locale),
+			ResourceResolver.GetString(_ => LoggingResource.Body_UserTimedOut, Locale).Insert(user)
 		);
 
 		return builder.Build();

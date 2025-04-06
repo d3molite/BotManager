@@ -4,7 +4,7 @@ using System.Resources;
 
 namespace BotManager.Resources.Manager;
 
-public static class Resolver
+public static class ResourceResolver
 {
 	public static string GetString(Expression<Func<object, string>> resourceSelector, string locale)
 	{

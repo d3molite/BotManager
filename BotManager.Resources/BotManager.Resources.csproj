@@ -48,4 +48,9 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Discord.Net.Core" Version="3.17.1" />
+      <PackageReference Include="Discord.Net.WebSocket" Version="3.17.1" />
+    </ItemGroup>
+
 </Project>

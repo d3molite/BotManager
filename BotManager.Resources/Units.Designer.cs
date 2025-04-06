@@ -85,5 +85,14 @@ namespace BotManager.Resources {
                 return ResourceManager.GetString("Minutes", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Years.
+        /// </summary>
+        public static string Years {
+            get {
+                return ResourceManager.GetString("Years", resourceCulture);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 using BotManager.Bot.Extensions;
 using BotManager.Db.Models;
 using BotManager.Resources;
+using BotManager.Resources.Formatting;
 using BotManager.Resources.Manager;
 using Discord;
 using Discord.WebSocket;
@@ -58,25 +59,25 @@ public partial class LoggingModule
 	{
 		var builder = GetLoggingEmbedBuilder();
 
-		var header = Resolver.GetString(_ => LoggingResource.Header_MessageDeleted, Locale);
+		var header = ResourceResolver.GetString(_ => LoggingResource.Header_MessageDeleted, Locale);
 
 		if (message != null)
 		{
-			var messageString = Resolver
+			var messageString = ResourceResolver
 								.GetString(_ => LoggingResource.Body_MessageDeleted, Locale)
 								.Insert(message, guildChannel);
 
 			builder.AddField(header, messageString);
 
 			builder.AddField(
-				Resolver.GetString(_ => LoggingResource.Header_Content, Locale),
+				ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale),
 				message.Content
 			);
 		}
 		else
 			builder.AddField(
 				header,
-				Resolver
+				ResourceResolver
 					.GetString(_ => LoggingResource.Body_MessageDeleted_NotFound, Locale)
 					.Insert(guildChannel)
 			);
@@ -91,19 +92,19 @@ public partial class LoggingModule
 		var builder = GetLoggingEmbedBuilder();
 		builder.WithColor(InfoColor);
 
-		var headerOriginalMessage = Resolver.GetString(
+		var headerOriginalMessage = ResourceResolver.GetString(
 			_ => LoggingResource.Header_MessageEdited_OriginalMessage,
 			Locale
 		);
 
-		var headerNewMessage = Resolver.GetString(
+		var headerNewMessage = ResourceResolver.GetString(
 			_ => LoggingResource.Header_MessageEdited_NewMessage,
 			Locale
 		);
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_MessageEdited, Locale),
-			Resolver.GetString(_ => LoggingResource.Body_MessageEdited, Locale).Insert(editedMessage)
+			ResourceResolver.GetString(_ => LoggingResource.Header_MessageEdited, Locale),
+			ResourceResolver.GetString(_ => LoggingResource.Body_MessageEdited, Locale).Insert(editedMessage)
 		);
 
 		if (originalMessage != null)
@@ -116,15 +117,15 @@ public partial class LoggingModule
 		{
 			builder.AddField(
 				headerOriginalMessage,
-				Resolver.GetString(_ => LoggingResource.Body_MessageEdited_NotFound, Locale)
+				ResourceResolver.GetString(_ => LoggingResource.Body_MessageEdited_NotFound, Locale)
 			);
 
 			builder.AddField(headerNewMessage, editedMessage.Content);
 		}
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_Actions, Locale),
-			$"[{Resolver.GetString(_ => LoggingResource.Body_Actions_LinkToMessage, Locale)}]({editedMessage.ToMessageLink()})"
+			ResourceResolver.GetString(_ => LoggingResource.Header_Actions, Locale),
+			$"[{ResourceResolver.GetString(_ => LoggingResource.Body_Actions_LinkToMessage, Locale)}]({editedMessage.ToMessageLink()})"
 		);
 
 		return builder.Build();

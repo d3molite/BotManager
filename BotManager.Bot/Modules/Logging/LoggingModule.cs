@@ -1,20 +1,14 @@
-﻿using BotManager.Bot.Extensions;
-using BotManager.Bot.Interfaces.Modules;
+﻿using BotManager.Bot.Interfaces.Modules;
+using BotManager.Bot.Modules.Core;
 using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.Logging;
 using Discord;
-using Discord.Rest;
 using Discord.WebSocket;
-using Serilog;
 
 namespace BotManager.Bot.Modules.Logging;
 
-public partial class LoggingModule(DiscordSocketClient client, GuildConfig guildConfig) : IUtilityModule
+public partial class LoggingModule(DiscordSocketClient client, GuildConfig guildConfig) : AbstractModuleBase<LoggingConfig>(guildConfig), IUtilityModule
 {
-	private LoggingConfig Config => guildConfig.LoggingConfig!;
-
-	private string Locale => guildConfig.GuildLocale;
-
 	private static readonly Color CriticalColor = Color.Red;
 
 	private static readonly Color WarningColor = Color.Orange;
@@ -34,13 +28,13 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig guild
 
 	private async Task SendLogEmbed(Embed embed, bool isCritical = false)
 	{
-		var guild = client.GetGuild(guildConfig.GuildId);
+		var guild = client.GetGuild(GuildConfig.GuildId);
 
-		var loggingChannelId = Config.LoggingChannelId;
+		var loggingChannelId = ModuleConfig.LoggingChannelId;
 
-		if (isCritical && Config.CriticalMessageChannelId.HasValue)
+		if (isCritical && ModuleConfig.CriticalMessageChannelId.HasValue)
 		{
-			loggingChannelId = Config.CriticalMessageChannelId.Value;
+			loggingChannelId = ModuleConfig.CriticalMessageChannelId.Value;
 		}
 
 		var loggingChannel = guild.GetTextChannel(loggingChannelId);
@@ -61,13 +55,13 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig guild
 	}
 
 	private bool IsCorrectGuild(SocketGuildUser user)
-		=> user.Guild.Id == guildConfig.GuildId;
+		=> user.Guild.Id == GuildConfig.GuildId;
 
 	private bool IsCorrectGuild(SocketGuild guild)
-		=> guild.Id == guildConfig.GuildId;
+		=> guild.Id == GuildConfig.GuildId;
 
 	private bool IsCorrectGuild(IGuildChannel channel)
-		=> channel.GuildId == guildConfig.GuildId;
+		=> channel.GuildId == GuildConfig.GuildId;
 
 	private async Task<IGuildChannel?> IsChannelInCorrectGuild(Cacheable<IMessageChannel, ulong> channel)
 	{

@@ -2,6 +2,7 @@ using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models.Modules.Voice;
 using BotManager.Resources;
+using BotManager.Resources.Formatting;
 using BotManager.Resources.Manager;
 using Discord;
 using Discord.WebSocket;
@@ -16,7 +17,7 @@ public partial class VoiceChannelModule
 
 		var command = new SlashCommandBuilder();
 		command.WithName(Commands.Voice);
-		command.WithDescription(Resolver.GetString(_ => CommandResource.Voice_Description, Locale));
+		command.WithDescription(ResourceResolver.GetString(_ => CommandResource.Voice_Description, Locale));
 		await guild.CreateApplicationCommandAsync(command.Build());
 	}
 
@@ -35,7 +36,7 @@ public partial class VoiceChannelModule
 		if (command.Channel.Id != Config.CommandChannelId)
 		{
 			await command.RespondAsync(
-				Resolver.GetString(_ => CommandResource.Voice_Error_Channel, Locale).Insert(Config.CommandChannelId),
+				ResourceResolver.GetString(_ => CommandResource.Voice_Error_Channel, Locale).Insert(Config.CommandChannelId),
 				ephemeral: true
 			);
 

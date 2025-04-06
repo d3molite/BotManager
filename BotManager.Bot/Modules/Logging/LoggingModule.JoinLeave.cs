@@ -1,5 +1,6 @@
 ﻿using BotManager.Bot.Extensions;
 using BotManager.Resources;
+using BotManager.Resources.Formatting;
 using BotManager.Resources.Manager;
 using Discord;
 using Discord.WebSocket;
@@ -38,8 +39,8 @@ public partial class LoggingModule
 		var builder = GetLoggingEmbedBuilder();
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_UserLeft, Locale),
-			Resolver.GetString(_ => LoggingResource.Body_UserLeft, Locale).Insert(user)
+			ResourceResolver.GetString(_ => LoggingResource.Header_UserLeft, Locale),
+			ResourceResolver.GetString(_ => LoggingResource.Body_UserLeft, Locale).Insert(user)
 		);
 
 		return builder.Build();
@@ -50,14 +51,14 @@ public partial class LoggingModule
 		var builder = GetLoggingEmbedBuilder();
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_UserJoined, Locale),
-			Resolver.GetString(_ => LoggingResource.Body_UserJoined, Locale).Insert(user)
+			ResourceResolver.GetString(_ => LoggingResource.Header_UserJoined, Locale),
+			ResourceResolver.GetString(_ => LoggingResource.Body_UserJoined, Locale).Insert(user)
 		);
 
 		var ageString = (DateTime.Now - user.CreatedAt).ToHumanFriendlyString();
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_UserJoined_Age, Locale),
+			ResourceResolver.GetString(_ => LoggingResource.Header_UserJoined_Age, Locale),
 			ageString
 		);
 

@@ -1,7 +1,7 @@
 using Discord;
 using Discord.WebSocket;
 
-namespace BotManager.Bot.Extensions;
+namespace BotManager.Resources.Formatting;
 
 public static class ResourceFormatExtensions
 {
@@ -22,6 +22,9 @@ public static class ResourceFormatExtensions
 	
 	public static string Insert(this string modifiable, string name)
 		=> string.Format(modifiable, name);
+	
+	public static string InsertDate(this string modifiable, DateTime dateTime)
+	=> string.Format(modifiable, dateTime.ToString("dd.MM.yyyy"));
 
 	public static string ToMessageLink(this IMessage message)
 		=> $"https://discord.com/channels/{((SocketGuildChannel)message.Channel).Guild.Id}/{message.Channel.Id}/{message.Id}";

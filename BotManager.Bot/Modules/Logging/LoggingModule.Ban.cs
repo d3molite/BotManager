@@ -1,5 +1,6 @@
 ﻿using BotManager.Bot.Extensions;
 using BotManager.Resources;
+using BotManager.Resources.Formatting;
 using BotManager.Resources.Manager;
 using Discord;
 using Discord.Rest;
@@ -59,14 +60,14 @@ public partial class LoggingModule
 		var builder = GetLoggingEmbedBuilder(critical: true);
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_UserBanned, Locale),
-			Resolver.GetString(_ => LoggingResource.Body_UserBanned, Locale).Insert(user)
+			ResourceResolver.GetString(_ => LoggingResource.Header_UserBanned, Locale),
+			ResourceResolver.GetString(_ => LoggingResource.Body_UserBanned, Locale).Insert(user)
 		);
 
 		builder.AddField(
-			Resolver.GetString(_ => LoggingResource.Header_UserBanned_Reason, Locale),
+			ResourceResolver.GetString(_ => LoggingResource.Header_UserBanned_Reason, Locale),
 			reason ?? 
-			Resolver.GetString(_ => LoggingResource.Body_UserBanned_ReasonNotFound, Locale)
+			ResourceResolver.GetString(_ => LoggingResource.Body_UserBanned_ReasonNotFound, Locale)
 		);
 
 		return builder.Build();

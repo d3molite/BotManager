@@ -4,6 +4,7 @@ using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.Feedback;
 using BotManager.Resources;
+using BotManager.Resources.Formatting;
 using BotManager.Resources.Manager;
 using Discord;
 using Discord.WebSocket;
@@ -30,8 +31,8 @@ public class FeedbackModule(DiscordSocketClient client, GuildConfig config) : IC
 	{
 		var command = new SlashCommandBuilder();
 		command.WithName(Commands.Feedback);
-		command.WithDescription(Resolver.GetString(x => CommandResource.Feedback_Description, ""));
-		command.AddDescriptionLocalization("de", Resolver.GetString(x => CommandResource.Feedback_Description, "de"));
+		command.WithDescription(ResourceResolver.GetString(x => CommandResource.Feedback_Description, ""));
+		command.AddDescriptionLocalization("de", ResourceResolver.GetString(x => CommandResource.Feedback_Description, "de"));
 
 		await guild.CreateApplicationCommandAsync(command.Build());
 	}
@@ -80,7 +81,7 @@ public class FeedbackModule(DiscordSocketClient client, GuildConfig config) : IC
 	private async Task ProcessFeedbackModal(SocketModal modal)
 	{
 		var data = modal.Data.Components.ToList();
-		await modal.RespondAsync(Resolver.GetString(x => CommandResource.Feedback_Received, _locale), ephemeral: true);
+		await modal.RespondAsync(ResourceResolver.GetString(x => CommandResource.Feedback_Received, _locale), ephemeral: true);
 
 		var message = data.Get(ModalFields.FeedbackText).Value;
 
@@ -105,8 +106,8 @@ public class FeedbackModule(DiscordSocketClient client, GuildConfig config) : IC
 	{
 		var embedBuilder = new EmbedBuilder();
 
-		var title = Resolver.GetString(x => EmbedResource.FeedbackEmbedTitle, _locale);
-		embedBuilder.Title = string.Format(title, user.GetEmbedInfo(), DateTime.Now.ToString("dd.MM.yyyy"));
+		var title = ResourceResolver.GetString(x => EmbedResource.FeedbackEmbedTitle, _locale);
+		embedBuilder.Title = string.Format(title, user.GetEmbedTitle(), DateTime.Now.ToString("dd.MM.yyyy"));
 
 		var splitText = Split(feedbackText, 900);
 

@@ -71,9 +71,9 @@ public partial class VoiceChannelModule
 	{
 		var builder = new ModalBuilder()
 					.WithCustomId(ModalFields.VoiceModalId)
-					.WithTitle(Resolver.GetString(_ => CommandResource.Voice_Modal_Title, Locale))
+					.WithTitle(ResourceResolver.GetString(_ => CommandResource.Voice_Modal_Title, Locale))
 					.AddTextInput(
-						Resolver.GetString(_ => CommandResource.Voice_Modal_ChannelName, Locale),
+						ResourceResolver.GetString(_ => CommandResource.Voice_Modal_ChannelName, Locale),
 						ModalFields.VoiceModalName,
 						minLength: 3,
 						maxLength: 14
