@@ -1,6 +1,6 @@
 ﻿namespace BotManager.Bot.Modules.Definitions;
 
-public static class ControlNames
+public static class Components
 {
 	public const string Order = nameof(Order);
 	public const string OrderButtonDelete = nameof(OrderButtonDelete);

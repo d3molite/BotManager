@@ -10,11 +10,11 @@ public partial class RoleRequestModule
 	{
 		switch (component.Data.CustomId)
 		{
-			case ControlNames.RoleRequestButtonAccept:
+			case Components.RoleRequestButtonAccept:
 				await ProcessAcceptButton(component);
 				break;
 
-			case ControlNames.RoleRequestButtonDeny:
+			case Components.RoleRequestButtonDeny:
 				await ProcessDenyButton(component);
 				break;
 		}
@@ -83,13 +83,13 @@ public partial class RoleRequestModule
 		var components = new ComponentBuilder()
 						.WithButton(
 							"Annehmen und Rolle zuweisen",
-							ControlNames.RoleRequestButtonAccept,
+							Components.RoleRequestButtonAccept,
 							ButtonStyle.Success,
 							disabled: request.Status != RoleRequestStatus.Open
 						)
 						.WithButton(
 							"Ablehnen",
-							ControlNames.RoleRequestButtonDeny,
+							Components.RoleRequestButtonDeny,
 							ButtonStyle.Danger,
 							disabled: request.Status != RoleRequestStatus.Open
 						);

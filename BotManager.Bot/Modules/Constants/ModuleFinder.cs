@@ -12,24 +12,23 @@ public static class ModuleFinder
 		{ Modals.OrderModalAddId, ModuleType.Order },
 		{ Modals.VoiceModalId, ModuleType.Voice },
 		{ Modals.RoleRequestModalId, ModuleType.RoleRequest },
-		{ Modals.FeedbackModal, ModuleType.Feedback },
 	};
 
 	private static readonly Dictionary<string, ModuleType> _buttonTypes = new()
 	{
-		{ ControlNames.OrderButtonClose, ModuleType.Order },
-		{ ControlNames.OrderButtonDelete, ModuleType.Order },
-		{ ControlNames.OrderButtonAdd, ModuleType.Order },
-		{ ControlNames.OrderButtonArrived, ModuleType.Order },
-		{ ControlNames.OrderButtonRemove, ModuleType.Order },
-		{ ControlNames.OrderButtonReload, ModuleType.Order },
-		{ ControlNames.RoleRequestButtonAccept, ModuleType.RoleRequest },
-		{ ControlNames.RoleRequestButtonDeny, ModuleType.RoleRequest },
+		{ Components.OrderButtonClose, ModuleType.Order },
+		{ Components.OrderButtonDelete, ModuleType.Order },
+		{ Components.OrderButtonAdd, ModuleType.Order },
+		{ Components.OrderButtonArrived, ModuleType.Order },
+		{ Components.OrderButtonRemove, ModuleType.Order },
+		{ Components.OrderButtonReload, ModuleType.Order },
+		{ Components.RoleRequestButtonAccept, ModuleType.RoleRequest },
+		{ Components.RoleRequestButtonDeny, ModuleType.RoleRequest },
 	};
 
 	private static readonly Dictionary<string, ModuleType> _selectTypes = new()
 	{
-		{ ControlNames.OrderRemoveSelectMenu, ModuleType.Order },
+		{ Components.OrderRemoveSelectMenu, ModuleType.Order },
 	};
 
 	public static ModuleType GetModuleByCommand(string command)

@@ -42,33 +42,33 @@ public partial class OrderTrackingModule
 
 	private static MessageComponent CreateOrderButtons(Order order)
 	{
-		return new ComponentBuilder().WithButton("Mitbestellen", ControlNames.OrderButtonAdd, disabled: !order.IsOpen)
+		return new ComponentBuilder().WithButton("Mitbestellen", Components.OrderButtonAdd, disabled: !order.IsOpen)
 									.WithButton(
 										"Position löschen",
-										ControlNames.OrderButtonRemove,
+										Components.OrderButtonRemove,
 										disabled: !order.IsOpen
 									)
 									.WithButton(
 										"Essen ist da!",
-										ControlNames.OrderButtonArrived,
+										Components.OrderButtonArrived,
 										ButtonStyle.Success,
 										disabled: (order.IsOpen || order.IsDelivered),
 										row: 1
 									)
 									.WithButton("Reload Embed", 
-										ControlNames.OrderButtonReload,
+										Components.OrderButtonReload,
 										ButtonStyle.Secondary,
 										row:1)
 									.WithButton(
 										"Bestellung schließen",
-										ControlNames.OrderButtonClose,
+										Components.OrderButtonClose,
 										ButtonStyle.Secondary,
 										row: 2,
 										disabled: !order.IsOpen
 									)
 									.WithButton(
 										"Bestellung löschen",
-										ControlNames.OrderButtonDelete,
+										Components.OrderButtonDelete,
 										ButtonStyle.Danger,
 										row: 2
 									)
@@ -178,7 +178,7 @@ public partial class OrderTrackingModule
 										new List<ActionRowBuilder>()
 										{
 											new ActionRowBuilder().WithSelectMenu(
-												new SelectMenuBuilder().WithCustomId(ControlNames.OrderRemoveSelectMenu)
+												new SelectMenuBuilder().WithCustomId(Components.OrderRemoveSelectMenu)
 																		.WithOptions(
 																			order!.OrderItems!.Where(
 																					x => x.UserId == userId

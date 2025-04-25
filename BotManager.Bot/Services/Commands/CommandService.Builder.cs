@@ -28,8 +28,10 @@ public partial class CommandModuleService
 		
 		foreach (var guildConfig in config.GuildConfigs)
 		{
+			// #if RELEASE
 			// var guild = client.GetGuild(guildConfig.GuildId);
 			// await guild.DeleteApplicationCommandsAsync();
+			// #endif
 				
 			if (guildConfig.HasOrderTrackingModule)
 				await SetupOrderModule(guildConfig);
@@ -86,11 +88,11 @@ public partial class CommandModuleService
 	private async Task SetupBirthdayModule(GuildConfig guildConfig)
 	{
 		var service = DependencyManager.Provider.GetRequiredService<IBirthdayService>();
-		var module = new BirthdaysModule(client, service);
+		var module = new BirthdaysModule(client, service, guildConfig);
 
-		await module.BuildCommands(guildConfig.BirthdayConfig!, guildConfig.GuildId);
+		await module.BuildCommands();
 
-		RegisterModule(guildConfig, module, ModuleType.Birthdays);
+		RegisterRefModule(guildConfig, module);
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 		Task.Run(async () => await module.StartCheckTask());

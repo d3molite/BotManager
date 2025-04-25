@@ -14,31 +14,31 @@ public partial class OrderTrackingModule
 
 		switch (id)
 		{
-			case ControlNames.OrderButtonClose:
+			case Components.OrderButtonClose:
 				await CloseOrder(component);
 				break;
 			
-			case ControlNames.OrderButtonDelete:
+			case Components.OrderButtonDelete:
 				await DeleteOrder(component);
 				break;
 			
-			case ControlNames.OrderButtonAdd:
+			case Components.OrderButtonAdd:
 				await AddToOrder(component);
 				break;
 			
-			case ControlNames.OrderButtonArrived:
+			case Components.OrderButtonArrived:
 				await MarkAsDelivered(component);
 				break;
 			
-			case ControlNames.OrderButtonRemove:
+			case Components.OrderButtonRemove:
 				await RemoveFromOrder(component);
 				break;
 			
-			case ControlNames.OrderButtonReload:
+			case Components.OrderButtonReload:
 				await RegenerateEmbed(component);
 				break;
 			
-			case ControlNames.OrderRemoveSelectMenu:
+			case Components.OrderRemoveSelectMenu:
 				await ExecuteSelect(component);
 				break;
 		}

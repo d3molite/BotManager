@@ -5,11 +5,9 @@ public enum ModuleType
     None,
     Order,
     Image,
-    Birthdays,
     Logging,
     AntiSpam,
     Reactions,
     Voice,
     RoleRequest,
-    Feedback
 }
