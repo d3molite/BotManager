@@ -13,7 +13,7 @@ public static class CommandLocatorExtension
 	public static IEnumerable<MethodInfo> GetCommandBuilders(this Type type)
 	{
 		return type
-			.GetMethods(BindingFlags.Static | BindingFlags.Public)
+			.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public)
 			.Where(method => method.GetCustomAttribute<CommandBuilderAttribute>() != null);
 	}
 
@@ -25,7 +25,7 @@ public static class CommandLocatorExtension
 	/// <returns>A MethodInfo object for the specified command, or null if none was found.</returns>
 	public static MethodInfo? GetCommandExecutor(this Type type, string commandName)
 	{
-		var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public);
+		var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
 		var matchingTask = methods.FirstOrDefault(method => HasMatchingCommandName(method, commandName));
 

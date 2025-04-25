@@ -89,7 +89,7 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 		}
 
 		else
-			Log.Debug("Module for button {ButtonName} was not found", data);
+			Log.Debug("Module for component {ButtonName} was not found", data);
 		
 		var refModule = ModuleRegister.TryGetFromRefComponent(data, ClientId, component.GuildId!.Value);
 		
@@ -99,20 +99,7 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 		}
 		else
 		{
-			Log.Debug("RefModule for modal {CommandName} was not found", data);
+			Log.Debug("RefModule for component {CommandName} was not found", data);
 		}
-	}
-
-	public async Task ExecuteSelectResponse(SocketMessageComponent component)
-	{
-		var data = component.Data.CustomId;
-
-		var module = ModuleRegister.TryGetFromSelect(data, ClientId, component.GuildId!.Value);
-
-		if (module != null)
-			await module.ExecuteButton(component);
-
-		else
-			Log.Debug("Module for button {ButtonName} was not found", data);
 	}
 }

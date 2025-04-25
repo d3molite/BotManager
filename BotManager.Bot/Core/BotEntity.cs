@@ -18,7 +18,6 @@ public class BotEntity : IBotEntity
 	private CommandModuleService CommandModuleService { get; }
 	private UtilityModuleService UtilityModuleService { get; }
 	
-
 	public BotEntity(BotConfig config)
 	{
 		_config = config;
@@ -43,7 +42,7 @@ public class BotEntity : IBotEntity
 		_client.SlashCommandExecuted += CommandModuleService.ExecuteCommand;
 		_client.ModalSubmitted += CommandModuleService.ExecuteModalResponse;
 		_client.ButtonExecuted += CommandModuleService.ExecuteComponentResponse;
-		_client.SelectMenuExecuted += CommandModuleService.ExecuteSelectResponse;
+		_client.SelectMenuExecuted += CommandModuleService.ExecuteComponentResponse;
 	}
 
 	private async Task OnClientReady()

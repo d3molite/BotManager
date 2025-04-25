@@ -5,7 +5,6 @@ namespace BotManager.Bot.Modules.Definitions;
 
 public static class Commands
 {
-    [ModuleType(ModuleType.Order)]
     public const string Order = "order";
 
     public const string Birthday = "birthday";

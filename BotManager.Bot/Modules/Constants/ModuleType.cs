@@ -3,7 +3,6 @@
 public enum ModuleType
 {
     None,
-    Order,
     Image,
     Logging,
     AntiSpam,

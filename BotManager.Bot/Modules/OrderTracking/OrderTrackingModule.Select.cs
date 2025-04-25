@@ -1,10 +1,13 @@
-﻿using Discord;
+﻿using BotManager.Bot.Attributes;
+using BotManager.Bot.Modules.Definitions;
+using Discord;
 using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.OrderTracking;
 
 public partial class OrderTrackingModule
 {
+	[MessageComponentExecutor(Components.OrderRemoveSelectMenu)]
 	public async Task ExecuteSelect(SocketMessageComponent component)
 	{
 		var message = await component.Channel.GetMessageAsync(component.Message.Reference.MessageId.Value);

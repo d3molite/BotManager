@@ -64,10 +64,10 @@ public partial class CommandModuleService
 	private async Task SetupOrderModule(GuildConfig guildConfig)
 	{
 		var service = DependencyManager.Provider.GetRequiredService<IOrderService>();
-		var module = new OrderTrackingModule(service, client);
+		var module = new OrderTrackingModule(service, client, guildConfig);
 
-		await module.BuildCommands(guildConfig.OrderTrackingConfig!, guildConfig.GuildId);
-		RegisterModule(guildConfig, module, ModuleType.Order);
+		await module.BuildCommands();
+		RegisterRefModule(guildConfig, module);
 	}
 
 	private void SetupImageModule(GuildConfig guildConfig)

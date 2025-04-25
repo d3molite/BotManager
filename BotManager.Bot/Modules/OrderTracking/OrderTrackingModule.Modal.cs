@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using BotManager.Bot.Attributes;
 using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models.Modules.Order;
@@ -10,24 +11,8 @@ namespace BotManager.Bot.Modules.OrderTracking;
 
 public partial class OrderTrackingModule
 {
-	public async Task ExecuteModal (SocketModal modal)
-	{
-		var id = modal.Data.CustomId;
-
-		switch (id)
-		{
-			case Modals.OrderModalId:
-				await ProcessOrderModal(modal);
-				break;
-			
-			case Modals.OrderModalAddId:
-				await ProcessAddToOrderModal(modal);
-				break;
-		}
-		
-	}
-	
-	private async Task ProcessOrderModal(SocketModal modal)
+	[ModalExecutor(Modals.OrderModalId)]
+	public async Task ProcessOrderModal(SocketModal modal)
 	{
 		var data = modal.Data.Components.ToList();
 		await modal.RespondAsync("Creating.", ephemeral: true);
@@ -60,7 +45,8 @@ public partial class OrderTrackingModule
 		await UpdateOrderMessage(created.Item, message);
 	}
 
-	private async Task ProcessAddToOrderModal(SocketModal modal)
+	[ModalExecutor(Modals.OrderModalAddId)]
+	public async Task ProcessAddToOrderModal(SocketModal modal)
 	{
 		var data = modal.Data.Components.ToList();
 		var order = await orderService.GetOrderAsync(modal.Message.Id);

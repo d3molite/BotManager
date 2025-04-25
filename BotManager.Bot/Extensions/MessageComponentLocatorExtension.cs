@@ -13,7 +13,7 @@ public static class MessageComponentLocatorExtension
 	/// <returns>A MethodInfo object for the specified modal, or null if none was found.</returns>
 	public static MethodInfo? GetComponentExecutor(this Type type, string componentName)
 	{
-		var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public);
+		var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
 		var matchingTask = methods.FirstOrDefault(method => HasMatchingComponentName(method, componentName));
 

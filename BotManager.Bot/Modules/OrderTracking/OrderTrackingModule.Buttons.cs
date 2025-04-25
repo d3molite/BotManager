@@ -1,4 +1,5 @@
-﻿using BotManager.Bot.Modules.Definitions;
+﻿using BotManager.Bot.Attributes;
+using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models.Modules.Order;
 using Demolite.Db.Enum;
 using Discord;
@@ -8,43 +9,9 @@ namespace BotManager.Bot.Modules.OrderTracking;
 
 public partial class OrderTrackingModule
 {
-	public async Task ExecuteButton(SocketMessageComponent component)
-	{
-		var id = component.Data.CustomId;
-
-		switch (id)
-		{
-			case Components.OrderButtonClose:
-				await CloseOrder(component);
-				break;
-			
-			case Components.OrderButtonDelete:
-				await DeleteOrder(component);
-				break;
-			
-			case Components.OrderButtonAdd:
-				await AddToOrder(component);
-				break;
-			
-			case Components.OrderButtonArrived:
-				await MarkAsDelivered(component);
-				break;
-			
-			case Components.OrderButtonRemove:
-				await RemoveFromOrder(component);
-				break;
-			
-			case Components.OrderButtonReload:
-				await RegenerateEmbed(component);
-				break;
-			
-			case Components.OrderRemoveSelectMenu:
-				await ExecuteSelect(component);
-				break;
-		}
-	}
-
-	private async Task RegenerateEmbed(SocketMessageComponent component)
+	
+	[MessageComponentExecutor(Components.OrderButtonReload)]
+	public async Task RegenerateEmbed(SocketMessageComponent component)
 	{
 		var order = await CheckForOwner(component);
 		if (order is null) return;
@@ -54,7 +21,8 @@ public partial class OrderTrackingModule
 		await component.RespondAsync("Embed neu generiert.", ephemeral: true);
 	}
 	
-	private async Task DeleteOrder(SocketMessageComponent component)
+	[MessageComponentExecutor(Components.OrderButtonDelete)]
+	public async Task DeleteOrder(SocketMessageComponent component)
 	{
 		var order = await CheckForOwner(component);
 		if (order is null) return;
@@ -80,7 +48,8 @@ public partial class OrderTrackingModule
 		await component.RespondAsync("Bestellung gelöscht.", ephemeral: true);
 	}
 	
-	private async Task CloseOrder(SocketMessageComponent component)
+	[MessageComponentExecutor(Components.OrderButtonClose)]
+	public async Task CloseOrder(SocketMessageComponent component)
 	{
 		var order = await CheckForOwner(component);
 		if (order is null) return;
@@ -105,7 +74,8 @@ public partial class OrderTrackingModule
 		await component.RespondAsync("Bestellung geschlossen.", ephemeral: true);
 	}
 
-	private async Task MarkAsDelivered(SocketMessageComponent component)
+	[MessageComponentExecutor(Components.OrderButtonArrived)]
+	public async Task MarkAsDelivered(SocketMessageComponent component)
 	{
 		var order = await CheckForOwner(component);
 		if (order is null) return;
@@ -132,24 +102,15 @@ public partial class OrderTrackingModule
 
 		await component.RespondAsync("Erledigt.", ephemeral: true);
 	}
-	
-	private async Task<Order?> CheckForOwner(SocketMessageComponent component)
-	{
-		var order = await orderService.GetOrderAsync(component.Message.Id);
-		var userId = component.User.Id;
 
-		if (order!.OwnerId == userId) return order;
-
-		await component.RespondAsync("Du bist nicht der Besitzer dieser Bestellung!", ephemeral:true);
-		return null;
-	}
-
-	private static async Task AddToOrder(SocketMessageComponent component)
+	[MessageComponentExecutor(Components.OrderButtonAdd)]
+	public static async Task AddToOrder(SocketMessageComponent component)
 	{
 		await component.RespondWithModalAsync(CreateAddToOrderModal());
 	}
 
-	private async Task RemoveFromOrder(SocketMessageComponent component)
+	[MessageComponentExecutor(Components.OrderButtonRemove)]
+	public async Task RemoveFromOrder(SocketMessageComponent component)
 	{
 		var order = await orderService.GetOrderAsync(component.Message.Id);
 
@@ -169,5 +130,16 @@ public partial class OrderTrackingModule
 			"Bitte Artikel zum Löschen auswählen", 
 			components: await CreateRemoveFromOrder(component), 
 			ephemeral:true);
+	}
+	
+	private async Task<Order?> CheckForOwner(SocketMessageComponent component)
+	{
+		var order = await orderService.GetOrderAsync(component.Message.Id);
+		var userId = component.User.Id;
+
+		if (order!.OwnerId == userId) return order;
+
+		await component.RespondAsync("Du bist nicht der Besitzer dieser Bestellung!", ephemeral:true);
+		return null;
 	}
 }
