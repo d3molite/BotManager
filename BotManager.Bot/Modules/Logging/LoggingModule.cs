@@ -7,7 +7,7 @@ using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.Logging;
 
-public partial class LoggingModule(DiscordSocketClient client, GuildConfig guildConfig) : AbstractModuleBase<LoggingConfig>(guildConfig), IUtilityModule
+public partial class LoggingModule(DiscordSocketClient client, GuildConfig config) : AbstractModuleBase<LoggingConfig>(config), IUtilityModule
 {
 	private static readonly Color CriticalColor = Color.Red;
 

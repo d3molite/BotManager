@@ -1,4 +1,5 @@
-﻿using BotManager.Bot.Interfaces.Modules;
+﻿using System.Reflection;
+using BotManager.Bot.Interfaces.Modules;
 using BotManager.Bot.Modules.Birthdays;
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Feedback;
@@ -53,9 +54,9 @@ public partial class CommandModuleService
 	private async Task SetupFeedbackModule(GuildConfig guildConfig)
 	{
 		var module = new FeedbackModule(client, guildConfig);
-		await module.BuildCommands(guildConfig.FeedbackConfig!, guildConfig.GuildId);
+		await module.BuildCommands();
 		
-		RegisterModule(guildConfig, module, ModuleType.Feedback);
+		RegisterRefModule(guildConfig, module);
 	}
 
 	private async Task SetupOrderModule(GuildConfig guildConfig)
@@ -121,5 +122,21 @@ public partial class CommandModuleService
 		ModuleRegister.CommandModules[key] = module;
 	}
 
+	private void RegisterRefModule(GuildConfig guildConfig, IRefCommandModule module)
+	{
+		var guildName = client.GetGuild(guildConfig.GuildId)
+			?.Name ?? guildConfig.GuildId.ToString();
+		
+		Log.Debug(
+			"Registering Ref {ModuleName} for {BotName} in Guild {Guild}",
+			module.GetType()
+				.Name,
+			User,
+			guildName
+		);
+
+		var moduleDefinition = new RefModuleInfo(module, ClientId, guildConfig.GuildId);
+		ModuleRegister.RefCommandModules.Add(moduleDefinition);
+	}
 	
 }

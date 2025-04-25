@@ -23,10 +23,22 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 			if (module != null)
 			{
 				await module.ExecuteCommands(command);
+				return;
 			}
 			else
 			{
 				Log.Debug("Module for command {CommandName} was not found", command.CommandName);
+			}
+			
+			var refModule = ModuleRegister.TryGetFromRefCommand(command.CommandName, ClientId, command.GuildId!.Value);
+			
+			if (refModule != null)
+			{
+				await refModule.ExecuteCommand(command);
+			}
+			else
+			{
+				Log.Debug("RefModule for command {CommandName} was not found", command.CommandName);
 			}
 		}
 		catch (Exception ex)
@@ -42,13 +54,27 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 		var module = ModuleRegister.TryGetFromModal(data, ClientId, modal.GuildId!.Value);
 
 		if (module != null)
+		{
 			await module.ExecuteModal(modal);
+			return;
+		}
 
 		else
 			Log.Debug("Module for modal {ModalName} was not found", data);
+		
+		var refModule = ModuleRegister.TryGetFromRefModal(data, ClientId, modal.GuildId!.Value);
+		
+		if (refModule != null)
+		{
+			await refModule.ExecuteModal(modal);
+		}
+		else
+		{
+			Log.Debug("RefModule for modal {CommandName} was not found", data);
+		}
 	}
 
-	public async Task ExecuteButtonResponse(SocketMessageComponent component)
+	public async Task ExecuteComponentResponse(SocketMessageComponent component)
 	{
 		var data = component.Data.CustomId;
 
@@ -57,10 +83,24 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 		var module = ModuleRegister.TryGetFromButton(data, ClientId, guildId);
 
 		if (module != null)
+		{
 			await module.ExecuteButton(component);
+			return;
+		}
 
 		else
 			Log.Debug("Module for button {ButtonName} was not found", data);
+		
+		var refModule = ModuleRegister.TryGetFromRefComponent(data, ClientId, component.GuildId!.Value);
+		
+		if (refModule != null)
+		{
+			await refModule.ExecuteMessageComponent(component);
+		}
+		else
+		{
+			Log.Debug("RefModule for modal {CommandName} was not found", data);
+		}
 	}
 
 	public async Task ExecuteSelectResponse(SocketMessageComponent component)

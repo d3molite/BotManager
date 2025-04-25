@@ -16,11 +16,11 @@ public partial class OrderTrackingModule
 
 		switch (id)
 		{
-			case ModalFields.OrderModalId:
+			case Modals.OrderModalId:
 				await ProcessOrderModal(modal);
 				break;
 			
-			case ModalFields.OrderModalAddId:
+			case Modals.OrderModalAddId:
 				await ProcessAddToOrderModal(modal);
 				break;
 		}
@@ -46,10 +46,10 @@ public partial class OrderTrackingModule
 			IsOpen = true,
 			MessageId = message.Id,
 			OwnerId = modal.User.Id,
-			RestaurantName = data.Get(ModalFields.OrderModalRestaurant).Value,
-			MenuLink = data.Get(ModalFields.OrderModalMenuLink).Value,
-			OrderTime = data.Get(ModalFields.OrderModalTime).Value,
-			PaypalLink = data.Get(ModalFields.OrderModalPaypalLink).Value
+			RestaurantName = data.Get(Modals.OrderModalRestaurant).Value,
+			MenuLink = data.Get(Modals.OrderModalMenuLink).Value,
+			OrderTime = data.Get(Modals.OrderModalTime).Value,
+			PaypalLink = data.Get(Modals.OrderModalPaypalLink).Value
 		};
 
 		var created = await orderService.CreateOrderAsync(order);
@@ -75,10 +75,10 @@ public partial class OrderTrackingModule
 		{
 			Id = Guid.NewGuid().ToString(),
 			OperationType = Operation.Created,
-			ItemName = data.Get(ModalFields.OrderModalAddName).Value,
-			ItemPrice = ParseModalDecimal(data.Get(ModalFields.OrderModalAddPrice).Value),
-			ItemNumber = data.GetString(ModalFields.OrderModalAddNumber),
-			ItemAmount = ParseModalInt(data.Get(ModalFields.OrderModalAddAmount).Value),
+			ItemName = data.Get(Modals.OrderModalAddName).Value,
+			ItemPrice = ParseModalDecimal(data.Get(Modals.OrderModalAddPrice).Value),
+			ItemNumber = data.GetString(Modals.OrderModalAddNumber),
+			ItemAmount = ParseModalInt(data.Get(Modals.OrderModalAddAmount).Value),
 			UserId = modal.User.Id,
 		};
 
@@ -128,11 +128,11 @@ public partial class OrderTrackingModule
 	{
 		var builder = new ModalBuilder()
 					.WithTitle("Neue Bestellung")
-					.WithCustomId(ModalFields.OrderModalId)
-					.AddTextInput("Restaurant", ModalFields.OrderModalRestaurant, placeholder: "Da Luigi")
-					.AddTextInput("Bestellzeit", ModalFields.OrderModalTime, placeholder: "19:00")
-					.AddTextInput("Paypal Bezahllink", ModalFields.OrderModalPaypalLink, placeholder:"https://paypal.me/...")
-					.AddTextInput("Link zur Speisekarte", ModalFields.OrderModalMenuLink, placeholder: "https://www....");
+					.WithCustomId(Modals.OrderModalId)
+					.AddTextInput("Restaurant", Modals.OrderModalRestaurant, placeholder: "Da Luigi")
+					.AddTextInput("Bestellzeit", Modals.OrderModalTime, placeholder: "19:00")
+					.AddTextInput("Paypal Bezahllink", Modals.OrderModalPaypalLink, placeholder:"https://paypal.me/...")
+					.AddTextInput("Link zur Speisekarte", Modals.OrderModalMenuLink, placeholder: "https://www....");
 		
 		return builder.Build();
 	}
@@ -140,20 +140,20 @@ public partial class OrderTrackingModule
 	private static Modal CreateAddToOrderModal()
 	{
 		var builder = new ModalBuilder().WithTitle("Artikel Hinzufügen")
-										.WithCustomId(ModalFields.OrderModalAddId)
+										.WithCustomId(Modals.OrderModalAddId)
 										.AddTextInput(
 											"Nummer auf Speisekarte",
-											ModalFields.OrderModalAddNumber,
+											Modals.OrderModalAddNumber,
 											required: false,
 											placeholder: "Optional"
 										)
 										.AddTextInput(
 											"Name auf der Speisekarte",
-											ModalFields.OrderModalAddName,
+											Modals.OrderModalAddName,
 											placeholder: ""
 										)
-										.AddTextInput("Preis", ModalFields.OrderModalAddPrice, placeholder: "3.50")
-										.AddTextInput("Menge", ModalFields.OrderModalAddAmount, value: "1");
+										.AddTextInput("Preis", Modals.OrderModalAddPrice, placeholder: "3.50")
+										.AddTextInput("Menge", Modals.OrderModalAddAmount, value: "1");
 
 		return builder.Build();
 	}

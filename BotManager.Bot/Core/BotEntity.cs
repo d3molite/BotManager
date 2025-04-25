@@ -42,7 +42,7 @@ public class BotEntity : IBotEntity
 		_client.Ready += OnClientReady;
 		_client.SlashCommandExecuted += CommandModuleService.ExecuteCommand;
 		_client.ModalSubmitted += CommandModuleService.ExecuteModalResponse;
-		_client.ButtonExecuted += CommandModuleService.ExecuteButtonResponse;
+		_client.ButtonExecuted += CommandModuleService.ExecuteComponentResponse;
 		_client.SelectMenuExecuted += CommandModuleService.ExecuteSelectResponse;
 	}
 

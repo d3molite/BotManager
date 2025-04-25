@@ -1,6 +1,6 @@
 ﻿namespace BotManager.Bot.Modules.Definitions;
 
-public static class ModalFields
+public static class Modals
 {
 	public const string OrderModal = nameof(OrderModal);
 	public const string OrderModalId = nameof(OrderModalId);
@@ -23,6 +23,6 @@ public static class ModalFields
 	public const string RoleRequestModalId = nameof(RoleRequestModalId);
 	public const string RoleRequestEmail = nameof(RoleRequestEmail);
 	
-	public const string FeedbackModalId = nameof(FeedbackModalId);
-	public const string FeedbackText = nameof(FeedbackText);
+	public const string FeedbackModal = nameof(FeedbackModal);
+	public const string FeedbackModalText = nameof(FeedbackModalText);
 }

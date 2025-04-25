@@ -37,6 +37,10 @@ public partial class OrderTrackingModule
 			case ControlNames.OrderButtonReload:
 				await RegenerateEmbed(component);
 				break;
+			
+			case ControlNames.OrderRemoveSelectMenu:
+				await ExecuteSelect(component);
+				break;
 		}
 	}
 

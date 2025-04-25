@@ -14,7 +14,7 @@ public partial class VoiceChannelModule
 	{
 		switch (modal.Data.CustomId)
 		{
-			case ModalFields.VoiceModalId:
+			case Modals.VoiceModalId:
 				await ProcessVoiceModal(modal);
 				break;
 		}
@@ -29,7 +29,7 @@ public partial class VoiceChannelModule
 		if (CurrentChannels.Count != 0) 
 			nextChannel += CurrentChannels.Select(x => x.ChannelNumber).Max();
 		
-		var channelName = $"[{nextChannel}] {data.Get(ModalFields.VoiceModalName).Value}";
+		var channelName = $"[{nextChannel}] {data.Get(Modals.VoiceModalName).Value}";
 
 		var guild = _client.GetGuild(_guildConfig.GuildId);
 
@@ -70,11 +70,11 @@ public partial class VoiceChannelModule
 	private Modal CreateVoiceModal()
 	{
 		var builder = new ModalBuilder()
-					.WithCustomId(ModalFields.VoiceModalId)
+					.WithCustomId(Modals.VoiceModalId)
 					.WithTitle(ResourceResolver.GetString(_ => CommandResource.Voice_Modal_Title, Locale))
 					.AddTextInput(
 						ResourceResolver.GetString(_ => CommandResource.Voice_Modal_ChannelName, Locale),
-						ModalFields.VoiceModalName,
+						Modals.VoiceModalName,
 						minLength: 3,
 						maxLength: 14
 					);

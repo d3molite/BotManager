@@ -2,12 +2,13 @@ using BotManager.Db.Models;
 
 namespace BotManager.Bot.Modules.Core;
 
-public class AbstractModuleBase<T>(GuildConfig guildConfig)
+public class AbstractModuleBase<T>(GuildConfig config)
 	where T : class
 {
-	protected string Locale => guildConfig.GuildLocale;
+	protected string Locale => config.GuildLocale;
 	
-	protected GuildConfig GuildConfig => guildConfig;
+	protected GuildConfig GuildConfig => config;
 	
-	protected T ModuleConfig => (guildConfig.GetType().GetProperty(typeof(T).Name)!.GetValue(guildConfig) as T)!;
+	protected T ModuleConfig => (config.GetType().GetProperty(typeof(T).Name)!.GetValue(config) as T)!;
+	
 }

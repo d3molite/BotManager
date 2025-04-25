@@ -8,11 +8,11 @@ public static class ModuleFinder
 {
 	private static readonly Dictionary<string, ModuleType> _modalTypes = new()
 	{
-		{ ModalFields.OrderModalId, ModuleType.Order },
-		{ ModalFields.OrderModalAddId, ModuleType.Order },
-		{ ModalFields.VoiceModalId, ModuleType.Voice },
-		{ ModalFields.RoleRequestModalId, ModuleType.RoleRequest },
-		{ ModalFields.FeedbackModalId, ModuleType.Feedback },
+		{ Modals.OrderModalId, ModuleType.Order },
+		{ Modals.OrderModalAddId, ModuleType.Order },
+		{ Modals.VoiceModalId, ModuleType.Voice },
+		{ Modals.RoleRequestModalId, ModuleType.RoleRequest },
+		{ Modals.FeedbackModal, ModuleType.Feedback },
 	};
 
 	private static readonly Dictionary<string, ModuleType> _buttonTypes = new()

@@ -11,7 +11,7 @@ public partial class RoleRequestModule
 	{
 		switch (modal.Data.CustomId)
 		{
-			case ModalFields.RoleRequestModalId:
+			case Modals.RoleRequestModalId:
 				await ExecuteRoleRequestModal(modal);
 				break;
 		}
@@ -29,7 +29,7 @@ public partial class RoleRequestModule
 		var request = new RoleRequest()
 		{
 			GuildId = modal.GuildId!.Value,
-			Email = data.GetString(ModalFields.RoleRequestEmail),
+			Email = data.GetString(Modals.RoleRequestEmail),
 			Status = RoleRequestStatus.Open,
 			UserId = modal.User.Id,
 			UserNick = $"{user.Nickname} (@{user.Username})",
@@ -48,12 +48,12 @@ public partial class RoleRequestModule
 	{
 		var modal = new ModalBuilder();
 
-		modal.WithCustomId(ModalFields.RoleRequestModalId);
+		modal.WithCustomId(Modals.RoleRequestModalId);
 		modal.WithTitle("LAN.User Rolle anfragen.");
 
 		modal.AddTextInput(
 			"E-Mail aus deiner Ticketbestellung",
-			ModalFields.RoleRequestEmail,
+			Modals.RoleRequestEmail,
 			TextInputStyle.Short,
 			"max@mustermann.de",
 			required: true

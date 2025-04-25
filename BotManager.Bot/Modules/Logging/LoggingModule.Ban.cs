@@ -18,7 +18,7 @@ public partial class LoggingModule
 	/// <param name="guild">Guild the user was banned from.</param>
 	private async Task LogUserBanned(SocketUser user, SocketGuild guild)
 	{
-		if (guild.Id != guildConfig.GuildId)
+		if (guild.Id != config.GuildId)
 			return;
 
 		// wait for discord to send the user ban to the audit log
