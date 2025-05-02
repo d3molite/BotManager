@@ -33,5 +33,5 @@ public static class CommandLocatorExtension
 	}
 
 	private static bool HasMatchingCommandName(MethodInfo methodInfo, string commandName)
-		=> methodInfo.GetCustomAttribute<CommandExecutorAttribute>()?.CommandName == commandName;
+		=> methodInfo.GetCustomAttributes<CommandExecutorAttribute>().Any(x => x.CommandName == commandName);
 }

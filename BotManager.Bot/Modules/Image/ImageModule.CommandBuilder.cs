@@ -1,102 +1,88 @@
-﻿using BotManager.Bot.Modules.Definitions;
-using BotManager.Db.Models.Modules.Image;
+﻿using BotManager.Bot.Attributes;
+using BotManager.Bot.Extensions;
+using BotManager.Bot.Modules.Definitions;
 using Discord;
-using Serilog;
+using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.Image;
 
 public partial class ImageModule
 {
-    public async Task BuildCommands(ImageConfig config, ulong guildId)
+    [CommandBuilder(Commands.Gifspeed)]
+    public static async Task BuildSpeedCommand(SocketGuild guild)
     {
-        await BuildWaawCommand(guildId);
-        await BuildHaahCommand(guildId);
-        await BuildWoowCommand(guildId);
-        await BuildHoohCommand(guildId);
-        await BuildReverseCommand(guildId);
-        await BuildSpeedCommand(guildId);
-        await BuildJpegCommand(guildId);
+        var builder = new SlashCommandBuilder();
+        builder.WithName(Commands.Gifspeed);
+        builder.WithDescription("Set new speed of gif");
+        builder.AddDescriptionLocalization("de", "Setze die neue Gif geschwindigkeit");
+        builder.AddOption("factor", ApplicationCommandOptionType.Number, "factor", isRequired:true);
+
+        await guild.TryCreateGuildCommand(builder);
     }
 
-    private async Task BuildSpeedCommand(ulong guildId)
+    [CommandBuilder(Commands.Waaw)]
+    public static async Task BuildWaawCommand(SocketGuild guild)
     {
-        var guild = client.GetGuild(guildId);
+        var builder = new SlashCommandBuilder();
+        builder.WithName(Commands.Waaw);
+        builder.WithDescription("Mirror image left to right");
+        builder.AddDescriptionLocalization("de", "Spiegel das letzte Bild von links nach rechts");
 
-        var command = new SlashCommandBuilder();
-        command.WithName(Commands.Gifspeed);
-        command.WithDescription("Set new speed of gif");
-        command.AddDescriptionLocalization("de", "Setze die neue Gif geschwindigkeit");
-        command.AddOption("factor", ApplicationCommandOptionType.Number, "factor", isRequired:true);
-
-        try
-        {
-            await guild.CreateApplicationCommandAsync(command.Build());
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Failed to build speed command");
-        }
-    }
-
-    private async Task BuildWaawCommand(ulong guildId)
-    {
-        var guild = client.GetGuild(guildId);
-
-        var command = new SlashCommandBuilder();
-        command.WithName(Commands.Waaw);
-        command.WithDescription("Mirror image left to right");
-        command.AddDescriptionLocalization("de", "Spiegel das letzte Bild von links nach rechts");
-
-        await guild.CreateApplicationCommandAsync(command.Build());
+        await guild.TryCreateGuildCommand(builder);
     }
     
-    private async Task BuildWoowCommand(ulong guildId)
+    [CommandBuilder(Commands.Woow)]
+    public static async Task BuildWoowCommand(SocketGuild guild)
     {
-        var guild = client.GetGuild(guildId);
+        var builder = new SlashCommandBuilder();
+        builder.WithName(Commands.Woow);
+        builder.WithDescription("Mirror image right to left");
+        builder.AddDescriptionLocalization("de", "Spiegel das letzte Bild von rechts nach links");
 
-        var command = new SlashCommandBuilder();
-        command.WithName(Commands.Woow);
-        command.WithDescription("Mirror image right to left");
-        command.AddDescriptionLocalization("de", "Spiegel das letzte Bild von rechts nach links");
-
-        await guild.CreateApplicationCommandAsync(command.Build());
+        await guild.TryCreateGuildCommand(builder);
     }
     
-    private async Task BuildHaahCommand(ulong guildId)
+    [CommandBuilder(Commands.Haah)]
+    public static async Task BuildHaahCommand(SocketGuild guild)
     {
-        var guild = client.GetGuild(guildId);
+        var builder = new SlashCommandBuilder();
+        builder.WithName(Commands.Haah);
+        builder.WithDescription("Mirror image top to bottom");
+        builder.AddDescriptionLocalization("de", "Spiegel das letzte Bild von oben nach unten");
 
-        var command = new SlashCommandBuilder();
-        command.WithName(Commands.Haah);
-        command.WithDescription("Mirror image top to bottom");
-        command.AddDescriptionLocalization("de", "Spiegel das letzte Bild von oben nach unten");
-
-        await guild.CreateApplicationCommandAsync(command.Build());
+        await guild.TryCreateGuildCommand(builder);
     }
     
-    private async Task BuildHoohCommand(ulong guildId)
+    [CommandBuilder(Commands.Hooh)]
+    public static async Task BuildHoohCommand(SocketGuild guild)
     {
-        var guild = client.GetGuild(guildId);
+        var builder = new SlashCommandBuilder();
+        builder.WithName(Commands.Hooh);
+        builder.WithDescription("Mirror image bottom to top");
+        builder.AddDescriptionLocalization("de", "Spiegel das letzte Bild von unten nach oben");
 
-        var command = new SlashCommandBuilder();
-        command.WithName(Commands.Hooh);
-        command.WithDescription("Mirror image bottom to top");
-        command.AddDescriptionLocalization("de", "Spiegel das letzte Bild von unten nach oben");
-
-        await guild.CreateApplicationCommandAsync(command.Build());
+        await guild.TryCreateGuildCommand(builder);
     }
     
-    private async Task BuildReverseCommand(ulong guildId)
+    [CommandBuilder(Commands.Reverse)]
+    public static async Task BuildReverseCommand(SocketGuild guild)
     {
-        var guild = client.GetGuild(guildId);
-
-        var command = new SlashCommandBuilder()
+        var builder = new SlashCommandBuilder()
             .WithName(Commands.Reverse)
             .WithDescription("Reverse a gif.")
             .AddDescriptionLocalization("de", "Spiele das letzte Gif rückwärts ab");
 
-        await guild.CreateApplicationCommandAsync(command.Build());
+        await guild.TryCreateGuildCommand(builder);
     }
 
-    
+    [CommandBuilder(Commands.NeedsMoreJpeg)]
+    public static async Task BuildJpegCommand(SocketGuild guild)
+    {
+        var builder = new SlashCommandBuilder()
+            .WithName(Commands.NeedsMoreJpeg)
+            .WithDescription("Mmmm crusty")
+            .AddDescriptionLocalization("de", "KNUSPRIG");
+
+        await guild.TryCreateGuildCommand(builder);
+    }
 }

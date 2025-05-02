@@ -1,4 +1,5 @@
-﻿using BotManager.Bot.Modules.Definitions;
+﻿using BotManager.Bot.Attributes;
+using BotManager.Bot.Modules.Definitions;
 using BotManager.ImageProcessing.Commands;
 using BotManager.ImageProcessing.Enum;
 using BotManager.ImageProcessing.Model;
@@ -8,7 +9,11 @@ namespace BotManager.Bot.Modules.Image;
 
 public partial class ImageModule
 {
-    private async Task ExecuteMirrorCommand(SocketSlashCommand command)
+    [CommandExecutor(Commands.Waaw)]
+    [CommandExecutor(Commands.Woow)]
+    [CommandExecutor(Commands.Haah)]
+    [CommandExecutor(Commands.Hooh)]
+    public async Task ExecuteMirrorCommand(SocketSlashCommand command)
     {
         var result = await DeferAndTryGet(command);
 

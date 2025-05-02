@@ -46,7 +46,7 @@ public partial class ImageModule
 
                 if (images.Length != 0)
                 {
-                    var image = images.First();
+                    var image = images[0];
                     
                     if (IsImage(image.Url)) 
                         return image.Url;
@@ -67,7 +67,7 @@ public partial class ImageModule
         return string.Empty;
     }
     
-    private async Task SendAndDelete(ImageModel imageModel, SocketInteraction interaction)
+    private static async Task SendAndDelete(ImageModel imageModel, SocketInteraction interaction)
     {
         try
         {
@@ -83,9 +83,9 @@ public partial class ImageModule
     
     private bool IsImage(string url)
     {
-        var imageExt = CleanImageUrl(url).Split('.').Last().ToLower();
+        var imageExt = CleanImageUrl(url).Split('.')[-1].ToLower();
         return _formats.Contains(imageExt);
     }
     
-    private static string CleanImageUrl(string url) => url.Split("?").First();
+    private static string CleanImageUrl(string url) => url.Split("?")[0];
 }

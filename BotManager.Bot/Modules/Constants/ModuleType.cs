@@ -3,7 +3,6 @@
 public enum ModuleType
 {
     None,
-    Image,
     Logging,
     AntiSpam,
     Reactions,

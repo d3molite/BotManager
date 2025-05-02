@@ -1,25 +1,15 @@
-﻿using BotManager.Bot.Modules.Definitions;
+﻿using BotManager.Bot.Attributes;
+using BotManager.Bot.Modules.Definitions;
 using BotManager.ImageProcessing.Commands;
-using Discord;
 using Discord.WebSocket;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace BotManager.Bot.Modules.Image;
 
 public partial class ImageModule
 {
-    private async Task BuildJpegCommand(ulong guildId)
-    {
-        var guild = client.GetGuild(guildId);
-
-        var command = new SlashCommandBuilder()
-            .WithName(Commands.NeedsMoreJpeg)
-            .WithDescription("Mmmm crusty")
-            .AddDescriptionLocalization("de", "KNUSPRIG");
-
-        await guild.CreateApplicationCommandAsync(command.Build());
-    }
-
-    private async Task ExecuteMoreJpegCommand(SocketSlashCommand command)
+    [CommandExecutor(Commands.NeedsMoreJpeg)]
+    public async Task ExecuteMoreJpegCommand(SocketSlashCommand command)
     {
         var result = await DeferAndTryGet(command);
 

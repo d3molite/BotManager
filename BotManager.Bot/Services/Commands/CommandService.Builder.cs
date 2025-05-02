@@ -72,10 +72,10 @@ public partial class CommandModuleService
 
 	private void SetupImageModule(GuildConfig guildConfig)
 	{
-		var module = new ImageModule(client);
+		var module = new ImageModule(client, guildConfig);
 
-		Task.Run(async () => await module.BuildCommands(guildConfig.ImageConfig!, guildConfig.GuildId));
-		RegisterModule(guildConfig, module, ModuleType.Image);
+		Task.Run(async () => await module.BuildCommands());
+		RegisterRefModule(guildConfig, module);
 	}
 	
 	private void SetupVoiceChannelModule(GuildConfig guildConfig)

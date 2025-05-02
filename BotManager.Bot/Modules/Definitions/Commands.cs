@@ -11,26 +11,22 @@ public static class Commands
     
     public const string ClearBirthday = "clearbirthday";
 
-    [ModuleType(ModuleType.Image)]
+    #region Image Commands
     public const string Waaw = "waaw";
 
-    [ModuleType(ModuleType.Image)]
     public const string Woow = "woow";
 
-    [ModuleType(ModuleType.Image)]
     public const string Haah = "haah";
 
-    [ModuleType(ModuleType.Image)]
     public const string Hooh = "hooh";
 
-    [ModuleType(ModuleType.Image)]
     public const string Reverse = "reverse";
 
-    [ModuleType(ModuleType.Image)]
     public const string Gifspeed = "gifspeed";
 
-    [ModuleType(ModuleType.Image)]
     public const string NeedsMoreJpeg = "needsmorejpeg";
+    
+    #endregion Image Commands
 
     [ModuleType(ModuleType.Voice)]
     public const string Voice = "voice";
