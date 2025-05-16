@@ -1,3 +1,4 @@
+using BotManager.Bot.Attributes;
 using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Resources;
@@ -10,17 +11,9 @@ namespace BotManager.Bot.Modules.VoiceChannel;
 
 public partial class VoiceChannelModule
 {
-	public async Task ExecuteModal(SocketModal modal)
-	{
-		switch (modal.Data.CustomId)
-		{
-			case Modals.VoiceModalId:
-				await ProcessVoiceModal(modal);
-				break;
-		}
-	}
 
-	private async Task ProcessVoiceModal(SocketModal modal)
+	[ModalExecutor(Modals.VoiceModalId)]
+	public async Task ProcessVoiceModal(SocketModal modal)
 	{
 		var data = modal.Data.Components.ToList();
 
@@ -31,7 +24,7 @@ public partial class VoiceChannelModule
 		
 		var channelName = $"[{nextChannel}] {data.Get(Modals.VoiceModalName).Value}";
 
-		var guild = _client.GetGuild(_guildConfig.GuildId);
+		var guild = Client.GetGuild(GuildConfig.GuildId);
 
 		RestVoiceChannel channel;
 
@@ -41,7 +34,7 @@ public partial class VoiceChannelModule
 				channelName,
 				properties =>
 				{
-					properties.CategoryId = Config.VoiceCategoryId;
+					properties.CategoryId = ModuleConfig.VoiceCategoryId;
 					properties.Bitrate = 384000;
 				}
 			);
@@ -50,7 +43,7 @@ public partial class VoiceChannelModule
 		{
 			channel = await guild.CreateVoiceChannelAsync(
 				channelName,
-				properties => { properties.CategoryId = Config.VoiceCategoryId; }
+				properties => { properties.CategoryId = ModuleConfig.VoiceCategoryId; }
 			);
 		}
 		

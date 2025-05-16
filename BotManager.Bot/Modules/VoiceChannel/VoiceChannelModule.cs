@@ -1,4 +1,5 @@
 ﻿using BotManager.Bot.Interfaces.Modules;
+using BotManager.Bot.Modules.Core;
 using BotManager.Bot.Modules.Logging;
 using BotManager.Bot.Services.Register;
 using BotManager.Db.Models;
@@ -7,35 +8,20 @@ using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.VoiceChannel;
 
-public partial class VoiceChannelModule : ICommandModule<VoiceChannelConfig>
+public partial class VoiceChannelModule : AbstractCommandModuleBase<VoiceChannelConfig>
 {
-	private readonly DiscordSocketClient _client;
-	private readonly GuildConfig _guildConfig;
 	private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(1));
 	private LoggingModule? _loggingModule;
 
-	private string Locale => _guildConfig.GuildLocale;
-
-	private VoiceChannelConfig Config => _guildConfig.VoiceChannelConfig!;
-
 	private List<VoiceState> CurrentChannels { get; set; } = [];
 
-	public VoiceChannelModule(DiscordSocketClient client, GuildConfig guildConfig)
+	public VoiceChannelModule(DiscordSocketClient client, GuildConfig guildConfig) : base(client, guildConfig)
 	{
-		_client = client;
-		_guildConfig = guildConfig;
-
-		Task.Run(async () => await PollChannels());
+		Task.Run(PollChannels);
 	}
-
-	public Task ExecuteButton(SocketMessageComponent component)
-		=> throw new NotImplementedException();
-
-	public Task ExecuteSelect(SocketMessageComponent component)
-		=> throw new NotImplementedException();
 
 	private void TryGetLogger()
 	{
-		_loggingModule ??= (LoggingModule)ModuleRegister.TryGetLogger(_client.CurrentUser.Id, _guildConfig.GuildId)!;
+		_loggingModule ??= (LoggingModule)ModuleRegister.TryGetLogger(Client.CurrentUser.Id, GuildConfig.GuildId)!;
 	}
 }

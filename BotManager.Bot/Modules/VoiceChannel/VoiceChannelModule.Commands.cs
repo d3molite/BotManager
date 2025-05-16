@@ -1,6 +1,5 @@
-using BotManager.Bot.Extensions;
+using BotManager.Bot.Attributes;
 using BotManager.Bot.Modules.Definitions;
-using BotManager.Db.Models.Modules.Voice;
 using BotManager.Resources;
 using BotManager.Resources.Formatting;
 using BotManager.Resources.Manager;
@@ -11,32 +10,24 @@ namespace BotManager.Bot.Modules.VoiceChannel;
 
 public partial class VoiceChannelModule
 {
-	public async Task BuildCommands(VoiceChannelConfig config, ulong guildId)
+	[CommandBuilder(Commands.Voice)]
+	public async Task BuildVoiceCommand(SocketGuild guild)
 	{
-		var guild = _client.GetGuild(guildId);
-
-		var command = new SlashCommandBuilder();
-		command.WithName(Commands.Voice);
-		command.WithDescription(ResourceResolver.GetString(_ => CommandResource.Voice_Description, Locale));
-		await guild.CreateApplicationCommandAsync(command.Build());
+		var builder = new SlashCommandBuilder();
+		builder.WithName(Commands.Voice);
+		builder.WithDescription(ResourceResolver.GetString(_ => CommandResource.Voice_Description, Locale));
+		await guild.CreateApplicationCommandAsync(builder.Build());
 	}
 
-	public async Task ExecuteCommands(SocketSlashCommand command)
+	[CommandExecutor(Commands.Voice)]
+	public async Task ExecuteVoiceCommand(SocketSlashCommand command)
 	{
-		switch (command.CommandName)
-		{
-			case Commands.Voice:
-				await ExecuteVoiceCommand(command);
-				break;
-		}
-	}
-
-	private async Task ExecuteVoiceCommand(SocketSlashCommand command)
-	{
-		if (command.Channel.Id != Config.CommandChannelId)
+		if (command.Channel.Id != ModuleConfig.CommandChannelId)
 		{
 			await command.RespondAsync(
-				ResourceResolver.GetString(_ => CommandResource.Voice_Error_Channel, Locale).Insert(Config.CommandChannelId),
+				ResourceResolver
+					.GetString(_ => CommandResource.Voice_Error_Channel, Locale)
+					.Insert(ModuleConfig.CommandChannelId),
 				ephemeral: true
 			);
 

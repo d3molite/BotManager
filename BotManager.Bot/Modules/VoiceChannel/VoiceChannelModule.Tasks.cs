@@ -1,4 +1,3 @@
-using Discord.Rest;
 using Discord.WebSocket;
 using Serilog;
 
@@ -6,9 +5,9 @@ namespace BotManager.Bot.Modules.VoiceChannel;
 
 public partial class VoiceChannelModule
 {
-	private async Task PollChannels()
+	private void PollChannels()
 	{
-		var category = _client.GetGuild(_guildConfig.GuildId).GetCategoryChannel(Config.VoiceCategoryId);
+		var category = Client.GetGuild(GuildConfig.GuildId).GetCategoryChannel(ModuleConfig.VoiceCategoryId);
 
 		foreach (var channel in category.Channels.Where(x => x.Name.StartsWith('[')))
 		{
@@ -24,7 +23,7 @@ public partial class VoiceChannelModule
 				);
 		}
 		
-		Log.Debug("Found {Count} Channels for {GuildName}:", CurrentChannels.Count, _guildConfig.GuildName);
+		Log.Debug("Found {Count} Channels for {GuildName}:", CurrentChannels.Count, GuildConfig.GuildName);
 
 		foreach (var channel in CurrentChannels)
 		{
@@ -51,7 +50,7 @@ public partial class VoiceChannelModule
 						await voiceState.Channel!.DeleteAsync();
 						removed.Add(voiceState);
 						TryGetLogger();
-						await _loggingModule!.LogVoiceChannelDeleted(Config.CommandChannelId, voiceState);
+						await _loggingModule!.LogVoiceChannelDeleted(ModuleConfig.CommandChannelId, voiceState);
 					}
 					catch (Exception ex)
 					{
@@ -89,7 +88,7 @@ public partial class VoiceChannelModule
 
 	private async Task ReloadChannel(VoiceState state)
 	{
-		var channel = await _client.GetChannelAsync(state.ChannelId);
+		var channel = await Client.GetChannelAsync(state.ChannelId);
 
 		if (channel is SocketVoiceChannel voiceChannel)
 		{

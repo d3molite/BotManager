@@ -50,7 +50,7 @@ public partial class CommandModuleService
 				await SetupModule<ImageModule>(guildConfig, true);
 			
 			if (guildConfig.HasVoiceChannelModule)
-				SetupVoiceChannelModule(guildConfig);
+				await SetupModule<VoiceChannelModule>(guildConfig);
 			
 			if (guildConfig.HasRoleRequestModule)
 				await SetupModule<RoleRequestModule>(guildConfig);
@@ -83,40 +83,16 @@ public partial class CommandModuleService
 		else
 			await module!.BuildCommands();
 		
-		RegisterRefModule(guildConfig, module!);
+		RegisterModule(guildConfig, module!);
 	}
 	
-	private void SetupVoiceChannelModule(GuildConfig guildConfig)
-	{
-		var module = new VoiceChannelModule(client, guildConfig);
-		Task.Run(async() => await module.BuildCommands(guildConfig.VoiceChannelConfig!, guildConfig.GuildId));
-		RegisterModule(guildConfig, module, ModuleType.Voice);
-	}
-
-	private void RegisterModule(GuildConfig guildConfig, ICommandModule module, ModuleType moduleType)
-	{
-		var guildName = client.GetGuild(guildConfig.GuildId)
-							?.Name ?? guildConfig.GuildId.ToString();
-
-		Log.Debug(
-			"Registering {ModuleName} for {BotName} in Guild {Guild}",
-			module.GetType()
-				.Name,
-			User,
-			guildName
-		);
-
-		var key = new ModuleData(moduleType, ClientId, guildConfig.GuildId);
-		ModuleRegister.CommandModules[key] = module;
-	}
-
-	private void RegisterRefModule(GuildConfig guildConfig, IRefCommandModule module)
+	private void RegisterModule(GuildConfig guildConfig, IRefCommandModule module)
 	{
 		var guildName = client.GetGuild(guildConfig.GuildId)
 			?.Name ?? guildConfig.GuildId.ToString();
 		
 		Log.Debug(
-			"Registering Ref {ModuleName} for {BotName} in Guild {Guild}",
+			"Registering {ModuleName} for {BotName} in Guild {Guild}",
 			module.GetType()
 				.Name,
 			User,
