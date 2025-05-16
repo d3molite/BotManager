@@ -23,7 +23,7 @@ public class BirthdaysModule : AbstractCommandModuleBase<BirthdayConfig>
 	private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(1));
 	private readonly IBirthdayService _birthdayService;
 
-	public BirthdaysModule(DiscordSocketClient client, IBirthdayService birthdayService, GuildConfig guildConfig) : base(client, guildConfig)
+	public BirthdaysModule(DiscordSocketClient client, GuildConfig guildConfig, IBirthdayService birthdayService) : base(client, guildConfig)
 	{
 		_birthdayService = birthdayService;
 		

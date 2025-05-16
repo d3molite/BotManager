@@ -37,17 +37,17 @@ public partial class CommandModuleService
 			if (guildConfig.HasOrderTrackingModule)
 			{
 				var service = DependencyManager.Provider.GetRequiredService<IOrderService>();
-				await SetupModule<OrderTrackingModule>(guildConfig, false, service);
+				await SetupModule<OrderTrackingModule>(guildConfig, service);
 			}
 
 			if (guildConfig.HasBirthdayModule)
 			{
 				var service = DependencyManager.Provider.GetRequiredService<IBirthdayService>();
-				await SetupModule<BirthdaysModule>(guildConfig, false, service);
+				await SetupModule<BirthdaysModule>(guildConfig, service);
 			}
 
 			if (guildConfig.HasImageModule)
-				await SetupModule<ImageModule>(guildConfig, true);
+				await SetupModule<ImageModule>(guildConfig);
 			
 			if (guildConfig.HasVoiceChannelModule)
 				await SetupModule<VoiceChannelModule>(guildConfig);
@@ -63,7 +63,7 @@ public partial class CommandModuleService
 		}
 	}
 
-	private async Task SetupModule<T>(GuildConfig guildConfig, bool isLongLoading = false, params object[] parameters)
+	private async Task SetupModule<T>(GuildConfig guildConfig, params object[] parameters)
 		where T : IRefCommandModule
 	{
 		var constructorParameters = new List<object>()
@@ -72,18 +72,25 @@ public partial class CommandModuleService
 		};
 		
 		constructorParameters.AddRange(parameters);
+
+		IRefCommandModule? refCommandModule;
 		
-		var module = Activator.CreateInstance(typeof(T), constructorParameters.ToArray()) as IRefCommandModule;
+		try
+		{
+			refCommandModule = Activator.CreateInstance(typeof(T), constructorParameters.ToArray()) as IRefCommandModule;
+		}
+		catch (Exception ex)
+		{
+			Log.Error(ex, "Failed to instantiate command module: {Type}", typeof(T));
+			return;
+		}
 		
-		if (isLongLoading)
+		
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-			Task.Run(async () => await module!.BuildCommands());
+		Task.Run(async () => await refCommandModule!.BuildCommands());
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 		
-		else
-			await module!.BuildCommands();
-		
-		RegisterModule(guildConfig, module!);
+		RegisterModule(guildConfig, refCommandModule!);
 	}
 	
 	private void RegisterModule(GuildConfig guildConfig, IRefCommandModule module)
