@@ -35,4 +35,6 @@ public static class Commands
     public const string LanRolle = "lanrolle";
 
     public const string Feedback = "feedback";
+    
+    public const string WatchParty = "watchparty";
 }

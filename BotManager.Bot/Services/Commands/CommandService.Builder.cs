@@ -8,6 +8,7 @@ using BotManager.Bot.Modules.Models;
 using BotManager.Bot.Modules.OrderTracking;
 using BotManager.Bot.Modules.RoleRequest;
 using BotManager.Bot.Modules.VoiceChannel;
+using BotManager.Bot.Modules.WatchParty;
 using BotManager.Bot.Services.Register;
 using BotManager.Db.Models;
 using BotManager.DI;
@@ -50,7 +51,18 @@ public partial class CommandModuleService
 			
 			if (guildConfig.HasFeedbackModule)
 				await SetupFeedbackModule(guildConfig);
+			
+			if (guildConfig.HasWatchPartyModule)
+				await SetupWatchPartyModule(guildConfig);
 		}
+	}
+
+	private async Task SetupWatchPartyModule(GuildConfig guildConfig)
+	{
+		var module = new WatchPartyModule(client, guildConfig);
+		await module.BuildCommands();
+		
+		RegisterRefModule(guildConfig, module);
 	}
 
 	private async Task SetupFeedbackModule(GuildConfig guildConfig)

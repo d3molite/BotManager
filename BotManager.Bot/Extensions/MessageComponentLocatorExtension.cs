@@ -21,5 +21,5 @@ public static class MessageComponentLocatorExtension
 	}
 
 	private static bool HasMatchingComponentName(MethodInfo methodInfo, string componentName)
-		=> methodInfo.GetCustomAttribute<MessageComponentExecutorAttribute>()?.ComponentName == componentName;
+		=> methodInfo.GetCustomAttributes<MessageComponentExecutorAttribute>().Any(x => x.ComponentName == componentName);
 }

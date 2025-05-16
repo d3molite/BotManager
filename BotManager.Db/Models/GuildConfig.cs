@@ -9,6 +9,7 @@ using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Reactions;
 using BotManager.Db.Models.Modules.RoleRequest;
 using BotManager.Db.Models.Modules.Voice;
+using BotManager.Db.Models.Modules.WatchParty;
 using Demolite.Db.Models;
 
 namespace BotManager.Db.Models;
@@ -42,6 +43,8 @@ public class GuildConfig : AbstractDbItem
 	public RoleRequestConfig? RoleRequestConfig { get; set; }
 	
 	public FeedbackConfig? FeedbackConfig { get; set; }
+	
+	public WatchPartyConfig? WatchPartyConfig { get; set; }
 
 	[NotMapped]
 	public bool HasOrderTrackingModule => OrderTrackingConfig != null;
@@ -69,6 +72,9 @@ public class GuildConfig : AbstractDbItem
 	
 	[NotMapped]
 	public bool HasFeedbackModule => FeedbackConfig != null;
+	
+	[NotMapped]
+	public bool HasWatchPartyModule => WatchPartyConfig != null;
 
 	public virtual BotConfig BotConfig { get; set; } = null!;
 

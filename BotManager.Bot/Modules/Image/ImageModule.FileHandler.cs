@@ -80,10 +80,10 @@ public partial class ImageModule
 
         Directory.Delete(imageModel.SubFolder, true);
     }
-    
+
     private bool IsImage(string url)
     {
-        var imageExt = CleanImageUrl(url).Split('.')[-1].ToLower();
+        var imageExt = CleanImageUrl(url).Split('.')[^1].ToLower();
         return _formats.Contains(imageExt);
     }
     

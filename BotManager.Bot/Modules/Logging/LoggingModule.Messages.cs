@@ -17,6 +17,9 @@ public partial class LoggingModule
 		ISocketMessageChannel channel
 	)
 	{
+		if (editedMessage.Author.Id == client.CurrentUser.Id)
+			return;
+		
 		if (!IsChannelInCorrectGuild(channel))
 			return;
 

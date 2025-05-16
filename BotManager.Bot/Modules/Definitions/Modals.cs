@@ -25,4 +25,8 @@ public static class Modals
 	
 	public const string FeedbackModal = nameof(FeedbackModal);
 	public const string FeedbackModalText = nameof(FeedbackModalText);
+	
+	public const string WatchPartyModalId = nameof(WatchPartyModalId);
+	public const string WatchPartyModalName = nameof(WatchPartyModalName);
+	public const string WatchPartyModalTime = nameof(WatchPartyModalTime);
 }

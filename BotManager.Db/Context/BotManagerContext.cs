@@ -7,6 +7,7 @@ using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Reactions;
 using BotManager.Db.Models.Modules.RoleRequest;
+using BotManager.Db.Models.Modules.WatchParty;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotManager.Db.Context;
@@ -42,6 +43,8 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.RoleRequestConfig).AutoInclude();
 		
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.FeedbackConfig).AutoInclude();
+		
+		modelBuilder.Entity<GuildConfig>().Navigation(x => x.WatchPartyConfig).AutoInclude();
 
 		// Guild Config Model Configurations
 
@@ -62,6 +65,8 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.RoleRequestConfig).WithOne(x => x.GuildConfig);
 		
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.FeedbackConfig).WithOne(x => x.GuildConfig);
+		
+		modelBuilder.Entity<GuildConfig>().HasOne(x => x.WatchPartyConfig).WithOne(x => x.GuildConfig);
 
 		// Sub Config Navigations
 
@@ -103,4 +108,6 @@ public class BotManagerContext : DbContext
 	public DbSet<RoleRequestConfig> RoleRequestConfigs { get; set; } = null!;
 	
 	public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
+	
+	public DbSet<WatchPartyConfig> WatchPartyConfigs { get; set; } = null!;
 }
