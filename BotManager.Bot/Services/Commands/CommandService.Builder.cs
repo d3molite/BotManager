@@ -33,61 +33,57 @@ public partial class CommandModuleService
 			// var guild = client.GetGuild(guildConfig.GuildId);
 			// await guild.DeleteApplicationCommandsAsync();
 			// #endif
-				
+
 			if (guildConfig.HasOrderTrackingModule)
-				await SetupOrderModule(guildConfig);
-			
+			{
+				var service = DependencyManager.Provider.GetRequiredService<IOrderService>();
+				await SetupModule<OrderTrackingModule>(guildConfig, false, service);
+			}
+
 			if (guildConfig.HasBirthdayModule)
-				await SetupBirthdayModule(guildConfig);
+			{
+				var service = DependencyManager.Provider.GetRequiredService<IBirthdayService>();
+				await SetupModule<BirthdaysModule>(guildConfig, false, service);
+			}
 
 			if (guildConfig.HasImageModule)
-				SetupImageModule(guildConfig);
+				await SetupModule<ImageModule>(guildConfig, true);
 			
 			if (guildConfig.HasVoiceChannelModule)
 				SetupVoiceChannelModule(guildConfig);
 			
 			if (guildConfig.HasRoleRequestModule)
-				await SetupRoleRequestModule(guildConfig);
+				await SetupModule<RoleRequestModule>(guildConfig);
 			
 			if (guildConfig.HasFeedbackModule)
-				await SetupFeedbackModule(guildConfig);
+				await SetupModule<FeedbackModule>(guildConfig);
 			
 			if (guildConfig.HasWatchPartyModule)
-				await SetupWatchPartyModule(guildConfig);
+				await SetupModule<WatchPartyModule>(guildConfig);
 		}
 	}
 
-	private async Task SetupWatchPartyModule(GuildConfig guildConfig)
+	private async Task SetupModule<T>(GuildConfig guildConfig, bool isLongLoading = false, params object[] parameters)
+		where T : IRefCommandModule
 	{
-		var module = new WatchPartyModule(client, guildConfig);
-		await module.BuildCommands();
+		var constructorParameters = new List<object>()
+		{
+			client, guildConfig,
+		};
 		
-		RegisterRefModule(guildConfig, module);
-	}
-
-	private async Task SetupFeedbackModule(GuildConfig guildConfig)
-	{
-		var module = new FeedbackModule(client, guildConfig);
-		await module.BuildCommands();
+		constructorParameters.AddRange(parameters);
 		
-		RegisterRefModule(guildConfig, module);
-	}
-
-	private async Task SetupOrderModule(GuildConfig guildConfig)
-	{
-		var service = DependencyManager.Provider.GetRequiredService<IOrderService>();
-		var module = new OrderTrackingModule(service, client, guildConfig);
-
-		await module.BuildCommands();
-		RegisterRefModule(guildConfig, module);
-	}
-
-	private void SetupImageModule(GuildConfig guildConfig)
-	{
-		var module = new ImageModule(client, guildConfig);
-
-		Task.Run(async () => await module.BuildCommands());
-		RegisterRefModule(guildConfig, module);
+		var module = Activator.CreateInstance(typeof(T), constructorParameters.ToArray()) as IRefCommandModule;
+		
+		if (isLongLoading)
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			Task.Run(async () => await module!.BuildCommands());
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+		
+		else
+			await module!.BuildCommands();
+		
+		RegisterRefModule(guildConfig, module!);
 	}
 	
 	private void SetupVoiceChannelModule(GuildConfig guildConfig)
@@ -95,28 +91,6 @@ public partial class CommandModuleService
 		var module = new VoiceChannelModule(client, guildConfig);
 		Task.Run(async() => await module.BuildCommands(guildConfig.VoiceChannelConfig!, guildConfig.GuildId));
 		RegisterModule(guildConfig, module, ModuleType.Voice);
-	}
-
-	private async Task SetupBirthdayModule(GuildConfig guildConfig)
-	{
-		var service = DependencyManager.Provider.GetRequiredService<IBirthdayService>();
-		var module = new BirthdaysModule(client, service, guildConfig);
-
-		await module.BuildCommands();
-
-		RegisterRefModule(guildConfig, module);
-
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-		Task.Run(async () => await module.StartCheckTask());
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-	}
-
-	private async Task SetupRoleRequestModule(GuildConfig guildConfig)
-	{
-		var module = new RoleRequestModule(client, guildConfig);
-		
-		await module.BuildCommands(guildConfig.RoleRequestConfig!, guildConfig.GuildId);
-		RegisterModule(guildConfig, module, ModuleType.RoleRequest);
 	}
 
 	private void RegisterModule(GuildConfig guildConfig, ICommandModule module, ModuleType moduleType)

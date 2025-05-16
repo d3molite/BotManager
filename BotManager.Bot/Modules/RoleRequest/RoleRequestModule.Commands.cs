@@ -1,3 +1,5 @@
+using BotManager.Bot.Attributes;
+using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models.Modules.RoleRequest;
 using Discord;
@@ -7,45 +9,32 @@ namespace BotManager.Bot.Modules.RoleRequest;
 
 public partial class RoleRequestModule
 {
-	public async Task BuildCommands(RoleRequestConfig config, ulong guildId)
+	
+	[CommandBuilder(Commands.LanRolle)]
+	public async Task BuildRoleRequestCommand(SocketGuild guild)
 	{
-		await BuildRoleRequestCommand(guildId);
+		var builder = new SlashCommandBuilder();
+		builder.WithName(Commands.LanRolle);
+		builder.WithDescription("Request your LAN.User role");
+		builder.AddDescriptionLocalization("de", "Frage deine LAN.User Rolle an");
+
+		await guild.TryCreateGuildCommand(builder);
 	}
 
-	private async Task BuildRoleRequestCommand(ulong guildId)
+
+	[CommandExecutor(Commands.LanRolle)]
+	public async Task ExecuteRoleRequestCommand(SocketSlashCommand command)
 	{
-		var guild = client.GetGuild(guildId);
-
-		var command = new SlashCommandBuilder();
-		command.WithName(Commands.LanRolle);
-		command.WithDescription("Request your LAN.User role");
-		command.AddDescriptionLocalization("de", "Frage deine LAN.User Rolle an");
-
-		await guild.CreateApplicationCommandAsync(command.Build());
-	}
-
-	public async Task ExecuteCommands(SocketSlashCommand command)
-	{
-		switch (command.CommandName)
-		{
-			case Commands.LanRolle:
-				await ExecuteRoleRequestCommand(command);
-				break;
-		}
-	}
-
-	private async Task ExecuteRoleRequestCommand(SocketSlashCommand command)
-	{
-		var guild = client.GetGuild(guildConfig.GuildId);
+		var guild = Client.GetGuild(GuildConfig.GuildId);
 		var user = guild.GetUser(command.User.Id);
 
-		if (user.Roles.Any(x => x.Id == _roleConfig.RoleId))
+		if (user.Roles.Any(x => x.Id == ModuleConfig.RoleId))
 		{
 			await command.RespondAsync("Du hast bereits die aktuelle LAN.User Rolle!", ephemeral:true);
 			return;
 		}
 
-		var receiver = await client.GetUserAsync(_roleConfig.ReceiverId);
+		var receiver = await Client.GetUserAsync(ModuleConfig.ReceiverId);
 		var dmChannel = await receiver.CreateDMChannelAsync();
 
 		await foreach (var message in dmChannel.GetMessagesAsync())

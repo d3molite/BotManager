@@ -1,3 +1,4 @@
+using BotManager.Bot.Attributes;
 using BotManager.Bot.Modules.Definitions;
 using Discord;
 using Discord.WebSocket;
@@ -6,21 +7,8 @@ namespace BotManager.Bot.Modules.RoleRequest;
 
 public partial class RoleRequestModule
 {
-	public async Task ExecuteButton(SocketMessageComponent component)
-	{
-		switch (component.Data.CustomId)
-		{
-			case Components.RoleRequestButtonAccept:
-				await ProcessAcceptButton(component);
-				break;
-
-			case Components.RoleRequestButtonDeny:
-				await ProcessDenyButton(component);
-				break;
-		}
-	}
-
-	private async Task ProcessDenyButton(SocketMessageComponent component)
+	[MessageComponentExecutor(Components.RoleRequestButtonDeny)]
+	public async Task ProcessDenyButton(SocketMessageComponent component)
 	{
 		var request = ReadFromComponent(component);
 		
@@ -34,20 +22,21 @@ public partial class RoleRequestModule
 		
 		await component.RespondAsync("Anfrage abgelehnt.", ephemeral: true);
 
-		var user = await client.GetUserAsync(request.UserId);
+		var user = await Client.GetUserAsync(request.UserId);
 
 		await user.SendMessageAsync("Deine Anfrage wurde leider abgelehnt. Bei Rückfragen wende dich bitte an die CGG Orga.");
 	}
 
-	private async Task ProcessAcceptButton(SocketMessageComponent component)
+	[MessageComponentExecutor(Components.RoleRequestButtonAccept)]
+	public async Task ProcessAcceptButton(SocketMessageComponent component)
 	{
 		var request = ReadFromComponent(component);
 
 		request.Status = RoleRequestStatus.Accepted;
 		
-		var guild = client.GetGuild(request.GuildId);
+		var guild = Client.GetGuild(request.GuildId);
 		var user = guild.GetUser(request.UserId);
-		var role = await guild.GetRoleAsync(_roleConfig.RoleId);
+		var role = await guild.GetRoleAsync(ModuleConfig.RoleId);
 
 		await user.AddRoleAsync(role);
 		

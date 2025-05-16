@@ -1,3 +1,4 @@
+using BotManager.Bot.Attributes;
 using BotManager.Bot.Extensions;
 using BotManager.Bot.Modules.Definitions;
 using Discord;
@@ -7,24 +8,15 @@ namespace BotManager.Bot.Modules.RoleRequest;
 
 public partial class RoleRequestModule
 {
-	public async Task ExecuteModal(SocketModal modal)
-	{
-		switch (modal.Data.CustomId)
-		{
-			case Modals.RoleRequestModalId:
-				await ExecuteRoleRequestModal(modal);
-				break;
-		}
-	}
-
-	private async Task ExecuteRoleRequestModal(SocketModal modal)
+	[ModalExecutor(Modals.RoleRequestModalId)]
+	public async Task ExecuteRoleRequestModal(SocketModal modal)
 	{
 		var data = modal.Data.Components.ToList();
 		
-		var guild = client.GetGuild(guildConfig.GuildId);
+		var guild = Client.GetGuild(GuildConfig.GuildId);
 
 		var user = guild.GetUser(modal.User.Id);
-		var receiver = await client.GetUserAsync(_roleConfig.ReceiverId);
+		var receiver = await Client.GetUserAsync(ModuleConfig.ReceiverId);
 
 		var request = new RoleRequest()
 		{

@@ -32,12 +32,6 @@ public static class ModuleRegister
 		return CommandModules.GetValueOrDefault(new ModuleData(moduleType, clientId, guildId));
 	}
 
-	public static ICommandModule? TryGetFromButton(string name, ulong clientId, ulong guildId)
-	{
-		var moduleType = ModuleFinder.GetModuleByButton(name);
-		return CommandModules.GetValueOrDefault(new ModuleData(moduleType, clientId, guildId));
-	}
-
 	public static IRefCommandModule? TryGetFromRefCommand(string commandName, ulong clientId, ulong commandGuildId)
 	{
 		var potentialCandidates = RefCommandModules.Where(x => x.GuildId == commandGuildId && x.ClientId == clientId);

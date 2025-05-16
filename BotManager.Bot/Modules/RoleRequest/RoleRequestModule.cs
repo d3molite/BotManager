@@ -1,14 +1,12 @@
-using BotManager.Bot.Interfaces.Modules;
+using BotManager.Bot.Modules.Core;
 using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.RoleRequest;
 using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.RoleRequest;
 
-public partial class RoleRequestModule(DiscordSocketClient client, GuildConfig guildConfig) : ICommandModule<RoleRequestConfig>
+public partial class RoleRequestModule(DiscordSocketClient client, GuildConfig guildConfig)
+	: AbstractCommandModuleBase<RoleRequestConfig>(client, guildConfig)
 {
-	private readonly RoleRequestConfig _roleConfig = guildConfig.RoleRequestConfig!;
-
-	public Task ExecuteSelect(SocketMessageComponent component)
-		=> throw new NotImplementedException();
+	
 }

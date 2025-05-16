@@ -6,7 +6,7 @@ using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.OrderTracking;
 
-public partial class OrderTrackingModule(IOrderService orderService, DiscordSocketClient client, GuildConfig guildConfig)
+public partial class OrderTrackingModule(DiscordSocketClient client, GuildConfig guildConfig, IOrderService orderService)
 	: AbstractCommandModuleBase<OrderTrackingConfig>(client, guildConfig)
 {
 }

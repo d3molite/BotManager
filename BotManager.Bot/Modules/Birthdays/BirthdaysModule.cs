@@ -11,11 +11,9 @@ using Discord.WebSocket;
 
 // Disable private warning because of reflection access.
 // ReSharper disable MemberCanBePrivate.Global
-
 namespace BotManager.Bot.Modules.Birthdays;
 
-public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthdayService, GuildConfig guildConfig)
-	: AbstractCommandModuleBase<BirthdayConfig>(client, guildConfig)
+public class BirthdaysModule : AbstractCommandModuleBase<BirthdayConfig>
 {
 	private string ConfigId => ModuleConfig.Id;
 	private ulong GuildId => GuildConfig.GuildId;
@@ -23,7 +21,14 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 	private ulong NotificationChannelId => ModuleConfig.PingChannelId;
 
 	private readonly PeriodicTimer _timer = new(TimeSpan.FromHours(1));
-	
+	private readonly IBirthdayService _birthdayService;
+
+	public BirthdaysModule(DiscordSocketClient client, IBirthdayService birthdayService, GuildConfig guildConfig) : base(client, guildConfig)
+	{
+		_birthdayService = birthdayService;
+		
+		Task.Run(async () => await StartCheckTask());
+	}
 
 	[CommandBuilder(Commands.Birthday)]
 	public static async Task BuildAddCommand(SocketGuild guild)
@@ -61,7 +66,7 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 			var now = DateTime.Now;
 			if (now.Hour != 13) continue;
 
-			var birthdays = await birthdayService.GetBirthdays(ConfigId, GuildId);
+			var birthdays = await _birthdayService.GetBirthdays(ConfigId, GuildId);
 			var birthday = birthdays.FirstOrDefault(x => x.Date.Month == now.Month && x.Date.Day == now.Day);
 
 			if (birthday is null) continue;
@@ -86,7 +91,7 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 			var dateTime = DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
 			var dateOnly = DateOnly.FromDateTime(dateTime);
 
-			await birthdayService.Upsert(ConfigId, command.GuildId!.Value, command.User.Id, dateOnly);
+			await _birthdayService.Upsert(ConfigId, command.GuildId!.Value, command.User.Id, dateOnly);
 
 			await command.RespondAsync($"Added your birthday! ({dateOnly.ToString("dd.MM.yyyy")})", ephemeral: true);
 		}
@@ -99,7 +104,7 @@ public class BirthdaysModule(DiscordSocketClient client, IBirthdayService birthd
 	[CommandExecutor(Commands.ClearBirthday)]
 	public async Task ExecuteClearBirthdayCommand(SocketSlashCommand command)
 	{
-		var result = await birthdayService.Delete(ConfigId, command.GuildId!.Value, command.User.Id);
+		var result = await _birthdayService.Delete(ConfigId, command.GuildId!.Value, command.User.Id);
 
 		if (result)
 		{
