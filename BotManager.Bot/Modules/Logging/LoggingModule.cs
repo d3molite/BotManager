@@ -15,13 +15,20 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig confi
 
 	private static readonly Color InfoColor = Color.Blue;
 
+	private bool _registered;
+
 	public Task RegisterModuleAsync()
 	{
+		if (_registered)
+			return Task.CompletedTask;
+		
 		client.MessageDeleted += LogMessageDeleted;
 		client.UserJoined += LogUserJoined;
 		client.UserLeft += LogUserLeft;
 		client.UserBanned += LogUserBanned;
 		client.MessageUpdated += LogMessageEdited;
+
+		_registered = true;
 
 		return Task.CompletedTask;
 	}

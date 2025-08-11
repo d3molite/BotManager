@@ -19,7 +19,7 @@ public partial class LoggingModule
 	{
 		if (editedMessage.Author.Id == client.CurrentUser.Id)
 			return;
-		
+
 		if (!IsChannelInCorrectGuild(channel))
 			return;
 
@@ -67,15 +67,12 @@ public partial class LoggingModule
 		if (message != null)
 		{
 			var messageString = ResourceResolver
-								.GetString(_ => LoggingResource.Body_MessageDeleted, Locale)
-								.Insert(message, guildChannel);
+				.GetString(_ => LoggingResource.Body_MessageDeleted, Locale)
+				.Insert(message, guildChannel);
 
 			builder.AddField(header, messageString);
 
-			builder.AddField(
-				ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale),
-				message.Content
-			);
+			builder.AddField(ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale), message.Content);
 		}
 		else
 			builder.AddField(
@@ -100,10 +97,7 @@ public partial class LoggingModule
 			Locale
 		);
 
-		var headerNewMessage = ResourceResolver.GetString(
-			_ => LoggingResource.Header_MessageEdited_NewMessage,
-			Locale
-		);
+		var headerNewMessage = ResourceResolver.GetString(_ => LoggingResource.Header_MessageEdited_NewMessage, Locale);
 
 		builder.AddField(
 			ResourceResolver.GetString(_ => LoggingResource.Header_MessageEdited, Locale),
@@ -113,7 +107,6 @@ public partial class LoggingModule
 		if (originalMessage != null)
 		{
 			builder.AddField(headerOriginalMessage, originalMessage.Content);
-
 			builder.AddField(headerNewMessage, GetChangesForNewMessage(originalMessage.Content, editedMessage.Content));
 		}
 		else
@@ -123,7 +116,13 @@ public partial class LoggingModule
 				ResourceResolver.GetString(_ => LoggingResource.Body_MessageEdited_NotFound, Locale)
 			);
 
-			builder.AddField(headerNewMessage, editedMessage.Content);
+			builder.AddField(
+				headerNewMessage,
+				editedMessage.Content ?? ResourceResolver.GetString(
+					_ => LoggingResource.Body_MessageEdited_NotFound,
+					Locale
+				)
+			);
 		}
 
 		builder.AddField(
@@ -141,8 +140,7 @@ public partial class LoggingModule
 
 		var newWords = new List<string>();
 
-		foreach (var item in modifiedWords.Select(
-					(x, i) => new
+		foreach (var item in modifiedWords.Select((x, i) => new
 					{
 						Word = x,
 						Index = i

@@ -45,6 +45,7 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 
 	[MessageComponentExecutor(Components.WatchPartyButtonJoin)]
 	[MessageComponentExecutor(Components.WatchPartyButtonInterestedPleaseWait)]
+	[MessageComponentExecutor(Components.WatchPartyButtonInterestedDontWait)]
 	[MessageComponentExecutor(Components.WatchPartyButtonNotInterested)]
 	public async Task ExecuteButton(SocketMessageComponent component)
 	{

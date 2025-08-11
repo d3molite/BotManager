@@ -14,6 +14,7 @@ public class BotEntity : IBotEntity
 	private readonly DiscordSocketClient _client;
 	private readonly CancellationTokenSource _tokenSource = new();
 	private readonly BotConfig _config;
+	private bool _alreadyRegistered = false;
 
 	private CommandModuleService CommandModuleService { get; }
 	private UtilityModuleService UtilityModuleService { get; }
@@ -47,8 +48,13 @@ public class BotEntity : IBotEntity
 
 	private async Task OnClientReady()
 	{
+		if (_alreadyRegistered)
+			return;
+		
 		Task.Run(async () => await CommandModuleService.BuildCommands());
 		Task.Run(async () => await UtilityModuleService.InitializeAsync());
+
+		_alreadyRegistered = true;
 	}
 
 	private async Task LogClientEvent(LogMessage arg)
