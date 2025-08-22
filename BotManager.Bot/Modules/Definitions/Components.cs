@@ -19,4 +19,13 @@ public static class Components
 	public const string WatchPartyButtonInterestedPleaseWait = nameof(WatchPartyButtonInterestedPleaseWait);
 	public const string WatchPartyButtonInterestedDontWait = nameof(WatchPartyButtonInterestedDontWait);
 	public const string WatchPartyButtonNotInterested = nameof(WatchPartyButtonNotInterested);
+
+	public const string PlanButtonAdd = nameof(PlanButtonAdd);
+	public const string PlanButtonRemove = nameof(PlanButtonRemove);
+	public const string PlanButtonEdit = nameof(PlanButtonEdit);
+	public const string PlanButtonDelete = nameof(PlanButtonDelete);
+	public const string PlanButtonReload = nameof(PlanButtonReload);
+
+	public const string PlanUserSelectMenu = nameof(PlanUserSelectMenu);
+	public const string PlanUserEditSelectMenu = nameof(PlanUserEditSelectMenu);
 }

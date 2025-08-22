@@ -4,6 +4,7 @@ using BotManager.Db.Models.Modules.AntiSpam;
 using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.Feedback;
 using BotManager.Db.Models.Modules.Image;
+using BotManager.Db.Models.Modules.LanPlanner;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Reactions;
@@ -27,59 +28,62 @@ public class GuildConfig : AbstractDbItem
 	public ulong GuildId { get; set; }
 
 	public OrderTrackingConfig? OrderTrackingConfig { get; set; }
-	
+
 	public VoiceChannelConfig? VoiceChannelConfig { get; set; }
-	
+
 	public ImageConfig? ImageConfig { get; set; }
-	
+
 	public BirthdayConfig? BirthdayConfig { get; set; }
 
 	public LoggingConfig? LoggingConfig { get; set; }
-	
+
 	public AntiSpamConfig? AntiSpamConfig { get; set; }
-	
+
 	public ReactionConfig? ReactionConfig { get; set; }
-	
+
 	public RoleRequestConfig? RoleRequestConfig { get; set; }
-	
+
 	public FeedbackConfig? FeedbackConfig { get; set; }
-	
+
 	public WatchPartyConfig? WatchPartyConfig { get; set; }
+
+	public LanPlannerConfig? LanPlannerConfig { get; set; }
 
 	[NotMapped]
 	public bool HasOrderTrackingModule => OrderTrackingConfig != null;
 
 	[NotMapped]
 	public bool HasVoiceChannelModule => VoiceChannelConfig != null;
-	
+
 	[NotMapped]
 	public bool HasImageModule => ImageConfig != null;
-	
+
 	[NotMapped]
 	public bool HasBirthdayModule => BirthdayConfig != null;
-	
+
 	[NotMapped]
 	public bool HasLoggingModule => LoggingConfig != null;
-	
+
 	[NotMapped]
 	public bool HasAntiSpamModule => AntiSpamConfig != null;
-	
+
 	[NotMapped]
 	public bool HasReactionModule => ReactionConfig != null;
-	
+
 	[NotMapped]
 	public bool HasRoleRequestModule => RoleRequestConfig != null;
-	
+
 	[NotMapped]
 	public bool HasFeedbackModule => FeedbackConfig != null;
 	
 	[NotMapped]
 	public bool HasWatchPartyModule => WatchPartyConfig != null;
 
+	[NotMapped]
+	public bool HasLanPlannerModule => LanPlannerConfig != null;
+
 	public virtual BotConfig BotConfig { get; set; } = null!;
 
 	[MaxLength(40)]
 	public string BotConfigId { get; set; } = null!;
-
-	
 }

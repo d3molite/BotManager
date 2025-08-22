@@ -28,7 +28,6 @@ public static class Commands
     
     #endregion Image Commands
 
-    [ModuleType(ModuleType.Voice)]
     public const string Voice = "voice";
     
     public const string LanRolle = "lanrolle";
@@ -36,4 +35,6 @@ public static class Commands
     public const string Feedback = "feedback";
     
     public const string WatchParty = "watchparty";
+    
+    public const string Plan = "plan";
 }

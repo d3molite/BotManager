@@ -40,7 +40,7 @@ public class OrderService(IDbRepository<Order> orderRepository, IDbRepository<Or
 			
 			var firstResult = await orderItemRepository.CrudManyAsync(order.OrderItems);
 
-			var isFailed = firstResult.FirstOrDefault(x => x.Success == false);
+			var isFailed = firstResult.FirstOrDefault(x => !x.Success);
 			
 			if (isFailed != null)
 				return DbResult<Order>.Failed(order, isFailed.ErrorMessage);

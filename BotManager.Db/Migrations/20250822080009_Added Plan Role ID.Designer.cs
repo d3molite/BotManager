@@ -3,6 +3,7 @@ using System;
 using BotManager.Db.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotManager.Db.Migrations
 {
     [DbContext(typeof(BotManagerContext))]
-    partial class BotManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20250822080009_Added Plan Role ID")]
+    partial class AddedPlanRoleID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -211,6 +214,8 @@ namespace BotManager.Db.Migrations
                         .HasColumnOrder(0);
 
                     b.Property<string>("LanPlanId")
+                        .IsRequired()
+                        .HasMaxLength(64)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nickname")
@@ -249,13 +254,6 @@ namespace BotManager.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnOrder(0);
-
-                    b.Property<string>("EventName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("MaxSeats")
-                        .HasColumnType("INTEGER");
 
                     b.Property<ulong>("MessageId")
                         .HasColumnType("INTEGER");
@@ -611,9 +609,13 @@ namespace BotManager.Db.Migrations
 
             modelBuilder.Entity("BotManager.Db.Models.Modules.LanPlanner.LanMember", b =>
                 {
-                    b.HasOne("BotManager.Db.Models.Modules.LanPlanner.LanPlan", null)
+                    b.HasOne("BotManager.Db.Models.Modules.LanPlanner.LanPlan", "Plan")
                         .WithMany("Members")
-                        .HasForeignKey("LanPlanId");
+                        .HasForeignKey("LanPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Plan");
                 });
 
             modelBuilder.Entity("BotManager.Db.Models.Modules.LanPlanner.LanPlannerConfig", b =>

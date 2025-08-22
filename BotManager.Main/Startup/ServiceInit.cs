@@ -1,6 +1,7 @@
 ﻿using BotManager.Db.Context;
 using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.Birthdays;
+using BotManager.Db.Models.Modules.LanPlanner;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Repositories;
 using BotManager.DI;
@@ -77,5 +78,9 @@ public static class ServiceInit
 
 		collection.AddSingleton<IDbRepository<Birthday>, BirthdayRepository>();
 		collection.AddSingleton<IBirthdayService, BirthdayService>();
+
+		collection.AddSingleton<IDbRepository<LanMember>, LanMemberRepository>();
+		collection.AddSingleton<IDbRepository<LanPlan>, LanPlanRepository>();
+		collection.AddSingleton<ILanPlanService, LanPlanService>();
 	}
 }

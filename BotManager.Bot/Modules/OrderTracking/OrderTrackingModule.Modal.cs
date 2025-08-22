@@ -97,18 +97,7 @@ public partial class OrderTrackingModule
 		await modal.RespondAsync("Erledigt!", ephemeral: true);
 	}
 
-	private static decimal ParseModalDecimal(string input)
-	{
-		Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-		
-		input = input.Replace(",", ".");
-		return decimal.TryParse(input, out var value) ? value : 0m;
-	}
-
-	private static int ParseModalInt(string input)
-	{
-		return int.TryParse(input, out var value) ? value : 1;
-	}
+	
 	
 	private static Modal CreateOrderModal()
 	{

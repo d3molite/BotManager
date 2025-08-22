@@ -1,3 +1,4 @@
+using System.Globalization;
 using BotManager.Bot.Extensions;
 using BotManager.Bot.Interfaces.Modules;
 using BotManager.Db.Models;
@@ -84,4 +85,15 @@ public class AbstractCommandModuleBase<T>(DiscordSocketClient client, GuildConfi
 
 		await (Task)task?.Invoke(this, [component])!;
 	}
+	
+	protected static decimal ParseModalDecimal(string input)
+	{
+		Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+		
+		input = input.Replace(",", ".");
+		return decimal.TryParse(input, out var value) ? value : 0m;
+	}
+
+	protected static int ParseModalInt(string input)
+		=> int.TryParse(input, out var value) ? value : 1;
 }

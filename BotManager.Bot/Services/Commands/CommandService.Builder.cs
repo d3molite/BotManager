@@ -1,9 +1,10 @@
-﻿using System.Reflection;
+using System.Reflection;
 using BotManager.Bot.Interfaces.Modules;
 using BotManager.Bot.Modules.Birthdays;
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Feedback;
 using BotManager.Bot.Modules.Image;
+using BotManager.Bot.Modules.LanPlanner;
 using BotManager.Bot.Modules.Models;
 using BotManager.Bot.Modules.OrderTracking;
 using BotManager.Bot.Modules.RoleRequest;
@@ -38,6 +39,12 @@ public partial class CommandModuleService
 			{
 				var service = DependencyManager.Provider.GetRequiredService<IOrderService>();
 				await SetupModule<OrderTrackingModule>(guildConfig, service);
+			}
+			
+			if (guildConfig.HasLanPlannerModule)
+			{
+				var service = DependencyManager.Provider.GetRequiredService<ILanPlanService>();
+				await SetupModule<LanPlannerModule>(guildConfig, service);
 			}
 
 			if (guildConfig.HasBirthdayModule)

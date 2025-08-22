@@ -1,8 +1,9 @@
-﻿using BotManager.Db.Models;
+using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.AntiSpam;
 using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.Feedback;
 using BotManager.Db.Models.Modules.Image;
+using BotManager.Db.Models.Modules.LanPlanner;
 using BotManager.Db.Models.Modules.Logging;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Reactions;
@@ -39,12 +40,14 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.VoiceChannelConfig).AutoInclude();
 
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.ReactionConfig).AutoInclude();
-		
+
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.RoleRequestConfig).AutoInclude();
-		
+
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.FeedbackConfig).AutoInclude();
-		
+
 		modelBuilder.Entity<GuildConfig>().Navigation(x => x.WatchPartyConfig).AutoInclude();
+
+		modelBuilder.Entity<GuildConfig>().Navigation(x => x.LanPlannerConfig).AutoInclude();
 
 		// Guild Config Model Configurations
 
@@ -61,18 +64,22 @@ public class BotManagerContext : DbContext
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.AntiSpamConfig).WithOne(x => x.GuildConfig);
 
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.ReactionConfig).WithOne(x => x.GuildConfig);
-		
+
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.RoleRequestConfig).WithOne(x => x.GuildConfig);
-		
+
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.FeedbackConfig).WithOne(x => x.GuildConfig);
-		
+
 		modelBuilder.Entity<GuildConfig>().HasOne(x => x.WatchPartyConfig).WithOne(x => x.GuildConfig);
+
+		modelBuilder.Entity<GuildConfig>().HasOne(x => x.LanPlannerConfig).WithOne(x => x.GuildConfig);
 
 		// Sub Config Navigations
 
 		modelBuilder.Entity<Order>().Navigation(x => x.OrderItems).AutoInclude();
 
 		modelBuilder.Entity<ReactionConfig>().Navigation(x => x.Reactions).AutoInclude();
+
+		modelBuilder.Entity<LanPlan>().Navigation(x => x.Members).AutoInclude();
 
 		// Sub config model configurations
 
@@ -104,10 +111,16 @@ public class BotManagerContext : DbContext
 	public DbSet<ReactionConfig> ReactionConfigs { get; set; } = null!;
 
 	public DbSet<ReactionItem> ReactionItems { get; set; } = null!;
-	
+
 	public DbSet<RoleRequestConfig> RoleRequestConfigs { get; set; } = null!;
-	
+
 	public DbSet<FeedbackConfig> FeedbackConfigs { get; set; } = null!;
-	
+
 	public DbSet<WatchPartyConfig> WatchPartyConfigs { get; set; } = null!;
+
+	public DbSet<LanPlannerConfig> LanPlannerConfigs { get; set; } = null!;
+
+	public DbSet<LanPlan> LanPlans { get; set; } = null!;
+
+	public DbSet<LanMember> LanMembers { get; set; } = null!;
 }
