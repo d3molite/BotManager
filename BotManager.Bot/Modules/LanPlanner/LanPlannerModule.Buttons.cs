@@ -17,7 +17,7 @@ public partial class LanPlannerModule
 		await component.RespondAsync(
 			"Wähle einen Teilnehmer aus!",
 			ephemeral: true,
-			components: await CreateUserSelectMenu(component.GuildId!.Value)
+			components: await CreateUserSelectMenu(component.GuildId!.Value, plan)
 		);
 	}
 

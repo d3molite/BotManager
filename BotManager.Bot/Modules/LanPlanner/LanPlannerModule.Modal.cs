@@ -56,7 +56,7 @@ public partial class LanPlannerModule
 			await modal.RespondAsync("Der plan wurde nicht gefunden", ephemeral: true);
 			return;
 		}
-		
+
 		var member = plan.Members.FirstOrDefault(x => x.Id == userId);
 
 		if (member is null)
@@ -77,15 +77,15 @@ public partial class LanPlannerModule
 			// do nothing, as the user self-edit modal has no id
 		}
 
-		if (data.Get(Modals.PlanEditModalNick).Value is {} nick)
+		if (data.Get(Modals.PlanEditModalNick).Value is { } nick)
 			member.Nickname = nick;
-		
-		if (data.Get(Modals.PlanEditModalSeatA).Value is {} seatA)
+
+		if (data.Get(Modals.PlanEditModalSeatA).Value is { } seatA)
 			member.SeatA = seatA;
-		
-		if (data.Get(Modals.PlanEditModalSeatB).Value is {} seatB)
+
+		if (data.Get(Modals.PlanEditModalSeatB).Value is { } seatB)
 			member.SeatB = seatB;
-		
+
 		var result = await planService.UpdateMemberAsync(member);
 
 		if (!result.Success)
@@ -93,7 +93,7 @@ public partial class LanPlannerModule
 			await modal.RespondAsync("Fehler beim aktualisieren", ephemeral: true);
 			return;
 		}
-		
+
 		var message = await modal.Channel.GetMessageAsync(plan.MessageId);
 		await UpdatePlanMessage((await planService.GetLanPlanAsync(plan.Id))!, (IUserMessage)message);
 	}
@@ -108,7 +108,7 @@ public partial class LanPlannerModule
 
 		return builder.Build();
 	}
-	
+
 	private static Modal CreateUserEditModal(LanPlan plan, LanMember member)
 	{
 		var builder = new ModalBuilder()
@@ -125,10 +125,10 @@ public partial class LanPlannerModule
 			.AddTextInput("Seat A", Modals.PlanEditModalSeatA, value: member.SeatA, required: false)
 			.AddTextInput("Seat B", Modals.PlanEditModalSeatB, value: member.SeatB, required: false)
 			.AddTextInput("NICHT BEARBEITEN", Modals.PlanEditModalPlanId, value: $"{plan.Id}:{member.Id}");
-		
+
 		return builder.Build();
 	}
-	
+
 	private static Modal CreateSelfUserEditModal(LanPlan plan, LanMember member)
 	{
 		var builder = new ModalBuilder()
@@ -144,31 +144,66 @@ public partial class LanPlannerModule
 			.AddTextInput("Seat A", Modals.PlanEditModalSeatA, value: member.SeatA, required: false)
 			.AddTextInput("Seat B", Modals.PlanEditModalSeatB, value: member.SeatB, required: false)
 			.AddTextInput("NICHT BEARBEITEN", Modals.PlanEditModalPlanId, value: $"{plan.Id}:{member.Id}");
-		
+
 		return builder.Build();
 	}
 
-	private async Task<MessageComponent> CreateUserSelectMenu(ulong componentGuildId)
+	private async Task<MessageComponent?> CreateUserSelectMenu(ulong componentGuildId, LanPlan plan)
 	{
 		var guild = client.GetGuild(componentGuildId);
-		var users = (await guild.GetUsersAsync().ToArrayAsync()).SelectMany(x => x);
 
-		var builder = new ComponentBuilder().WithRows(
-			new List<ActionRowBuilder>()
-			{
-				new ActionRowBuilder()
-					.WithSelectMenu(
+		var users = (await guild.GetUsersAsync().ToArrayAsync())
+			.SelectMany(x => x)
+			.Where(x => plan.Members.All(y => y.UserId != x.Id))
+			.OrderBy(x => x.DisplayName)
+			.ToArray();
+
+		if (users.Length < 25)
+		{
+			var builder = new ComponentBuilder().WithRows(
+				new List<ActionRowBuilder>()
+				{
+					new ActionRowBuilder().WithSelectMenu(
 						new SelectMenuBuilder()
 							.WithCustomId(Components.PlanUserSelectMenu)
 							.WithOptions(
 								users
-									.Select(x => new SelectMenuOptionBuilder().WithLabel(x.DisplayName).WithValue(x.Id.ToString()))
+									.Select(x => new SelectMenuOptionBuilder()
+										.WithLabel(x.DisplayName)
+										.WithValue(x.Id.ToString())
+									)
 									.ToList()
-							)),
-			}
+							)
+					), }
+			);
+
+			return builder.Build();
+		}
+
+		var chunks = users.Chunk(24);
+
+		var builderChunked = new ComponentBuilder().WithRows(
+			chunks
+				.Select((chunk, index) => new ActionRowBuilder().WithComponents(
+						[
+							new SelectMenuBuilder()
+								.WithCustomId(Components.PlanUserSelectMenu + index)
+								.WithOptions(
+									chunk
+										.Select(user
+											=> new SelectMenuOptionBuilder()
+												.WithLabel(user.DisplayName)
+												.WithValue(user.Id.ToString())
+										)
+										.ToList()
+								)
+						]
+					)
+				)
+				.ToList()
 		);
-		
-		return builder.Build();
+
+		return builderChunked.Build();
 	}
 
 	private async Task<MessageComponent> CreateUserSelectMenu(LanPlan plan)
@@ -176,20 +211,21 @@ public partial class LanPlannerModule
 		var builder = new ComponentBuilder().WithRows(
 			new List<ActionRowBuilder>()
 			{
-				new ActionRowBuilder()
-					.WithSelectMenu(
-						new SelectMenuBuilder()
-							.WithCustomId(Components.PlanUserEditSelectMenu)
-							.WithOptions(
-								plan.Members
-									.Select(x => new SelectMenuOptionBuilder().WithLabel(!string.IsNullOrEmpty(x.Nickname) ? x.Nickname : x.UserId.ToString()).WithValue(x.UserId.ToString()))
-									.ToList()
-							)),
-			}
+				new ActionRowBuilder().WithSelectMenu(
+					new SelectMenuBuilder()
+						.WithCustomId(Components.PlanUserEditSelectMenu)
+						.WithOptions(
+							plan
+								.Members.Select(x
+									=> new SelectMenuOptionBuilder()
+										.WithLabel(!string.IsNullOrEmpty(x.Nickname) ? x.Nickname : x.UserId.ToString())
+										.WithValue(x.UserId.ToString())
+								)
+								.ToList()
+						)
+				), }
 		);
-		
+
 		return builder.Build();
 	}
-
-	
 }
