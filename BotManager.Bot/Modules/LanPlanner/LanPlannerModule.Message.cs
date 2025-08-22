@@ -58,7 +58,7 @@ public partial class LanPlannerModule
 			foreach (var member in group)
 			{
 				var name = !string.IsNullOrWhiteSpace(member.Nickname) ? member.Nickname : member.UserId.ToString();
-				builder.AddField(name, UserInfo(member));
+				builder.AddField(name, UserInfo(member), inline:true);
 			}
 			
 			ret.Add(builder.Build());

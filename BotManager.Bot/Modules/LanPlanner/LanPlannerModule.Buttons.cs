@@ -43,7 +43,7 @@ public partial class LanPlannerModule
 			await component.RespondAsync(
 				"Wähle einen Teilnehmer aus!",
 				ephemeral: true,
-				components: await CreateUserSelectMenu(plan)
+				components: await EditUserSelectMenu(plan)
 			);
 
 			return;

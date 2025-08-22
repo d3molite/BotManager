@@ -206,26 +206,60 @@ public partial class LanPlannerModule
 		return builderChunked.Build();
 	}
 
-	private async Task<MessageComponent> CreateUserSelectMenu(LanPlan plan)
+	private async Task<MessageComponent> EditUserSelectMenu(LanPlan plan)
 	{
-		var builder = new ComponentBuilder().WithRows(
-			new List<ActionRowBuilder>()
-			{
-				new ActionRowBuilder().WithSelectMenu(
-					new SelectMenuBuilder()
-						.WithCustomId(Components.PlanUserEditSelectMenu)
-						.WithOptions(
-							plan
-								.Members.Select(x
-									=> new SelectMenuOptionBuilder()
-										.WithLabel(!string.IsNullOrEmpty(x.Nickname) ? x.Nickname : x.UserId.ToString())
-										.WithValue(x.UserId.ToString())
+		if (plan.Members.Count < 25)
+		{
+			var builder = new ComponentBuilder().WithRows(
+				new List<ActionRowBuilder>()
+				{
+					new ActionRowBuilder().WithSelectMenu(
+						new SelectMenuBuilder()
+							.WithCustomId(Components.PlanUserEditSelectMenu)
+							.WithOptions(
+								plan
+									.Members.Select(x
+										=> new SelectMenuOptionBuilder()
+											.WithLabel(
+												!string.IsNullOrEmpty(x.Nickname) ? x.Nickname : x.UserId.ToString()
+											)
+											.WithValue(x.UserId.ToString())
+									)
+									.ToList()
+							)
+					), }
+			);
+
+			return builder.Build();
+		}
+
+		var chunks = plan.Members.Chunk(24);
+
+		var builderChunked = new ComponentBuilder().WithRows(
+			chunks
+				.Select((chunk, index) => new ActionRowBuilder().WithComponents(
+						[
+							new SelectMenuBuilder()
+								.WithCustomId(Components.PlanUserEditSelectMenu + index)
+								.WithOptions(
+									chunk
+										.Select(user
+											=> new SelectMenuOptionBuilder()
+												.WithLabel(
+													!string.IsNullOrEmpty(user.Nickname)
+														? user.Nickname
+														: user.UserId.ToString()
+												)
+												.WithValue(user.UserId.ToString())
+										)
+										.ToList()
 								)
-								.ToList()
-						)
-				), }
+						]
+					)
+				)
+				.ToList()
 		);
 
-		return builder.Build();
+		return builderChunked.Build();
 	}
 }
