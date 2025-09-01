@@ -148,6 +148,63 @@ public partial class LanPlannerModule
 		return builder.Build();
 	}
 
+	private async Task<MessageComponent?> RemoveUserSelectMenu(LanPlan plan)
+	{
+		if (plan.Members.Count < 25)
+		{
+			var builder = new ComponentBuilder().WithRows(
+				new List<ActionRowBuilder>()
+				{
+					new ActionRowBuilder().WithSelectMenu(
+						new SelectMenuBuilder()
+							.WithCustomId(Components.PlanUserRemoveSelectMenu)
+							.WithOptions(
+								plan
+									.Members.Select(x
+										=> new SelectMenuOptionBuilder()
+											.WithLabel(
+												!string.IsNullOrEmpty(x.Nickname) ? x.Nickname : x.UserId.ToString()
+											)
+											.WithValue(x.UserId.ToString())
+									)
+									.ToList()
+							)
+					), }
+			);
+
+			return builder.Build();
+		}
+
+		var chunks = plan.Members.Chunk(24);
+
+		var builderChunked = new ComponentBuilder().WithRows(
+			chunks
+				.Select((chunk, index) => new ActionRowBuilder().WithComponents(
+						[
+							new SelectMenuBuilder()
+								.WithCustomId(Components.PlanUserRemoveSelectMenu + index)
+								.WithOptions(
+									chunk
+										.Select(user
+											=> new SelectMenuOptionBuilder()
+												.WithLabel(
+													!string.IsNullOrEmpty(user.Nickname)
+														? user.Nickname
+														: user.UserId.ToString()
+												)
+												.WithValue(user.UserId.ToString())
+										)
+										.ToList()
+								)
+						]
+					)
+				)
+				.ToList()
+		);
+
+		return builderChunked.Build();
+	}
+
 	private async Task<MessageComponent?> CreateUserSelectMenu(ulong componentGuildId, LanPlan plan)
 	{
 		var guild = client.GetGuild(componentGuildId);

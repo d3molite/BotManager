@@ -28,4 +28,5 @@ public static class Components
 
 	public const string PlanUserSelectMenu = nameof(PlanUserSelectMenu);
 	public const string PlanUserEditSelectMenu = nameof(PlanUserEditSelectMenu);
+	public const string PlanUserRemoveSelectMenu = nameof(PlanUserRemoveSelectMenu);
 }

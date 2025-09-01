@@ -107,4 +107,65 @@ public partial class LanPlannerModule
 
 		await component.RespondWithModalAsync(CreateUserEditModal(plan, member));
 	}
+
+	[MessageComponentExecutor(Components.PlanUserRemoveSelectMenu)]
+	public async Task ExecuteUserRemove(SocketMessageComponent component)
+	{
+		var message = await component.Channel.GetMessageAsync(component.Message.Reference.MessageId.Value);
+		var data = component.Data.Values.First();
+
+		if (!ulong.TryParse(data, out var userId))
+		{
+			await component.UpdateAsync(msg =>
+			{
+				msg.Content = "User id invalid!";
+				msg.Components = null;
+			});
+			return;
+		}
+
+		var plan = await planService.GetLanPlanAsync(message.Id);
+
+		var member = plan!.Members.FirstOrDefault(x => x.UserId == userId);
+		
+		if (member is null)
+		{
+			await component.UpdateAsync(msg =>
+			{
+				msg.Content = "User is not in the plan!";
+				msg.Components = null;
+			});
+			return;
+		}
+
+		var guild = client.GetGuild(GuildConfig.GuildId);
+		var user = guild.GetUser(userId);
+		
+		var result = await planService.RemoveFromPlanAsync(member);
+
+		if (!result.Success)
+		{
+			await component.UpdateAsync(msg =>
+				{
+					msg.Content = "Ein Fehler ist Aufgetreten.";
+					msg.Embed = new EmbedBuilder().AddField("Error:", result.ErrorMessage).Build();
+					msg.Components = null;
+				}
+			);
+
+			return;
+		}
+		
+		var role = await guild.GetRoleAsync(ModuleConfig.MemberRoleId);
+		await user.RemoveRoleAsync(role);
+		
+		await UpdatePlanMessage(plan, (IUserMessage)message);
+
+		await component.UpdateAsync(msg =>
+			{
+				msg.Content = $"Member <@{userId}> was added to the plan!";
+				msg.Components = null;
+			}
+		);
+	}
 }

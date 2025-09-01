@@ -35,6 +35,57 @@ public class LanMember : AbstractDbItem
 	}
 
 	[NotMapped]
+	public int ExpertCount
+	{
+		get
+		{
+			var result = 0;
+
+			if (SeatA.Contains("expert", StringComparison.CurrentCultureIgnoreCase))
+				result++;
+
+			if (SeatB.Contains("expert", StringComparison.CurrentCultureIgnoreCase))
+				result++;
+
+			return result;
+		}
+	}
+
+	[NotMapped]
+	public int BeginnerCount
+	{
+		get
+		{
+			var result = 0;
+
+			if (SeatA.Contains("beginner", StringComparison.CurrentCultureIgnoreCase))
+				result++;
+
+			if (SeatB.Contains("beginner", StringComparison.CurrentCultureIgnoreCase))
+				result++;
+
+			return result;
+		}
+	}
+
+	[NotMapped]
+	public int LegendCount
+	{
+		get
+		{
+			var result = 0;
+
+			if (SeatA.Contains("legend", StringComparison.CurrentCultureIgnoreCase))
+				result++;
+
+			if (SeatB.Contains("legend", StringComparison.CurrentCultureIgnoreCase))
+				result++;
+
+			return result;
+		}
+	}
+
+	[NotMapped]
 	public string SeatDescriptions
 		=> $"{(!string.IsNullOrWhiteSpace(SeatA) ? SeatA : "")} {(NumberOfSeats > 1 ? "&" : "")} {(!string.IsNullOrWhiteSpace(SeatB) ? SeatB : "")}";
 }

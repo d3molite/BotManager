@@ -9,11 +9,13 @@ public partial class LanPlannerModule
 {
 	private static async Task UpdatePlanMessage(LanPlan plan, IUserMessage message)
 	{
+		var messageText = CreatePlanMessage(plan);
 		var embeds = CreatePlanEmbed(plan);
 		var components = CreatePlanButtons();
 
 		await message.ModifyAsync(msg =>
 			{
+				msg.Content = messageText;
 				msg.Embeds = embeds.ToArray();
 				msg.Components = components;
 			}
@@ -33,24 +35,27 @@ public partial class LanPlannerModule
 
 	private static IEnumerable<Embed> CreatePlanEmbed(LanPlan plan)
 	{
-		List<Embed> ret = [];
-
-		var builder = new EmbedBuilder();
-		builder.WithTitle($"Planung für {plan.EventName}");
-		builder.AddField("Seats belegt:", $"{plan.Members.Sum(x => x.NumberOfSeats)}/{plan.MaxSeats}");
-		ret.Add(builder.Build());
-		
-		ret.AddRange(CreateUserGroupDetails(plan));
-
-		return ret;
+		return CreateUserGroupDetails(plan);
 	}
 
-	private static IEnumerable<Embed> CreateUserGroupDetails(LanPlan plan)
+	private static string CreatePlanMessage(LanPlan plan)
+	{
+		var builder = new StringBuilder();
+		builder.AppendLine($"Planung für **{plan.EventName}**");
+		builder.AppendLine($"Seats belegt: {plan.Members.Sum(x => x.NumberOfSeats)}/{plan.MaxSeats}");
+		builder.AppendLine($"Teilnehmer: {plan.Members.Count}");
+		builder.AppendLine($"- Beginner: {plan.Members.Sum(x => x.BeginnerCount)}");
+		builder.AppendLine($"- Expert: {plan.Members.Sum(x => x.ExpertCount)}");
+		builder.AppendLine($"- Legend: {plan.Members.Sum(x => x.LegendCount)}");
+		return builder.ToString();
+	}
+
+	private static List<Embed> CreateUserGroupDetails(LanPlan plan)
 	{
 		List<Embed> ret = [];
 		var groups = plan.Members.GroupBy(x => x.SeatingGroup);
 
-		foreach (var group in groups)
+		foreach (var group in groups.OrderBy(x => x.Key))
 		{
 			var builder = new EmbedBuilder()
 				.WithTitle($"Gruppe: {group.Key}");

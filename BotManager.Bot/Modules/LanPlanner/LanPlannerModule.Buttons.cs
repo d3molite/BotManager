@@ -32,6 +32,19 @@ public partial class LanPlannerModule
 		await component.RespondAsync("Neu geladen!", ephemeral: true);
 	}
 
+	[MessageComponentExecutor(Components.PlanButtonRemove)]
+	public async Task RemoveFromPlan(SocketMessageComponent component)
+	{
+		var plan = await CheckForOwner(component);
+		if (plan is null) return;
+
+		await component.RespondAsync(
+			"Wähle einen Teilnehmer aus!",
+			ephemeral: true,
+			components: await RemoveUserSelectMenu(plan)
+		);
+	}
+
 	[MessageComponentExecutor(Components.PlanButtonEdit)]
 	public async Task EditUser(SocketMessageComponent component)
 	{
