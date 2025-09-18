@@ -7,20 +7,12 @@ ServiceInit.ConfigureLogging();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-# if DEBUG
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-
-# endif
 
 ServiceInit.RegisterServices(builder);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-# if DEBUG
-
 builder.Services.AddMudServices();
-
-#endif
 
 var app = builder.Build();
 
@@ -43,12 +35,15 @@ else
 
 # if DEBUG
 app.UseHttpsRedirection();
+# endif
 
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
+app.MapBlazorHub();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
-# endif
+
 
 Task.Run(async () => await ServiceInit.StartBots(app));
 

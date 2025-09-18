@@ -21,6 +21,13 @@ public class LanMember : AbstractDbItem
 
 	[MaxLength(32)]
 	public string SeatB { get; set; } = string.Empty;
+	
+	[MaxLength(32)]
+	public string SeatName { get; set; } = string.Empty;
+
+	public int SeatingRow { get; set; } = 0;
+
+	public int SeatingOrder { get; set; } = 0;
 
 	[NotMapped]
 	public int NumberOfSeats

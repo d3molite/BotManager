@@ -1,0 +1,187 @@
+@page "/seating/{PlanId}"
+@using System.Runtime.Intrinsics.Arm
+@using System.Security.Cryptography
+@using System.Text
+@using BotManager.Db.Models.Modules.LanPlanner
+@using BotManager.Interfaces.Services.Data
+@inject ILanPlanService LanPlanService
+
+@if (Valid)
+{
+    <div class="plan-container">
+        <div class="plan-title-container">
+            <h3>Seatingmap</h3>
+            <h3>@LoadedPlan?.EventName</h3>
+        </div>
+        <div class="plan-tables-wrapper">
+            @foreach (var row in LoadedPlan?.Members.GroupBy(x => x.SeatingRow).OrderBy(x => x.Key))
+            {
+                
+                @if (row.Key % 2 == 0 && row.Key != 0)
+                {
+                    <div class="plan-table-row">
+                        @for (var i = 0; i < 10; i++)
+                        {
+                            <div class="table-placeholder"></div>
+                        }
+                    </div>
+                }
+                else{
+                    <div class="plan-table-space"></div>
+                }
+                <div class="plan-table-row">
+                    @if (row.Key == 1)
+                    {
+                        @for (var i = 0; i < 2; i++)
+                        {
+                            <div class="plan-table-seat double" style="background-color: #ff000033;"></div>
+                        }
+                        @if (row.Sum(x => x.NumberOfSeats) < 16)
+                        {
+                            <div style="width: 4.25vw;"></div>
+                        }
+                    }
+                    @foreach (var member in row.OrderByDescending(x => x.SeatingOrder))
+                    {
+                        <div class="@GetTableClass(member)" style="@GetTableStyle(member)">
+                            <div class="seat-seats border-bottom">
+                                @((MarkupString)member.SeatName)
+                            </div>
+                            <div class="text-center">@((MarkupString)member.Nickname)</div>
+                            <div class="text-center" style="font-size: 0.7rem">@member.SeatingGroup</div>
+                            <div class="seat-seats">
+                                @GetMemberSeats(member)
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public required string PlanId { get; set; }
+
+    private bool Valid { get; set; }
+
+    private LanPlan? LoadedPlan { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            LoadedPlan = await LanPlanService.GetLanPlanAsync(PlanId);
+            GenerateSeatNames();
+            Valid = true;
+        }
+        catch
+        {
+            Valid = false;
+
+            // do nothing
+        }
+    }
+
+    private void GenerateSeatNames()
+    {
+        var rows = LoadedPlan?.Members.GroupBy(x => x.SeatingRow).OrderBy(x => x.Key);
+
+        foreach (var row in rows)
+        {
+            var seatNumber = row.Key switch
+            {
+                1 => 61,
+                2 => 41,
+                3 => 61,
+                4 => 41,
+            };
+            
+            var rowName = row.Key switch
+            {
+                1 => "Q-",
+                2 => "Q-",
+                3 => "P-",
+                4 => "P-",
+            };
+
+            var count = row.Sum(x => x.NumberOfSeats);
+
+            if (count < 20)
+                seatNumber += 20 - count;
+            
+            foreach (var (member, index) in row.OrderByDescending(x => x.SeatingOrder).Select((e, i) => (e, i)))
+            {
+                var sb = new StringBuilder();
+                
+                sb.Append("<div>");
+                sb.Append(rowName);
+                sb.Append(seatNumber);
+                sb.Append("</div>");
+
+                if (member.NumberOfSeats > 1)
+                {
+                    sb.Append("<div>");
+                    sb.Append(rowName);
+                    sb.Append(seatNumber + 1);
+                    sb.Append("</div>");
+                }
+
+                member.SeatName = sb.ToString();
+                
+                seatNumber += member.NumberOfSeats;
+            }
+        }
+        
+    }
+
+    private static string GetTableClass(LanMember member)
+    {
+        var c = "plan-table-seat";
+
+        if (member.NumberOfSeats > 1)
+            c += " double";
+
+        return c; 
+    }
+
+    private static MarkupString GetMemberSeats(LanMember member)
+    {
+        var sb = new StringBuilder();
+
+        if (string.IsNullOrEmpty(member.SeatA))
+        {
+            sb.Append("<div>?</div>");
+        }
+        else
+        {
+            sb.Append($"<div>{member.SeatA}</div>");
+        }
+
+        if (string.IsNullOrEmpty(member.SeatB)) 
+            return (MarkupString)sb.ToString();
+
+        var seatB = member.SeatB.Split(" ")[0];
+        sb.Append($"<div>{seatB}</div>");
+
+        return (MarkupString)sb.ToString();
+    }
+
+    private string GetTableStyle(LanMember member)
+    {
+        var sb = new StringBuilder();
+        
+        var group = member.SeatingGroup;
+        var sha = SHA1.Create();
+
+        var sha1 = Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(group)));
+
+        sb.Append("background-color: #");
+        sb.Append(sha1[..6]);
+        sb.Append("44;");
+        return sb.ToString();
+    }
+
+}

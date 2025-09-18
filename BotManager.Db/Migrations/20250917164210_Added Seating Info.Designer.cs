@@ -3,6 +3,7 @@ using System;
 using BotManager.Db.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotManager.Db.Migrations
 {
     [DbContext(typeof(BotManagerContext))]
-    partial class BotManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20250917164210_Added Seating Info")]
+    partial class AddedSeatingInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -239,9 +242,6 @@ namespace BotManager.Db.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SeatingOrder")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SeatingRow")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("UserId")

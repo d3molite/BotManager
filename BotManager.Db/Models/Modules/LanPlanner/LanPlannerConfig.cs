@@ -7,6 +7,8 @@ namespace BotManager.Db.Models.Modules.LanPlanner;
 public class LanPlannerConfig : AbstractGuildConfig
 {
 	public ulong PlannerChannelId { get; set; }
-	
+
+	public ulong SeatingMapChannelId { get; set; }
+
 	public ulong MemberRoleId { get; set; }
 }
