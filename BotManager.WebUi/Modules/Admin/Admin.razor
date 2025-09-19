@@ -13,7 +13,7 @@
         <MudStack>
             @foreach (var config in _allowedConfigs)
             {
-                <MudLink Href=@($"/admin/{config.Id}")>@config.Name</MudLink>
+                <MudLink Href=@($"/bot/{config.Id}")>@config.Name</MudLink>
             }
             </MudStack>
     </Authorized>

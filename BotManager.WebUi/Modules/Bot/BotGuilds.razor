@@ -1,0 +1,38 @@
+@page "/bot/{ConfigId}/guild"
+@using BotManager.Db.Models
+@using Demolite.Db.Interfaces
+
+@inject IDbRepository<BotConfig> BotConfigRepository
+
+<AuthorizeBot BotId="@ConfigId">
+    <Authorized>
+        <MudPaper Class="p-3" Style="width: 30vw !important;">
+            <MudStack>
+                <MudText>Select Guild to Edit</MudText>
+                <MudDivider FlexItem="false"/>
+                @if (Config is not null)
+                {
+                    @foreach (var guild in Config.GuildConfigs)
+                    {
+                        <MudButton Variant="Variant.Outlined"
+                                   Href=@($"/bot/{ConfigId}/guilds/{guild.Id}")>@guild.GuildName</MudButton>
+                    }
+                }
+            </MudStack>
+        </MudPaper>
+    </Authorized>
+</AuthorizeBot>
+
+@code {
+
+    [Parameter]
+    public required string ConfigId { get; set; }
+
+    private BotConfig? Config { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Config = await BotConfigRepository.GetCustomAsync(x => x.Id == ConfigId);
+    }
+
+}

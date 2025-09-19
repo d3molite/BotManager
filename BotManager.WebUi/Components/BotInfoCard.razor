@@ -1,36 +1,42 @@
 @using BotManager.Core.Models
-<MudItem xs="3">
-    <MudPaper>
-        <MudStack Class="p-2">
-            <MudStack Row="true" Style="max-height: 5vh; height: 5vh;" Justify="Justify.SpaceEvenly"
-                      AlignItems="AlignItems.Center">
-                <img class="rounded-circle" width="64" src="@Info.ImageUri" alt="The bot image"/>
-                <MudStack Row="true" AlignItems="AlignItems.Center">
-                    <MudText>@Info.Name</MudText>
-                    @if (Info.Online)
-                    {
-                        <div class="online-circle"></div>
-                    }
-                    else
-                    {
-                        <div class="offline-circle"></div>
-                    }
-                </MudStack>
-            </MudStack>
+
+<MudPaper Class="w-100">
+    <MudStack Class="p-2 w-100" Row="true">
+        <MudStack Row="true" Justify="Justify.FlexStart" Style="width: 15vw;"
+                  AlignItems="AlignItems.Center">
             @if (Info.Online)
             {
-                <MudDivider Light="true" FlexItem="false"/>
-                <MudStack AlignItems="AlignItems.Center">
-                    <MudText Typo="Typo.body1">Active modules:</MudText>
-                    @foreach (var module in Info.Modules)
-                    {
-                        <MudText Typo="Typo.body2">@module</MudText>
-                    }
-                </MudStack>
+                <img class="bot-image-circle" width="64" height="64" src="@Info.ImageUri" alt="bot profile image"/>
             }
+            else
+            {
+                <div class="bot-image-circle" style="width: 64px !important; height:64px !important" width="64" height="64">Offline</div>
+            }
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudText>@Info.Name</MudText>
+                @if (Info.Online)
+                {
+                    <div class="circle online"></div>
+                }
+                else
+                {
+                    <div class="circle offline"></div>
+                }
+            </MudStack>
         </MudStack>
-    </MudPaper>
-</MudItem>
+        <div class="divider"></div>
+        @if (Info.Online)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.body1">Active modules:</MudText>
+                @foreach (var module in Info.Modules)
+                {
+                    <MudText Typo="Typo.body2">@module</MudText>
+                }
+            </MudStack>
+        }
+    </MudStack>
+</MudPaper>
 
 @code {
 

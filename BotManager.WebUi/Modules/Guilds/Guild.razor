@@ -1,0 +1,42 @@
+@page "/bot/{ConfigId}/guild/{GuildId}"
+@using BotManager.Db.Models
+@using Demolite.Db.Interfaces
+
+@inject IDbRepository<BotConfig> BotConfigRepository
+
+<AuthorizeBot BotId="@ConfigId">
+    <Authorized>
+        <MudPaper Class="p-3" Style="width: 30vw !important;">
+            <MudStack>
+                @if (Config is not null && GuildConfig is not null)
+                {
+                    <MudText>Editing @GuildConfig.GuildName</MudText>
+                    <MudDivider FlexItem="false"/>
+                    <MudButton Variant="Variant.Outlined" Href=@($"/bot/{ConfigId}/guild/{GuildId}/planner/")>
+                        @(GuildConfig.HasLanPlannerModule ? "Edit Lan Plan Config" : "Create Lan Plan Config")
+                    </MudButton>
+                }
+                
+            </MudStack>
+        </MudPaper>
+    </Authorized>
+</AuthorizeBot>
+
+@code {
+
+    [Parameter]
+    public required string ConfigId { get; set; }
+
+    [Parameter]
+    public required string GuildId { get; set; }
+
+    private BotConfig? Config { get; set; }
+
+    private GuildConfig? GuildConfig => Config?.GuildConfigs.FirstOrDefault(x => x.Id == GuildId);
+
+    protected override async Task OnInitializedAsync()
+    {
+        Config = await BotConfigRepository.GetCustomAsync(x => x.Id == ConfigId);
+    }
+
+}

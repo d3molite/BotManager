@@ -97,6 +97,8 @@ public class BotEntity : IBotEntity
 
 	public async Task StartAsync()
 	{
+		Log.Debug("Starting {BotName}", Name);
+		
 		await _client.LoginAsync(TokenType.Bot, _config.Token);
 		await _client.StartAsync();
 
@@ -115,12 +117,15 @@ public class BotEntity : IBotEntity
 
 	public async Task StopAsync()
 	{
+		Log.Debug("Stopping {BotName}", Name);
 		await _tokenSource.CancelAsync();
+		_tokenSource.TryReset();
 	}
 
 	public async Task RestartAsync()
 	{
-		await _tokenSource.CancelAsync();
+		await StopAsync();
+		await Task.Delay(1000);
 		await StartAsync();
 	}
 

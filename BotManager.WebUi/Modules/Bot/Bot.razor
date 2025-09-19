@@ -1,0 +1,99 @@
+@page "/bot/{ConfigId}"
+@using BotManager.Db.Models
+@using BotManager.Interfaces.Core
+@using BotManager.Interfaces.Services.Bot
+@using Demolite.Db.Enum
+@using Demolite.Db.Interfaces
+@inject IDbRepository<BotConfig> BotConfigRepository
+@inject IBotService BotService
+@inject ISnackbar Snackbar
+
+<AuthorizeBot BotId="@ConfigId">
+    <Authorized>
+        <MudPaper Class="p-3" Style="width: 30vw !important;">
+            <MudStack>
+                @if (Config is not null)
+                {
+                    <MudText>Editing @Config?.Name</MudText>
+
+                    <MudDivider FlexItem="false"/>
+
+                    <MudTextField Variant="Variant.Outlined"
+                        @bind-Value="Config.Presence" Label="Presence"/>
+
+                    <MudButton Variant="Variant.Outlined" Color="Color.Success" @onclick="Save">Save</MudButton>
+                    
+                    <MudDivider FlexItem="false"/>
+                    
+                    <MudButton Variant="Variant.Outlined" Href=@($"/bot/{ConfigId}/guilds")>Edit Guild Configs</MudButton>
+                    
+                    <MudDivider FlexItem="false"/>
+
+                    <MudStack Row="true" Justify="Justify.Center">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" @onclick="StartInstance">Start Bot
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" @onclick="StopInstance">Stop Bot
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" @onclick="RestartInstance">Restart Bot
+                        </MudButton>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudPaper>
+    </Authorized>
+</AuthorizeBot>
+
+@code {
+
+    [Parameter]
+    public required string ConfigId { get; set; }
+
+    private BotConfig? Config { get; set; }
+
+    private async Task Save()
+    {
+        if (Config is null) return;
+
+        Config.OperationType = Operation.Updated;
+
+        var result = await BotConfigRepository.CrudAsync(Config);
+
+        if (result.Success)
+            Snackbar.Add("Saved.", Severity.Success);
+        else
+            Snackbar.Add(result.ErrorMessage, Severity.Error);
+    }
+
+    private async Task StartInstance()
+    {
+        var bot = GetBot();
+
+        if (bot != null)
+            await bot.StartAsync();
+    }
+    
+    private async Task StopInstance()
+    {
+        var bot = GetBot();
+        
+        if (bot != null)
+            await bot.StopAsync();
+    }
+    
+    private async Task RestartInstance()
+    {
+        var bot = GetBot();
+
+        if (bot != null)
+            await bot.RestartAsync();
+    }
+
+    private IBotEntity? GetBot()
+        => BotService.Bots.FirstOrDefault(x => x.Id == ConfigId);
+
+    protected override async Task OnInitializedAsync()
+    {
+        Config = await BotConfigRepository.GetCustomAsync(x => x.Id == ConfigId);
+    }
+
+}

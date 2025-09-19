@@ -1,15 +1,32 @@
-.online-circle{
-    height: 1vh; 
-    width: 1vh;
+.bot-image-circle{
+    height: 64px !important;
+    width: 64px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid white;
+    object-fit: scale-down;
+}
+
+.circle{
+    height: 10px !important;
+    min-width: 10px !important;
+    width: 10px !important;
+    min-height: 10px !important;
     content: "";
     border-radius: 50%;
+}
+
+.divider{
+    width: 1px !important;
+    border-right: 1px solid #ffffff42;
+}
+
+.online{
     background: #26b050;
 }
 
-.offline-circle{
-    height: 1vh;
-    width: 1vh;
-    content: "";
-    border-radius: 50%;
+.offline{
     background: #b32121;
 }

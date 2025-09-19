@@ -4,14 +4,14 @@
 
 <PageTitle>BotManager</PageTitle>
 
-<MudStack Class="flex-grow-1 h100 w100" Justify="Justify.Center" AlignItems="AlignItems.Center">
+<MudStack Class="flex-grow-1 h-100 w-100" Justify="Justify.Center" AlignItems="AlignItems.Center">
     <MudText>
         Available Bots
     </MudText>
-    <MudGrid Justify="Justify.Center" Class="w-75">
+    <MudStack Justify="Justify.Center" Class="w-75">
         @foreach (var bot in BotService.Bots)
         {
             <BotInfoCard Info="@bot.GetInfo()"></BotInfoCard>
         }
-    </MudGrid>
+    </MudStack>
 </MudStack>

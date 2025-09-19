@@ -142,6 +142,7 @@ public static class ServiceInit
 		collection.AddSingleton<IDbRepository<Birthday>, BirthdayRepository>();
 		collection.AddSingleton<IBirthdayService, BirthdayService>();
 
+		collection.AddSingleton<IDbRepository<LanPlannerConfig>, LanPlannerConfigRepository>();
 		collection.AddSingleton<IDbRepository<LanMember>, LanMemberRepository>();
 		collection.AddSingleton<IDbRepository<LanPlan>, LanPlanRepository>();
 		collection.AddSingleton<ILanPlanService, LanPlanService>();

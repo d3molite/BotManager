@@ -1,0 +1,44 @@
+@page "/bot/{ConfigId}/guild/{GuildId}/planner/"
+@using BotManager.Db.Models
+@using BotManager.Db.Models.Modules.LanPlanner
+@using Demolite.Db.Enum
+@using Demolite.Db.Interfaces
+@inject IDbRepository<BotConfig> BotConfigRepository
+@inject IDbRepository<LanPlannerConfig> LanPlanConfigRepository
+
+<h3>LanPlanConfig</h3>
+
+@code {
+
+    [Parameter]
+    public required string ConfigId { get; set; }
+
+    [Parameter]
+    public required string GuildId { get; set; }
+
+    private BotConfig? Config { get; set; }
+
+    private GuildConfig GuildConfig => Config?.GuildConfigs.First(x => x.Id == GuildId)!;
+    
+    private LanPlannerConfig LanPlannerConfig { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Config = await BotConfigRepository.GetCustomAsync(x => x.Id == ConfigId);
+        
+        if (GuildConfig.LanPlannerConfig is null)
+            LanPlannerConfig = new LanPlannerConfig()
+            {
+                Id = Guid.NewGuid().ToString(),
+                GuildConfigId = GuildConfig.Id,
+                OperationType = Operation.Created,
+            };
+
+        else
+        {
+            LanPlannerConfig = GuildConfig.LanPlannerConfig;
+            LanPlannerConfig.OperationType = Operation.Updated;
+        }
+    }
+
+}
