@@ -2,11 +2,15 @@ using BotManager.Core.Helpers;
 using BotManager.Main.Components;
 using BotManager.Main.Startup;
 using MudBlazor.Services;
+using Serilog;
 
 ServiceInit.ConfigureLogging();
 
 // begin by loading .env files
-Env.Load("./env/oauth.env");
+var loaded = Env.Load("./env/oauth.env");
+
+if (!loaded)
+	Log.Error("Could not load ./env/oauth.env");
 
 var builder = WebApplication.CreateBuilder(args);
 

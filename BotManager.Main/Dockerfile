@@ -35,7 +35,7 @@ COPY --chmod=0755 --from=build /https/* /https/
 COPY --from=publish /app/publish .
 
 RUN mkdir /app/dbdata
-RUN mkdir /app/env
+RUN mkdir -p /app/env
 RUN mkdir /app/image
 
 ENTRYPOINT ["dotnet", "BotManager.Main.dll"]

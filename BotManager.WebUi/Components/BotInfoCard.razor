@@ -1,12 +1,12 @@
 @using BotManager.Core.Models
-<MudItem xs="2">
+<MudItem xs="3">
     <MudPaper>
         <MudStack Class="p-2">
             <MudStack Row="true" Style="max-height: 5vh; height: 5vh;" Justify="Justify.SpaceEvenly"
                       AlignItems="AlignItems.Center">
                 <img class="rounded-circle" width="64" src="@Info.ImageUri" alt="The bot image"/>
                 <MudStack Row="true" AlignItems="AlignItems.Center">
-                    <MudText Typo="Typo.h6">@Info.Name</MudText>
+                    <MudText>@Info.Name</MudText>
                     @if (Info.Online)
                     {
                         <div class="online-circle"></div>

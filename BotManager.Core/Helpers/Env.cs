@@ -1,4 +1,6 @@
-﻿namespace BotManager.Core.Helpers;
+﻿using Serilog;
+
+namespace BotManager.Core.Helpers;
 
 public static class Env
 {
@@ -26,8 +28,9 @@ public static class Env
 				Environment.SetEnvironmentVariable(parts[0], parts[1]);
 			}
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
+			Log.Error(ex, "Exception while loading environment variables");
 			return false;
 		}
 

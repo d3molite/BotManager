@@ -21,7 +21,7 @@ public class BotConfig : AbstractDbItem
 	public string AdminUserIds { get; set; } = string.Empty;
 	
 	[NotMapped]
-	public IEnumerable<ulong> AdminIds => AdminUserIds.Split(',').Select(ulong.Parse);
+	public IEnumerable<ulong> AdminIds => string.IsNullOrEmpty(AdminUserIds) ? [] : AdminUserIds.Split(',').Select(ulong.Parse);
 	
 	public bool Active { get; set; }
 	
