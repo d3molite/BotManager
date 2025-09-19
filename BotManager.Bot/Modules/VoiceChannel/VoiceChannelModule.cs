@@ -10,6 +10,8 @@ namespace BotManager.Bot.Modules.VoiceChannel;
 
 public partial class VoiceChannelModule : AbstractCommandModuleBase<VoiceChannelConfig>
 {
+	public override string ModuleName => "Voice Channels";
+	
 	private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(1));
 	private LoggingModule? _loggingModule;
 

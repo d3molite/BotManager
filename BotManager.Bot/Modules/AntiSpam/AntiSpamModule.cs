@@ -25,6 +25,8 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 		return Task.CompletedTask;
 	}
 
+	public string ModuleName => "AntiSpam";
+
 	private async Task CleanupQueues()
 	{
 		while (await _timer.WaitForNextTickAsync())

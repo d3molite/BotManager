@@ -17,6 +17,8 @@ public class ReactionModule(DiscordSocketClient client, GuildConfig guildConfig)
 		client.MessageReceived += ReactToMessage;
 	}
 
+	public string ModuleName => "Reactions";
+
 	private async Task ReactToMessage(SocketMessage message)
 	{
 		if (!CanReactToMessage(message))

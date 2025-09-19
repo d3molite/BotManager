@@ -1,6 +1,8 @@
 .main-page-wrapper {
     max-width: 100vw !important;
+    width: 100vw !important;
     max-height: 94vh !important;
+    height: 94vh !important;
     overflow: hidden !important;
     display: flex;
 }

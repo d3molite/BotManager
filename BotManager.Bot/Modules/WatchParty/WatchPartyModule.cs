@@ -12,6 +12,8 @@ namespace BotManager.Bot.Modules.WatchParty;
 public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 	: AbstractCommandModuleBase<WatchPartyConfig>(client, config)
 {
+	public override string ModuleName => "Watch Party";
+	
 	[CommandBuilder(Commands.WatchParty)]
 	public async Task BuildWatchPartyCommand(SocketGuild guild)
 	{

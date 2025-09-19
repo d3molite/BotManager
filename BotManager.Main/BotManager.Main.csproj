@@ -37,6 +37,7 @@
       <ProjectReference Include="..\BotManager.Core\BotManager.Core.csproj" />
       <ProjectReference Include="..\BotManager.Db\BotManager.Db.csproj" />
       <ProjectReference Include="..\BotManager.Services\BotManager.Services.csproj" />
+      <ProjectReference Include="..\BotManager.WebUi\BotManager.WebUi.csproj" />
     </ItemGroup>
     
     <ItemGroup>

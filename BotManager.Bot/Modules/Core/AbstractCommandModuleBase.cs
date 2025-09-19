@@ -13,6 +13,8 @@ public class AbstractCommandModuleBase<T>(DiscordSocketClient client, GuildConfi
 {
 	protected DiscordSocketClient Client => client;
 
+	public virtual string ModuleName => "Unnamed Module";
+
 	/// <summary>
 	/// Builds and registers all commands for this module.
 	/// </summary>

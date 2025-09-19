@@ -17,6 +17,8 @@ public class BirthdaysModule : AbstractCommandModuleBase<BirthdayConfig>
 {
 	private string ConfigId => ModuleConfig.Id;
 	private ulong GuildId => GuildConfig.GuildId;
+	
+	public override string ModuleName => "Birthdays";
 
 	private ulong NotificationChannelId => ModuleConfig.PingChannelId;
 

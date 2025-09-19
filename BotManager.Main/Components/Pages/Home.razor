@@ -1,8 +1,17 @@
 ﻿@page "/"
+@using BotManager.Interfaces.Services.Bot
+@inject IBotService BotService
 
 <PageTitle>BotManager</PageTitle>
 
-<div style="display: flex; flex-grow: 1; justify-content: center; align-items: center; height: 100vh; width: 100vw;">
-    <div>System up and running</div>
-</div>
-
+<MudStack Class="flex-grow-1 h100 w100" Justify="Justify.Center" AlignItems="AlignItems.Center">
+    <MudText>
+        Available Bots
+    </MudText>
+    <MudGrid Justify="Justify.Center" Class="w-75">
+        @foreach (var bot in BotService.Bots)
+        {
+            <BotInfoCard Info="@bot.GetInfo()"></BotInfoCard>
+        }
+    </MudGrid>
+</MudStack>

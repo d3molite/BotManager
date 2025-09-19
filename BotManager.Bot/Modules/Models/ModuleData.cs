@@ -8,7 +8,7 @@ public class ModuleData(ModuleType moduleType, ulong clientId, ulong guildId)
 
     private ulong GuildId { get; } = guildId;
 
-    private ulong ClientId { get; } = clientId;
+    public ulong ClientId { get; } = clientId;
     
     public override bool Equals(object? obj)
     {

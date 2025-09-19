@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\" />
+      <ProjectReference Include="..\BotManager.Core\BotManager.Core.csproj" />
     </ItemGroup>
 
 </Project>

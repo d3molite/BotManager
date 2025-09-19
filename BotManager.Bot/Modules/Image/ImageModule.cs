@@ -8,5 +8,5 @@ namespace BotManager.Bot.Modules.Image;
 
 public partial class ImageModule(DiscordSocketClient client, GuildConfig guildConfig) : AbstractCommandModuleBase<ImageConfig>(client, guildConfig)
 {
-    
+    public override string ModuleName => "Image Manipulation";
 }

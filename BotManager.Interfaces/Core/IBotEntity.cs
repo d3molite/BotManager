@@ -1,4 +1,6 @@
-﻿namespace BotManager.Interfaces.Core;
+﻿using BotManager.Core.Models;
+
+namespace BotManager.Interfaces.Core;
 
 public interface IBotEntity
 {
@@ -15,4 +17,6 @@ public interface IBotEntity
 	public Task StopAsync();
 
 	public Task RestartAsync();
+
+	public BotInfo GetInfo();
 }

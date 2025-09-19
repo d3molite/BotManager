@@ -9,4 +9,5 @@ namespace BotManager.Bot.Modules.LanPlanner;
 public partial class LanPlannerModule(DiscordSocketClient client, GuildConfig guildConfig, ILanPlanService planService)
 	: AbstractCommandModuleBase<LanPlannerConfig>(client, guildConfig)
 {
+	public override string ModuleName => "Lan Planning";
 }

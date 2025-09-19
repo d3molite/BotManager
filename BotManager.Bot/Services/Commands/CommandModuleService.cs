@@ -18,18 +18,6 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 
 		try
 		{
-			var module = ModuleRegister.TryGetFromCommand(command.CommandName, ClientId, command.GuildId!.Value);
-
-			if (module != null)
-			{
-				await module.ExecuteCommands(command);
-				return;
-			}
-			else
-			{
-				Log.Debug("Module for command {CommandName} was not found", command.CommandName);
-			}
-			
 			var refModule = ModuleRegister.TryGetFromRefCommand(command.CommandName, ClientId, command.GuildId!.Value);
 			
 			if (refModule != null)
@@ -50,17 +38,6 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 	public async Task ExecuteModalResponse(SocketModal modal)
 	{
 		var data = modal.Data.CustomId;
-
-		var module = ModuleRegister.TryGetFromModal(data, ClientId, modal.GuildId!.Value);
-
-		if (module != null)
-		{
-			await module.ExecuteModal(modal);
-			return;
-		}
-
-		else
-			Log.Debug("Module for modal {ModalName} was not found", data);
 		
 		var refModule = ModuleRegister.TryGetFromRefModal(data, ClientId, modal.GuildId!.Value);
 		

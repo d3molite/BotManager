@@ -15,6 +15,8 @@ namespace BotManager.Bot.Modules.Feedback;
 public class FeedbackModule(DiscordSocketClient client, GuildConfig config)
 	: AbstractCommandModuleBase<FeedbackConfig>(client, config)
 {
+	public override string ModuleName => "Feedback";
+	
 	private ulong ChannelId => ModuleConfig.FeedbackChannelId;
 
 	private bool AddReaction => ModuleConfig.AddReactions;

@@ -3,4 +3,6 @@
 public interface IUtilityModule
 {
 	public Task RegisterModuleAsync();
+	
+	public string ModuleName { get; }
 }

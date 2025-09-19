@@ -9,4 +9,5 @@ namespace BotManager.Bot.Modules.OrderTracking;
 public partial class OrderTrackingModule(DiscordSocketClient client, GuildConfig guildConfig, IOrderService orderService)
 	: AbstractCommandModuleBase<OrderTrackingConfig>(client, guildConfig)
 {
+	public override string ModuleName => "Order Tracking";
 }

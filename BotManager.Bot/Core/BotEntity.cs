@@ -1,6 +1,9 @@
-﻿using BotManager.Bot.Services;
+﻿using BotManager.Bot.Modules.Models;
+using BotManager.Bot.Services;
 using BotManager.Bot.Services.Commands;
+using BotManager.Bot.Services.Register;
 using BotManager.Bot.Services.Utilities;
+using BotManager.Core.Models;
 using BotManager.Db.Models;
 using BotManager.Interfaces.Core;
 using Discord;
@@ -17,8 +20,9 @@ public class BotEntity : IBotEntity
 	private bool _alreadyRegistered = false;
 
 	private CommandModuleService CommandModuleService { get; }
+
 	private UtilityModuleService UtilityModuleService { get; }
-	
+
 	public BotEntity(BotConfig config)
 	{
 		_config = config;
@@ -26,18 +30,19 @@ public class BotEntity : IBotEntity
 		_client = new DiscordSocketClient(
 			new DiscordSocketConfig()
 			{
-				GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.MessageContent,
+				GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers |
+								GatewayIntents.MessageContent,
 				MessageCacheSize = 200,
 				AlwaysDownloadUsers = true,
-				#if DEBUG
+#if DEBUG
 				UseInteractionSnowflakeDate = false,
-				#endif
+#endif
 			}
 		);
 
 		CommandModuleService = new CommandModuleService(_config, _client);
 		UtilityModuleService = new UtilityModuleService(_config, _client);
-		
+
 		_client.Log += LogClientEvent;
 		_client.Ready += OnClientReady;
 		_client.SlashCommandExecuted += CommandModuleService.ExecuteCommand;
@@ -50,7 +55,7 @@ public class BotEntity : IBotEntity
 	{
 		if (_alreadyRegistered)
 			return;
-		
+
 		Task.Run(async () => await CommandModuleService.BuildCommands());
 		Task.Run(async () => await UtilityModuleService.InitializeAsync());
 
@@ -65,17 +70,17 @@ public class BotEntity : IBotEntity
 			case LogSeverity.Error:
 				Log.Error(arg.Exception, "{BotName}: {LogMessage}", Name, arg.Message);
 				break;
-			
+
 			case LogSeverity.Warning:
 				Log.Error(arg.Exception, "{BotName}: {LogMessage}", Name, arg.Message);
 				break;
-			
+
 			case LogSeverity.Info:
 			case LogSeverity.Verbose:
 			case LogSeverity.Debug:
 				Log.Debug(arg.Exception, "{BotName}: {LogMessage}", Name, arg.Message);
 				break;
-				
+
 			default:
 				Log.Debug("{BotName}: {LogMessage}", Name, arg.Message);
 				break;
@@ -103,7 +108,7 @@ public class BotEntity : IBotEntity
 		{
 			await Task.Delay(1);
 		}
-			
+
 		await _client.StopAsync();
 		await _client.LogoutAsync();
 	}
@@ -117,5 +122,28 @@ public class BotEntity : IBotEntity
 	{
 		await _tokenSource.CancelAsync();
 		await StartAsync();
+	}
+
+	public BotInfo GetInfo()
+	{
+		try
+		{
+			var id = _client.CurrentUser.Id;
+			
+			return new BotInfo()
+			{
+				ImageUri = _client.CurrentUser.GetAvatarUrl(),
+				Name = _client.CurrentUser.Username,
+				Online = _client.LoginState == LoginState.LoggedIn,
+				Modules = ModuleRegister.GetModuleNames(id), };
+		}
+		catch
+		{
+			return new BotInfo()
+			{
+				Name = Name,
+				Online = false,
+			};
+		}
 	}
 }

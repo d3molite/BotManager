@@ -7,7 +7,8 @@ using Discord.WebSocket;
 
 namespace BotManager.Bot.Modules.Logging;
 
-public partial class LoggingModule(DiscordSocketClient client, GuildConfig config) : AbstractModuleBase<LoggingConfig>(config), IUtilityModule
+public partial class LoggingModule(DiscordSocketClient client, GuildConfig config)
+	: AbstractModuleBase<LoggingConfig>(config), IUtilityModule
 {
 	private static readonly Color CriticalColor = Color.Red;
 
@@ -21,7 +22,7 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig confi
 	{
 		if (_registered)
 			return Task.CompletedTask;
-		
+
 		client.MessageDeleted += LogMessageDeleted;
 		client.UserJoined += LogUserJoined;
 		client.UserLeft += LogUserLeft;
@@ -32,6 +33,8 @@ public partial class LoggingModule(DiscordSocketClient client, GuildConfig confi
 
 		return Task.CompletedTask;
 	}
+
+	public string ModuleName => "Logging";
 
 	private async Task SendLogEmbed(Embed embed, bool isCritical = false)
 	{

@@ -8,5 +8,5 @@ namespace BotManager.Bot.Modules.RoleRequest;
 public partial class RoleRequestModule(DiscordSocketClient client, GuildConfig guildConfig)
 	: AbstractCommandModuleBase<RoleRequestConfig>(client, guildConfig)
 {
-	
+	public override string ModuleName => "Role Request";
 }
