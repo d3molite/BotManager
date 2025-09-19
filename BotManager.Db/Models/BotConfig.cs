@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Demolite.Db.Models;
 
 namespace BotManager.Db.Models;
@@ -16,9 +17,15 @@ public class BotConfig : AbstractDbItem
 	[MaxLength(255)]
 	public string? Presence { get; set; }
 	
+	[MaxLength(1000)]
+	public string AdminUserIds { get; set; } = string.Empty;
+	
+	[NotMapped]
+	public IEnumerable<ulong> AdminIds => AdminUserIds.Split(',').Select(ulong.Parse);
+	
 	public bool Active { get; set; }
 	
 	public bool Debug { get; set; }
 
-	public IEnumerable<GuildConfig> GuildConfigs { get; set; }
+	public IEnumerable<GuildConfig> GuildConfigs { get; set; } = [];
 }
