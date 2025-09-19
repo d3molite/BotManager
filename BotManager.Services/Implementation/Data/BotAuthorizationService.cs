@@ -10,8 +10,9 @@ public class BotAuthorizationService(IDbContextFactory<BotManagerContext> dbCont
 	public async Task<bool> HasAnyAccessAsync(ulong userId)
 	{
 		await using var context = await dbContextFactory.CreateDbContextAsync();
-		
-		return await context.Configs.AnyAsync(x => x.AdminIds.Contains(userId));
+
+		var configs = await context.Configs.ToListAsync();
+		return configs.Any(x => x.AdminIds.Contains(userId));
 	}
 
 	public async Task<bool> HasBotAccessAsync(ulong userId, string botId)
