@@ -10,11 +10,11 @@
     <MudAppBar Elevation="1">
         <MudText Typo="Typo.h6" Class="ml-3">BotManager by Demolite</MudText>
         <MudSpacer/>
-        <AuthorizeView Policy="HasAnyBotAccess">
+        <AuthorizeAnyAdminInline>
             <Authorized>
                 <MudButton Href="/admin">Admin</MudButton>
             </Authorized>
-        </AuthorizeView>
+        </AuthorizeAnyAdminInline>
         <MudSpacer />
         <LoginPartial />
     </MudAppBar>

@@ -1,0 +1,28 @@
+@using BotManager.Interfaces.Services.Data
+@inject IBotAuthorizationService AuthorizationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (_isLoading)
+{
+    <MudContainer Class="d-flex justify-center align-center" Style="height: 200px;">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
+    </MudContainer>
+}
+else if (_canAccess)
+{
+    @Authorized
+}
+else
+{
+    @if (NotAuthorized != null)
+    {
+        @NotAuthorized
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Filled">
+            <MudText Typo="Typo.h6">Access Denied</MudText>
+            <MudText>You don't have permission to access this bot.</MudText>
+        </MudAlert>
+    }
+}

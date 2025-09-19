@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using BotManager.Authentication.Access;
-using BotManager.Authentication.Context;
+﻿using BotManager.Authentication.Context;
 using BotManager.Authentication.Controllers;
 using BotManager.Db.Context;
 using BotManager.Db.Models;
@@ -15,7 +13,6 @@ using BotManager.Services.Implementation.Bot;
 using BotManager.Services.Implementation.Data;
 using Demolite.Db.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -115,14 +112,6 @@ public static class ServiceInit
 		builder.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly);
 		
 		builder.Services.AddScoped<IBotAuthorizationService, BotAuthorizationService>();
-		builder.Services.AddScoped<IAuthorizationHandler, HasAnyBotAccessHandler>();
-		builder.Services.AddScoped<IAuthorizationHandler, BotSpecificAccessHandler>();
-
-		builder.Services.AddAuthorizationBuilder()
-			.AddPolicy("HasAnyBotAccess", policy => 
-				policy.Requirements.Add(new HasAnyBotAccessRequirement()))
-			.AddPolicy("CanEditBot", policy => 
-				policy.Requirements.Add(new BotSpecificAccessRequirement("")));
 	}
 
 	private static void AddDatabaseServices(WebApplicationBuilder builder)

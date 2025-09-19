@@ -15,7 +15,7 @@
             <MudText>
                 @GetDisplayName(context.User)
             </MudText>
-            <MudButton>
+            <MudButton @onclick="LogoutAsync">
                 @if (_isLoggingOut)
                 {
                     <MudText>Logging out ...</MudText>

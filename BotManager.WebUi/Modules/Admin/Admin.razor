@@ -1,15 +1,43 @@
 @page "/admin"
-<AuthorizeView Policy="HasAnyBotAccess">
+@using BotManager.Core.Helpers
+@using BotManager.Db.Models
+@using BotManager.Interfaces.Services.Data
+@using Serilog
+
+@inject IBotAuthorizationService BotAuthorizationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<AuthorizeAnyAdmin>
     <Authorized>
-        You are Authorized
+        <MudText>Edit Configs for Bots</MudText>
+        <MudStack>
+            @foreach (var config in _allowedConfigs)
+            {
+                <MudLink Href=@($"/admin/{config.Id}")>@config.Name</MudLink>
+            }
+            </MudStack>
     </Authorized>
     <NotAuthorized>
         You are not Authorized
     </NotAuthorized>
-</AuthorizeView>
+</AuthorizeAnyAdmin>
 
 @code {
 
-    
+    private IEnumerable<BotConfig> _allowedConfigs = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(100);
+        
+        Log.Debug("Fetching auth state");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        Log.Debug("Fetched state {State}", authState);
+        if (!authState.User.TryGetUserId(out var ulongId))
+            return;
+
+        _allowedConfigs = await BotAuthorizationService.GetConfigsWithAccessAsync(ulongId);
+    }
 
 }

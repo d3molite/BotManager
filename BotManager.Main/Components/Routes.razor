@@ -1,7 +1,28 @@
-﻿<Router AppAssembly="@typeof(Program).Assembly">
+﻿@using System.Reflection
+@using BotManager.WebUi.Modules.Admin
+@inject NavigationManager NavigationManager
+
+<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="@AdditionalAssemblies">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)">
         </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
     </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(Layout.MainLayout)">
+            <h3>Page Not Found</h3>
+            <p>Sorry, there's nothing at this address.</p>
+            <p>Current path: @NavigationManager.Uri</p>
+        </LayoutView>
+    </NotFound>
 </Router>
+
+@code {
+
+    private IEnumerable<Assembly> AdditionalAssemblies =>
+    [
+        typeof(Admin).Assembly,
+    ];
+
+}

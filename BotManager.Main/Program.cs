@@ -1,6 +1,7 @@
 using BotManager.Core.Helpers;
 using BotManager.Main.Components;
 using BotManager.Main.Startup;
+using BotManager.WebUi.Modules.Admin;
 using MudBlazor.Services;
 using Serilog;
 
@@ -40,18 +41,17 @@ else
 	app.UseHsts();
 }
 
-# if DEBUG
-app.UseHttpsRedirection();
-# endif
-
 app.UseStaticFiles();
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAntiforgery();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>()
+	.AddInteractiveServerRenderMode()
+	.AddAdditionalAssemblies(typeof(Admin).Assembly);
 
 Task.Run(async () => await ServiceInit.StartBots(app));
 

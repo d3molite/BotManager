@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BotManager.Core\BotManager.Core.csproj" />
+      <ProjectReference Include="..\BotManager.Interfaces\BotManager.Interfaces.csproj" />
     </ItemGroup>
 
 </Project>

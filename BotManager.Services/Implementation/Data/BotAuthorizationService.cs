@@ -24,10 +24,12 @@ public class BotAuthorizationService(IDbContextFactory<BotManagerContext> dbCont
 		return bot is not null && bot.AdminIds.Contains(userId);
 	}
 
-	public async Task<List<BotConfig>> GetConfigsWithAccessAsync(ulong userId, ulong guildId)
+	public async Task<IEnumerable<BotConfig>> GetConfigsWithAccessAsync(ulong userId)
 	{
 		await using var context = await dbContextFactory.CreateDbContextAsync();
 		
-		return await context.Configs.Where(x => x.AdminIds.Contains(userId)).ToListAsync();
+		var configs = await context.Configs.ToListAsync();
+		
+		return configs.Where(x => x.AdminIds.Contains(userId));
 	}
 }
