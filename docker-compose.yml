@@ -16,3 +16,4 @@
     volumes:
       - "./dbdata/:/app/dbdata/"
       - "./image/:/app/image/"
+      - "./env/:/app/env/"

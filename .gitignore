@@ -4,9 +4,12 @@
 **/obj/**
 
 *main.db*
+*identity.db*
+
 e.env
 
 *.DotSettings
 *.DotSettings.user
 
 .env
+oauth.env

@@ -1,0 +1,73 @@
+@using System.Security.Claims
+@using BotManager.Main.Components.Dialog
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+
+<AuthorizeView>
+    <Authorized>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            @if (!string.IsNullOrEmpty(GetAvatar(context.User)))
+            {
+                <img
+                    src=@($"https://cdn.discordapp.com/avatars/{GetDiscordId(context.User)}/{GetAvatar(context.User)}.png")
+                    alt="Avatar" class="rounded-circle" width="32" height="32"/>
+            }
+            <MudText>
+                @GetDisplayName(context.User)
+            </MudText>
+            <MudButton>
+                @if (_isLoggingOut)
+                {
+                    <MudText>Logging out ...</MudText>
+                }
+                else
+                {
+                    <MudText>Logout</MudText>
+                }
+                    
+            </MudButton>
+        </MudStack>
+    </Authorized>
+    <NotAuthorized>
+        <MudButton @onclick="AskAndRedirect">Login with discord</MudButton>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private bool _isLoggingOut;
+
+    private static string GetDisplayName(ClaimsPrincipal user)
+    {
+        var displayName = user.FindFirst(ClaimTypes.Name)?.Value ?? "User";
+        return "@" + displayName;
+    }
+
+    private static string GetDiscordId(ClaimsPrincipal user) => user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+
+    private static string GetAvatar(ClaimsPrincipal user) => user.FindFirst("discord_avatar")?.Value ?? "";
+
+    private async Task LogoutAsync()
+    {
+        if (_isLoggingOut) return;
+
+        _isLoggingOut = true;
+        StateHasChanged();
+
+        // Direct navigation to GET logout endpoint
+        Navigation.NavigateTo("/Account/Logout", forceLoad: true);
+    }
+
+    private async Task AskAndRedirect()
+    {
+        var dialog = await DialogService.ShowAsync<LoginConfirmationDialog>();
+
+        var dialogResult = await dialog.Result;
+
+        if (dialogResult?.Canceled is true)
+            return;
+        
+        Navigation.NavigateTo("/Account/Login", forceLoad: true);
+    }
+    
+}

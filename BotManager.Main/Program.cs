@@ -1,8 +1,12 @@
+using BotManager.Core.Helpers;
 using BotManager.Main.Components;
 using BotManager.Main.Startup;
 using MudBlazor.Services;
 
 ServiceInit.ConfigureLogging();
+
+// begin by loading .env files
+Env.Load("./env/oauth.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +27,6 @@ ServiceInit.SetContainer(app);
 if (app.Environment.IsDevelopment())
 {
 	app.UseMigrationsEndPoint();
-	
 }
 else
 {
@@ -39,11 +42,12 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAntiforgery();
-app.MapBlazorHub();
+app.UseAuthorization();
 
+app.MapControllers();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
-
 
 Task.Run(async () => await ServiceInit.StartBots(app));
 

@@ -1,4 +1,7 @@
-﻿using BotManager.Db.Context;
+﻿using System.Reflection;
+using BotManager.Authentication.Context;
+using BotManager.Authentication.Controllers;
+using BotManager.Db.Context;
 using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.Birthdays;
 using BotManager.Db.Models.Modules.LanPlanner;
@@ -10,6 +13,7 @@ using BotManager.Interfaces.Services.Data;
 using BotManager.Services.Implementation.Bot;
 using BotManager.Services.Implementation.Data;
 using Demolite.Db.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -20,26 +24,33 @@ public static class ServiceInit
 	public static void ConfigureLogging()
 	{
 		Log.Logger = new LoggerConfiguration()
-					.WriteTo.Debug()
-					.WriteTo.Trace()
-					.WriteTo.Console()
-					.MinimumLevel.Debug()
-					.CreateLogger();
+			.WriteTo.Debug()
+			.WriteTo.Trace()
+			.WriteTo.Console()
+			.MinimumLevel.Debug()
+			.CreateLogger();
 	}
-	
+
 	public static void RegisterServices(WebApplicationBuilder builder)
 	{
 		AddDatabaseServices(builder);
+		AddAuthenticationServices(builder);
 		AddDataServices(builder.Services);
 	}
 
 	public static async Task ApplyMigrations(WebApplication app)
 	{
-		var factory = app.Services.GetService<IDbContextFactory<BotManagerContext>>();
+		var factory = app.Services.GetRequiredService<IDbContextFactory<BotManagerContext>>();
 		var db = await factory.CreateDbContextAsync();
 
 		await db.Database.EnsureCreatedAsync();
 		await db.Database.MigrateAsync();
+
+		var idFactory = app.Services.GetRequiredService<IDbContextFactory<AuthenticationDbContext>>();
+		var idDb = await idFactory.CreateDbContextAsync();
+
+		await idDb.Database.EnsureCreatedAsync();
+		await idDb.Database.MigrateAsync();
 	}
 
 	public static void SetContainer(WebApplication app)
@@ -53,17 +64,68 @@ public static class ServiceInit
 		await botService.Initialize();
 	}
 
+	private static void AddAuthenticationServices(WebApplicationBuilder builder)
+	{
+
+		builder
+			.Services.AddAuthentication(options =>
+				{
+					options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+					options.DefaultChallengeScheme = "Discord";
+				}
+			)
+			.AddCookie(
+				CookieAuthenticationDefaults.AuthenticationScheme,
+				options =>
+				{
+					options.LoginPath = "/Account/Login";
+					options.LogoutPath = "/Account/Logout";
+					options.AccessDeniedPath = "/Account/AccessDenied";
+					options.ExpireTimeSpan = TimeSpan.FromDays(1);
+					options.SlidingExpiration = true;
+				}
+			);
+
+		builder
+			.Services.AddOpenIddict()
+			.AddClient(clientOptions =>
+				{
+					clientOptions.AllowAuthorizationCodeFlow();
+
+					clientOptions.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+
+					clientOptions.UseAspNetCore().EnableRedirectionEndpointPassthrough();
+
+					clientOptions.UseSystemNetHttp();
+
+					clientOptions
+						.UseWebProviders()
+						.AddDiscord(discordOptions
+							=> discordOptions
+								.SetClientId(Environment.GetEnvironmentVariable("DISCORD_CLIENT_ID")!)
+								.SetClientSecret(Environment.GetEnvironmentVariable("DISCORD_CLIENT_SECRET")!)
+								.SetRedirectUri("callback/login/discord")
+						);
+				}
+			)
+			.AddCore(coreOptions => coreOptions.UseEntityFrameworkCore().UseDbContext<AuthenticationDbContext>());
+
+		builder.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly);
+	}
+
 	private static void AddDatabaseServices(WebApplicationBuilder builder)
 	{
-		foreach (var file in Directory.GetFiles("./dbdata"))
-		{
-			Log.Debug("{File}", file);
-		}
-		
-		builder.Services.AddDbContextFactory<BotManagerContext>(options => options.UseSqlite("DataSource=./dbdata/main.db"));
-		builder.Services.AddDbContext<BotManagerContext>();
+		builder.Services.AddDbContextFactory<AuthenticationDbContext>(options
+			=> options.UseSqlite("DataSource=./dbdata/identity.db").UseOpenIddict()
+		);
 
-		var identityConnectionString = "";
+		builder.Services.AddDbContext<AuthenticationDbContext>();
+
+		builder.Services.AddDbContextFactory<BotManagerContext>(options
+			=> options.UseSqlite("DataSource=./dbdata/main.db")
+		);
+
+		builder.Services.AddDbContext<BotManagerContext>();
 	}
 
 	private static void AddDataServices(IServiceCollection collection)

@@ -1,0 +1,26 @@
+<MudDialog>
+    <TitleContent>
+        Login with Discord?
+    </TitleContent>
+    <DialogContent>
+        <MudStack>
+            <MudText>This will send data to discord.com (Discord Inc.)</MudText>
+            <MudText>Do you want to continue?</MudText>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Yes</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+
+}

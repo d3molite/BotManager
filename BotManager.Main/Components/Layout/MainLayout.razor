@@ -1,8 +1,23 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    @Body
-</div>
+<MudThemeProvider IsDarkMode="true"/>
+<MudPopoverProvider />
+
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h6" Class="ml-3">BotManager by Demolite</MudText>
+        <MudSpacer />
+        <LoginPartial />
+    </MudAppBar>
+    <MudMainContent>
+        <div class="main-page-wrapper">
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
