@@ -1,5 +1,4 @@
 @page "/seating/{PlanId}"
-@using System.Runtime.Intrinsics.Arm
 @using System.Security.Cryptography
 @using System.Text
 @using BotManager.Db.Models.Modules.LanPlanner
@@ -97,14 +96,16 @@
                 2 => 41,
                 3 => 61,
                 4 => 41,
+                _ => 0,
             };
             
             var rowName = row.Key switch
             {
-                1 => "Q-",
-                2 => "Q-",
-                3 => "P-",
-                4 => "P-",
+                1 => "S-",
+                2 => "S-",
+                3 => "R-",
+                4 => "R-",
+                _ => "?-"
             };
 
             var count = row.Sum(x => x.NumberOfSeats);
