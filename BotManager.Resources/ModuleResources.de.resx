@@ -14,4 +14,7 @@
     <data name="ModMailNew" xml:space="preserve">
         <value>Neue ModMail von:</value>
     </data>
+    <data name="ModMailNewResponse" xml:space="preserve">
+        <value>Die Moderatoren melden sich schnellstmöglich bei dir!</value>
+    </data>
 </root>

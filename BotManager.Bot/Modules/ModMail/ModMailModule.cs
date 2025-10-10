@@ -67,11 +67,20 @@ public class ModMailModule(DiscordSocketClient client, BotConfig config) : IUtil
 			return;
 		}
 
-		var matchingThread = await GetMatchingThreadForUser(matchingForum, message);
+		var (matchingThread, isNew) = await GetMatchingThreadForUser(matchingForum, message);
 
 		await matchingThread.SendMessageAsync(text: FormatThreadMessage(message));
 
 		await message.AddReactionAsync(new Emoji("✅"));
+
+		if (!isNew)
+			return;
+		
+		var locale = config.GuildConfigs.First(x => x.GuildId == matchingForum.Guild.Id)
+			.GuildLocale;
+
+		var resource = ResourceResolver.GetString(_ => ModuleResources.ModMailNewResponse, locale);
+		await message.Channel.SendMessageAsync(text: resource);
 	}
 
 	private SocketForumChannel? GetMatchingForumForUser(SocketUser user)
@@ -93,17 +102,19 @@ public class ModMailModule(DiscordSocketClient client, BotConfig config) : IUtil
 		return null;
 	}
 
-	private async Task<IThreadChannel> GetMatchingThreadForUser(SocketForumChannel forumChannel, SocketMessage message)
+	private async Task<Tuple<IThreadChannel, bool>> GetMatchingThreadForUser(
+		SocketForumChannel forumChannel,
+		SocketMessage message
+	)
 	{
 		var threads = await forumChannel.GetActiveThreadsAsync();
 
 		var existingThread = threads.Where(x => !x.IsLocked)
 			.FirstOrDefault(x => x.Name.Contains($"{message.Author.Id}"));
 
-		if (existingThread is null)
-			return await CreatePostAsync(forumChannel, message);
-
-		return forumChannel.Guild.GetThreadChannel(existingThread.Id);
+		return existingThread is null
+			? new Tuple<IThreadChannel, bool>(await CreatePostAsync(forumChannel, message), true)
+			: new Tuple<IThreadChannel, bool>(forumChannel.Guild.GetThreadChannel(existingThread.Id), false);
 	}
 
 	private async Task<IThreadChannel> CreatePostAsync(SocketForumChannel forumChannel, SocketMessage message)
@@ -120,7 +131,7 @@ public class ModMailModule(DiscordSocketClient client, BotConfig config) : IUtil
 	{
 		var locale = config.GuildConfigs.First(x => x.GuildId == guildId)
 			.GuildLocale;
-		
+
 		var sb = new StringBuilder();
 
 		var mailConfig = ModMailConfigs.First(x => x.GuildId == guildId);
@@ -137,7 +148,7 @@ public class ModMailModule(DiscordSocketClient client, BotConfig config) : IUtil
 	{
 		var sb = new StringBuilder();
 
-		sb.AppendLine($"[{message.Author.Username}]:");
+		sb.AppendLine($"**[{message.Author.Username}]**:");
 		sb.AppendLine(message.Content);
 
 		if (message.Attachments.Count == 0)

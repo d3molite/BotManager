@@ -67,5 +67,14 @@ namespace BotManager.Resources {
                 return ResourceManager.GetString("ModMailNew", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mods will get back to you as soon as possible..
+        /// </summary>
+        public static string ModMailNewResponse {
+            get {
+                return ResourceManager.GetString("ModMailNewResponse", resourceCulture);
+            }
+        }
     }
 }
