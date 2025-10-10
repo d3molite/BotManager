@@ -144,7 +144,7 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 		builder.AddField("Wann?", data.Time);
 		builder.AddField("Da:", data.GetUserList(x => x.JoinedUsers));
 		builder.AddField("Nicht da, bitte wartet:", data.GetUserList(x => x.InterestedUsers));
-		builder.AddField("Nicht da, müsst nicht warten:", data.GetUserList(x => x.DontWaitUsers));
+		builder.AddField("Interessiert, müsst aber nicht warten:", data.GetUserList(x => x.DontWaitUsers));
 		builder.AddField("Nicht interessiert:", data.GetUserList(x => x.NotInterestedUsers));
 
 		return builder.Build();
