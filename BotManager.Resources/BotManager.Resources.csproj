@@ -23,6 +23,10 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>EmbedResource.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="ButtonResource.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ButtonResource.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -45,6 +49,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>EmbedResource.resx</DependentUpon>
+      </Compile>
+      <Compile Update="ButtonResource.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ButtonResource.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

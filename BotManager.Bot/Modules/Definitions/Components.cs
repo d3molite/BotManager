@@ -15,11 +15,6 @@ public static class Components
 	public const string RoleRequestButtonAccept = nameof(RoleRequestButtonAccept);
 	public const string RoleRequestButtonDeny = nameof(RoleRequestButtonDeny);
 	
-	public const string WatchPartyButtonJoin = nameof(WatchPartyButtonJoin);
-	public const string WatchPartyButtonInterestedPleaseWait = nameof(WatchPartyButtonInterestedPleaseWait);
-	public const string WatchPartyButtonInterestedDontWait = nameof(WatchPartyButtonInterestedDontWait);
-	public const string WatchPartyButtonNotInterested = nameof(WatchPartyButtonNotInterested);
-
 	public const string PlanButtonAdd = nameof(PlanButtonAdd);
 	public const string PlanButtonRemove = nameof(PlanButtonRemove);
 	public const string PlanButtonEdit = nameof(PlanButtonEdit);

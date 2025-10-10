@@ -15,6 +15,11 @@ public static class ResourceResolver
 		var name = memberExpression.Member.Name;
 		var manager = new ResourceManager(type);
 		return manager.GetString(name, new CultureInfo(locale)) ?? $"No resource found for {name}";
+	}
 
+	public static string GetString(Type resourceType, string resourceKey, string locale)
+	{
+		var manager = new ResourceManager(resourceType);
+		return manager.GetString(resourceKey, new CultureInfo(locale)) ?? $"No resource found for {resourceKey}";
 	}
 }

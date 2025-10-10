@@ -4,6 +4,8 @@ using BotManager.Bot.Modules.Core;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.WatchParty;
+using BotManager.Metadata.Constants;
+using BotManager.Metadata.WatchParty;
 using Discord;
 using Discord.WebSocket;
 
@@ -40,15 +42,15 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 		await modal.RespondAsync(
 			$"<@&{ModuleConfig.PingRoleId}>",
 			embed: CreateWatchPartyEmbed(data),
-			components: CreateWatchPartyButtons(),
+			components: WatchPartyButtonBuilder.Build(GuildConfig.GuildLocale),
 			allowedMentions: AllowedMentions.All
 		);
 	}
 
-	[MessageComponentExecutor(Components.WatchPartyButtonJoin)]
-	[MessageComponentExecutor(Components.WatchPartyButtonInterestedPleaseWait)]
-	[MessageComponentExecutor(Components.WatchPartyButtonInterestedDontWait)]
-	[MessageComponentExecutor(Components.WatchPartyButtonNotInterested)]
+	[MessageComponentExecutor(Buttons.WatchPartyJoin)]
+	[MessageComponentExecutor(Buttons.WatchPartyInterested)]
+	[MessageComponentExecutor(Buttons.WatchPartyDontWait)]
+	[MessageComponentExecutor(Buttons.WatchPartyNotInterested)]
 	public async Task ExecuteButton(SocketMessageComponent component)
 	{
 		var message = component.Message;
@@ -59,19 +61,19 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 
 		switch (component.Data.CustomId)
 		{
-			case Components.WatchPartyButtonJoin:
+			case Buttons.WatchPartyJoin:
 				data.MoveIntoList(x => x.JoinedUsers, userId);
 				break;
 
-			case Components.WatchPartyButtonInterestedPleaseWait:
+			case Buttons.WatchPartyInterested:
 				data.MoveIntoList(x => x.InterestedUsers, userId);
 				break;
 			
-			case Components.WatchPartyButtonInterestedDontWait:
+			case Buttons.WatchPartyDontWait:
 				data.MoveIntoList(x => x.DontWaitUsers, userId);
 				break;
 
-			case Components.WatchPartyButtonNotInterested:
+			case Buttons.WatchPartyNotInterested:
 				data.MoveIntoList(x => x.NotInterestedUsers, userId);
 				break;
 		}
@@ -147,22 +149,12 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 
 		return builder.Build();
 	}
+	
 
-	private static MessageComponent CreateWatchPartyButtons()
-	{
-		var builder = new ComponentBuilder()
-			.WithButton("Bin Dabei", Components.WatchPartyButtonJoin, ButtonStyle.Success)
-			.WithButton("Nicht da, bitte wartet", Components.WatchPartyButtonInterestedPleaseWait, ButtonStyle.Secondary)
-			.WithButton("Prinzipiell interesse, müsst aber nicht warten", Components.WatchPartyButtonInterestedDontWait, ButtonStyle.Secondary)
-			.WithButton("Nicht interessiert", Components.WatchPartyButtonNotInterested, ButtonStyle.Danger);
-
-		return builder.Build();
-	}
-
-	private static async Task UpdateWatchPartyMessage(WatchPartyData data, IUserMessage message)
+	private async Task UpdateWatchPartyMessage(WatchPartyData data, IUserMessage message)
 	{
 		var embed = CreateWatchPartyEmbed(data);
-		var components = CreateWatchPartyButtons();
+		var components = WatchPartyButtonBuilder.Build(GuildConfig.GuildLocale);
 
 		await message.ModifyAsync(msg =>
 			{

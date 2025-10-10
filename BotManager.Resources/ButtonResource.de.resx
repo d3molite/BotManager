@@ -1,0 +1,26 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="WatchPartyJoin" xml:space="preserve">
+        <value>Bin dabei</value>
+    </data>
+    <data name="WatchPartyDontWait" xml:space="preserve">
+        <value>Müsst nicht warten</value>
+    </data>
+    <data name="WatchPartyInterested" xml:space="preserve">
+        <value>Nicht da, bitte wartet</value>
+    </data>
+    <data name="WatchPartyNotInterested" xml:space="preserve">
+        <value>Nicht interessiert</value>
+    </data>
+</root>
