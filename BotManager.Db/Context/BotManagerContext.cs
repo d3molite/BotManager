@@ -5,6 +5,7 @@ using BotManager.Db.Models.Modules.Feedback;
 using BotManager.Db.Models.Modules.Image;
 using BotManager.Db.Models.Modules.LanPlanner;
 using BotManager.Db.Models.Modules.Logging;
+using BotManager.Db.Models.Modules.ModMail;
 using BotManager.Db.Models.Modules.Order;
 using BotManager.Db.Models.Modules.Reactions;
 using BotManager.Db.Models.Modules.RoleRequest;
@@ -21,9 +22,13 @@ public class BotManagerContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder.Entity<BotConfig>().Navigation(x => x.GuildConfigs).AutoInclude();
-
 		modelBuilder.Entity<BotConfig>().HasMany(x => x.GuildConfigs).WithOne(x => x.BotConfig);
+		
+		modelBuilder.Entity<BotConfig>().Navigation(x => x.GuildConfigs).AutoInclude();
+		
+		modelBuilder.Entity<BotConfig>().HasMany(x => x.ModMailConfigs).WithOne(x => x.BotConfig);
+		
+		modelBuilder.Entity<BotConfig>().Navigation(x => x.ModMailConfigs).AutoInclude();
 
 		// Guild Config Navigations
 
@@ -123,4 +128,6 @@ public class BotManagerContext : DbContext
 	public DbSet<LanPlan> LanPlans { get; set; } = null!;
 
 	public DbSet<LanMember> LanMembers { get; set; } = null!;
+	
+	public DbSet<ModMailConfig> ModMailConfigs { get; set; } = null!;
 }

@@ -27,6 +27,10 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>ButtonResource.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="ModuleResources.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ModuleResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -54,6 +58,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>ButtonResource.resx</DependentUpon>
+      </Compile>
+      <Compile Update="ModuleResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ModuleResources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

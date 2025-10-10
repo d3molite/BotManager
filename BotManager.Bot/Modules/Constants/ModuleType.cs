@@ -7,4 +7,5 @@ public enum ModuleType
     AntiSpam,
     Reactions,
     Voice,
+    ModMail
 }

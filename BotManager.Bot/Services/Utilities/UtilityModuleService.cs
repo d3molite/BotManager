@@ -3,6 +3,7 @@ using BotManager.Bot.Modules.AntiSpam;
 using BotManager.Bot.Modules.Constants;
 using BotManager.Bot.Modules.Logging;
 using BotManager.Bot.Modules.Models;
+using BotManager.Bot.Modules.ModMail;
 using BotManager.Bot.Modules.Reactions;
 using BotManager.Bot.Services.Register;
 using BotManager.Db.Models;
@@ -24,6 +25,9 @@ public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 
 	private async Task InitializeInternal()
 	{
+		if (config.ModMailConfigs.Any())
+			await SetupModMailModule(client, config);
+		
 		foreach (var guildConfig in config.GuildConfigs)
 		{
 			if (guildConfig.HasLoggingModule)
@@ -35,6 +39,12 @@ public class UtilityModuleService(BotConfig config, DiscordSocketClient client)
 			if (guildConfig.HasReactionModule)
 				await SetupReactionModule(guildConfig);
 		}
+	}
+
+	private async Task SetupModMailModule(DiscordSocketClient client, BotConfig botConfig)
+	{
+		var module = new ModMailModule(client, botConfig);
+		await module.RegisterModuleAsync();
 	}
 
 	private async Task SetupLoggingModule(GuildConfig guildConfig)
