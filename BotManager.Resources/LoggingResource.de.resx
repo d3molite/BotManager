@@ -95,4 +95,7 @@
     <data name="Body_Actions_LinkToVoiceChannel" xml:space="preserve">
         <value>Klicke hier zum Beitreten: &lt;#{0}&gt;</value>
     </data>
+    <data name="Body_MessageDeleted_Errors" xml:space="preserve">
+        <value>Es fehlen informationen über die gelöschte Nachricht</value>
+    </data>
 </root>

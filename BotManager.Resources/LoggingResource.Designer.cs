@@ -87,6 +87,15 @@ namespace BotManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There were errors with retrieving the message.
+        /// </summary>
+        public static string Body_MessageDeleted_Errors {
+            get {
+                return ResourceManager.GetString("Body_MessageDeleted_Errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A message was deleted in &lt;#{0}&gt; but the content could not be retrieved from cache..
         /// </summary>
         public static string Body_MessageDeleted_NotFound {

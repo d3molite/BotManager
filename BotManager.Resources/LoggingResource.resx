@@ -102,4 +102,7 @@
     <data name="Body_Actions_LinkToVoiceChannel" xml:space="preserve">
         <value>Click here to join: &lt;#{0}&gt;</value>
     </data>
+    <data name="Body_MessageDeleted_Errors" xml:space="preserve">
+        <value>There were errors with retrieving the message</value>
+    </data>
 </root>

@@ -55,7 +55,11 @@ public partial class LoggingModule
 		if (messageObject.Author.Id == client.CurrentUser.Id)
 			return;
 
-		await SendLogEmbed(MessageDeletedEmbed(guildChannel, messageObject), true);
+		if (!string.IsNullOrEmpty(messageObject.Content))
+		{
+			await SendLogEmbed(MessageDeletedEmbed(guildChannel, messageObject), true);
+			return;
+		}
 	}
 
 	private Embed MessageDeletedEmbed(IGuildChannel guildChannel, IMessage? message = null)
@@ -66,19 +70,34 @@ public partial class LoggingModule
 
 		if (message != null)
 		{
-			var messageString = ResourceResolver
-				.GetString(_ => LoggingResource.Body_MessageDeleted, Locale)
+			var messageString = ResourceResolver.GetString(_ => LoggingResource.Body_MessageDeleted, Locale)
 				.Insert(message, guildChannel);
 
 			builder.AddField(header, messageString);
 
-			builder.AddField(ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale), message.Content);
+			if (!string.IsNullOrEmpty(message.Content))
+				builder.AddField(
+					ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale),
+					message.Content
+				);
+
+			else if (message.Attachments.Any())
+				builder.AddField(
+					ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale),
+					string.Join(", ", message.Attachments.Select(x => x.Filename))
+				);
+
+			else
+				builder.AddField(
+					ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale),
+					ResourceResolver.GetString(_ => LoggingResource.Body_MessageDeleted_Errors, Locale)
+				);
+			
 		}
 		else
 			builder.AddField(
 				header,
-				ResourceResolver
-					.GetString(_ => LoggingResource.Body_MessageDeleted_NotFound, Locale)
+				ResourceResolver.GetString(_ => LoggingResource.Body_MessageDeleted_NotFound, Locale)
 					.Insert(guildChannel)
 			);
 
@@ -101,7 +120,8 @@ public partial class LoggingModule
 
 		builder.AddField(
 			ResourceResolver.GetString(_ => LoggingResource.Header_MessageEdited, Locale),
-			ResourceResolver.GetString(_ => LoggingResource.Body_MessageEdited, Locale).Insert(editedMessage)
+			ResourceResolver.GetString(_ => LoggingResource.Body_MessageEdited, Locale)
+				.Insert(editedMessage)
 		);
 
 		if (originalMessage != null)
@@ -135,8 +155,11 @@ public partial class LoggingModule
 
 	private static string GetChangesForNewMessage(string original, string modified)
 	{
-		var originalWords = original.Split(' ').ToList();
-		var modifiedWords = modified.Split(' ').ToList();
+		var originalWords = original.Split(' ')
+			.ToList();
+
+		var modifiedWords = modified.Split(' ')
+			.ToList();
 
 		var newWords = new List<string>();
 
