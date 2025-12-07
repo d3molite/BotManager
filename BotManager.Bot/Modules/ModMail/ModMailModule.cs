@@ -33,6 +33,9 @@ public class ModMailModule(DiscordSocketClient client, BotConfig config) : IUtil
 		if (message.Author.Id == client.CurrentUser.Id || message.Channel is not SocketThreadChannel thread)
 			return;
 
+		if (!IsMatchingForum(thread.ParentChannel))
+			return;
+
 		if (thread.IsLocked)
 			return;
 
@@ -102,6 +105,9 @@ public class ModMailModule(DiscordSocketClient client, BotConfig config) : IUtil
 		return null;
 	}
 
+	private bool IsMatchingForum(SocketChannel channel)
+		=> ModMailConfigs.Any(x => x.ForumChannelId == channel.Id);
+
 	private async Task<Tuple<IThreadChannel, bool>> GetMatchingThreadForUser(
 		SocketForumChannel forumChannel,
 		SocketMessage message
@@ -164,7 +170,7 @@ public class ModMailModule(DiscordSocketClient client, BotConfig config) : IUtil
 	{
 		var sb = new StringBuilder();
 
-		sb.AppendLine($"[<@{message.Author.Id}>]:");
+		sb.AppendLine($"[{message.Author.Username}]:");
 		sb.AppendLine(message.Content);
 
 		if (message.Attachments.Count == 0)

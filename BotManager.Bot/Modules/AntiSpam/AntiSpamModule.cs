@@ -13,7 +13,7 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 	private readonly List<SpamHandler> _spamHandlers = [];
 
 	private Dictionary<IUser, MessageQueue> _userMessages = [];
-	
+
 	private readonly PeriodicTimer _timer = new PeriodicTimer(TimeSpan.FromMinutes(4));
 
 	private AntiSpamConfig Config => config.AntiSpamConfig!;
@@ -86,11 +86,10 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 
 		try
 		{
-			var prefixes = Config
-							.IgnorePrefixes.Split(',')
-							.Select(x => x.Trim())
-							.Where(x => !string.IsNullOrEmpty(x));
-			
+			var prefixes = Config.IgnorePrefixes.Split(',')
+				.Select(x => x.Trim())
+				.Where(x => !string.IsNullOrEmpty(x));
+
 			if (prefixes.Any(x => message.Content.StartsWith(x)))
 				return true;
 		}
@@ -108,7 +107,7 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 			return;
 
 		var module = ModuleRegister.TryGetLogger(client.CurrentUser.Id, config.GuildId);
-		
+
 		var handler = new SpamHandler(module)
 		{
 			User = (SocketGuildUser)user,
@@ -128,8 +127,13 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 
 	private static bool ContainsSpam(MessageQueue queue)
 	{
-		return queue
-				.Queue.GroupBy(message => message.Content)
-				.Any(group => group.Count() > 5);
+		var isSpamByMessage = queue.Queue.GroupBy(message => message.Content)
+			.Any(group => group.Count() > 5);
+
+		var isSpamByAttachment = queue.Queue
+			.GroupBy(message => string.Join("", message.Attachments.Select(x => x.Filename)))
+			.Any(group => group.Count() > 5);
+
+		return isSpamByMessage || isSpamByAttachment;
 	}
 }
