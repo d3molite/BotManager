@@ -4,8 +4,6 @@ using BotManager.Bot.Modules.Core;
 using BotManager.Bot.Modules.Definitions;
 using BotManager.Db.Models;
 using BotManager.Db.Models.Modules.WatchParty;
-using BotManager.Metadata.Constants;
-using BotManager.Metadata.WatchParty;
 using Discord;
 using Discord.WebSocket;
 
@@ -42,86 +40,8 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 		await modal.RespondAsync(
 			$"<@&{ModuleConfig.PingRoleId}>",
 			embed: CreateWatchPartyEmbed(data),
-			components: WatchPartyButtonBuilder.Build(GuildConfig.GuildLocale),
 			allowedMentions: AllowedMentions.All
 		);
-	}
-
-	[MessageComponentExecutor(Buttons.WatchPartyJoin)]
-	[MessageComponentExecutor(Buttons.WatchPartyInterested)]
-	[MessageComponentExecutor(Buttons.WatchPartyDontWait)]
-	[MessageComponentExecutor(Buttons.WatchPartyNotInterested)]
-	public async Task ExecuteButton(SocketMessageComponent component)
-	{
-		var message = component.Message;
-		var embed = message.Embeds.First();
-		var userId = component.User.Id;
-
-		var data = GetDataFromEmbed(embed);
-
-		switch (component.Data.CustomId)
-		{
-			case Buttons.WatchPartyJoin:
-				data.MoveIntoList(x => x.JoinedUsers, userId);
-				break;
-
-			case Buttons.WatchPartyInterested:
-				data.MoveIntoList(x => x.InterestedUsers, userId);
-				break;
-			
-			case Buttons.WatchPartyDontWait:
-				data.MoveIntoList(x => x.DontWaitUsers, userId);
-				break;
-
-			case Buttons.WatchPartyNotInterested:
-				data.MoveIntoList(x => x.NotInterestedUsers, userId);
-				break;
-		}
-
-		await UpdateWatchPartyMessage(data, component.Message);
-
-		await component.RespondAsync("Ok!", ephemeral: true);
-	}
-
-	private static WatchPartyData GetDataFromEmbed(Embed embed)
-	{
-		var title = embed.Fields[0];
-		var time = embed.Fields[1];
-
-		var usersJoined = embed.Fields[2];
-		var usersInterested = embed.Fields[3];
-		var usersDontWait = embed.Fields[4];
-		var usersNotInterested = embed.Fields[5];
-
-		var data = new WatchPartyData()
-		{
-			Name = title.Value,
-			Time = time.Value,
-			JoinedUsers = SplitIntoUserIds(usersJoined.Value),
-			InterestedUsers = SplitIntoUserIds(usersInterested.Value),
-			DontWaitUsers = SplitIntoUserIds(usersDontWait.Value),
-			NotInterestedUsers = SplitIntoUserIds(usersNotInterested.Value),
-		};
-
-		return data;
-	}
-
-	private static List<ulong> SplitIntoUserIds(string embedData)
-	{
-		if (embedData == "-")
-			return [];
-
-		var splitData = embedData.Split(Environment.NewLine);
-
-		var toReturn = new List<ulong>();
-
-		foreach (var line in splitData)
-		{
-			var processed = line.Replace("<@", "").Replace(">", "").Trim();
-			toReturn.Add(ulong.Parse(processed));
-		}
-
-		return toReturn;
 	}
 
 	private static Modal CreateWatchPartyModal()
@@ -130,7 +50,7 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 
 		builder.WithCustomId(Modals.WatchPartyModalId);
 		builder.WithTitle("Watchparty");
-		builder.AddTextInput("Wir wollen schauen:", Modals.WatchPartyModalName);
+		builder.AddTextInput("Wir schauen:", Modals.WatchPartyModalName);
 		builder.AddTextInput("Wann?", Modals.WatchPartyModalTime);
 
 		return builder.Build();
@@ -142,25 +62,7 @@ public class WatchPartyModule(DiscordSocketClient client, GuildConfig config)
 		builder.WithTitle($"Watchparty");
 		builder.AddField("Wir schauen:", data.Name);
 		builder.AddField("Wann?", data.Time);
-		builder.AddField("Da:", data.GetUserList(x => x.JoinedUsers));
-		builder.AddField("Nicht da, bitte wartet:", data.GetUserList(x => x.InterestedUsers));
-		builder.AddField("Interessiert, müsst aber nicht warten:", data.GetUserList(x => x.DontWaitUsers));
-		builder.AddField("Nicht interessiert:", data.GetUserList(x => x.NotInterestedUsers));
 
 		return builder.Build();
-	}
-	
-
-	private async Task UpdateWatchPartyMessage(WatchPartyData data, IUserMessage message)
-	{
-		var embed = CreateWatchPartyEmbed(data);
-		var components = WatchPartyButtonBuilder.Build(GuildConfig.GuildLocale);
-
-		await message.ModifyAsync(msg =>
-			{
-				msg.Embed = embed;
-				msg.Components = components;
-			}
-		);
 	}
 }

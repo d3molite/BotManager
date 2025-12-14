@@ -25,9 +25,11 @@ public static class ExpressionHelper
 		return expression switch
 		{
 			MemberExpression memberExpression => memberExpression,
-
-			UnaryExpression { NodeType: ExpressionType.Convert } unaryExpression => unaryExpression
-				.Operand as MemberExpression,
+			
+			UnaryExpression { NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked } unaryExpression 
+				=> GetMemberExpression(unaryExpression.Operand),
+			
+			LambdaExpression lambdaExpression => GetMemberExpression(lambdaExpression.Body),
 			
 			_ => null,
 		};
@@ -35,11 +37,15 @@ public static class ExpressionHelper
 
 	public static string? GetString(this MemberInfo memberInfo)
 	{
-		return memberInfo.MemberType switch
+		return memberInfo switch
 		{
-			MemberTypes.Field => ((FieldInfo)memberInfo).GetRawConstantValue() as string,
-			MemberTypes.Property => ((PropertyInfo)memberInfo).GetRawConstantValue() as string,
-			var _ => null,
+			FieldInfo field => field.IsLiteral
+				? field.GetRawConstantValue() as string   // const
+				: field.GetValue(null) as string,         // static readonly
+
+			PropertyInfo prop => prop.GetValue(null) as string,
+
+			_ => null
 		};
 	}
 }

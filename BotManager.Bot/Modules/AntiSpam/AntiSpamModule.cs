@@ -75,7 +75,7 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 
 	private bool IgnoreMessage(SocketMessage message)
 	{
-		if (string.IsNullOrWhiteSpace(message.Content) || message.Author.Id == client.CurrentUser.Id)
+		if (message.Author.Id == client.CurrentUser.Id)
 			return true;
 
 		if (message.Channel is not SocketGuildChannel channel)
@@ -129,8 +129,9 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 	{
 		var isSpamByMessage = queue.Queue.GroupBy(message => message.Content)
 			.Any(group => group.Count() > 5);
-
+		
 		var isSpamByAttachment = queue.Queue
+			.Where(message => message.Attachments.Count > 0)
 			.GroupBy(message => string.Join("", message.Attachments.Select(x => x.Filename)))
 			.Any(group => group.Count() > 5);
 
