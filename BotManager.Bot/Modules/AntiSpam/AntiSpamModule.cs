@@ -127,14 +127,20 @@ public class AntiSpamModule(DiscordSocketClient client, GuildConfig config) : IU
 
 	private static bool ContainsSpam(MessageQueue queue)
 	{
-		var isSpamByMessage = queue.Queue.GroupBy(message => message.Content)
+		var isSpamByMessage = queue.Queue
+			.Where(x => !string.IsNullOrEmpty(x.Content))
+			.GroupBy(message => message.Content)
 			.Any(group => group.Count() > 5);
 		
 		var isSpamByAttachment = queue.Queue
 			.Where(message => message.Attachments.Count > 0)
 			.GroupBy(message => string.Join("", message.Attachments.Select(x => x.Filename)))
 			.Any(group => group.Count() > 5);
+		
+		var isSpamByStickers = queue.Queue.Where(message => message.Stickers.Count > 0)
+			.GroupBy(message => message.Stickers.First().Id)
+			.Any(group => group.Count() > 5);
 
-		return isSpamByMessage || isSpamByAttachment;
+		return isSpamByMessage || isSpamByAttachment || isSpamByStickers;
 	}
 }

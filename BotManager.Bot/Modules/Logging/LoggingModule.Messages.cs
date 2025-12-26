@@ -55,11 +55,8 @@ public partial class LoggingModule
 		if (messageObject.Author.Id == client.CurrentUser.Id)
 			return;
 
-		if (!string.IsNullOrEmpty(messageObject.Content))
-		{
-			await SendLogEmbed(MessageDeletedEmbed(guildChannel, messageObject), true);
-			return;
-		}
+
+		await SendLogEmbed(MessageDeletedEmbed(guildChannel, messageObject), true);
 	}
 
 	private Embed MessageDeletedEmbed(IGuildChannel guildChannel, IMessage? message = null)
@@ -85,6 +82,12 @@ public partial class LoggingModule
 				builder.AddField(
 					ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale),
 					string.Join(", ", message.Attachments.Select(x => x.Filename))
+				);
+			
+			else if (message.Stickers.Any())
+				builder.AddField(
+					ResourceResolver.GetString(_ => LoggingResource.Header_Content, Locale),
+					$"Stickers: {string.Join(", ", message.Stickers.Select(x => x.Name))}"
 				);
 
 			else

@@ -22,6 +22,7 @@ public class MessageQueue(int maxMessages)
 	{
 		if (Queue.Count >= maxMessages) 
 			Queue.RemoveAt(0);
+		
 		Queue.Add(message);
 	}
 
