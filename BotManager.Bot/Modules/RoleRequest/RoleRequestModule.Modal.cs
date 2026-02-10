@@ -21,7 +21,7 @@ public partial class RoleRequestModule
 		var request = new RoleRequest()
 		{
 			GuildId = modal.GuildId!.Value,
-			Email = data.GetString(Modals.RoleRequestEmail),
+			OrderInformation = data.GetString(Modals.RoleRequestInfo),
 			Status = RoleRequestStatus.Open,
 			UserId = modal.User.Id,
 			UserNick = $"{user.Nickname} (@{user.Username})",
@@ -44,10 +44,10 @@ public partial class RoleRequestModule
 		modal.WithTitle("LAN.User Rolle anfragen.");
 
 		modal.AddTextInput(
-			"E-Mail aus deiner Ticketbestellung",
-			Modals.RoleRequestEmail,
+			"Barcode-Nummer vom Ticket (cgg123...)",
+			Modals.RoleRequestInfo,
 			TextInputStyle.Short,
-			"max@mustermann.de",
+			"cgg1234567...",
 			required: true
 		);
 
@@ -63,7 +63,7 @@ public partial class RoleRequestModule
 		embed.AddField(RoleRequestEmbedFields.UserId, request.UserId);
 		embed.AddField(RoleRequestEmbedFields.Status, request.Status);
 		embed.AddField(RoleRequestEmbedFields.UserNick, request.UserNick);
-		embed.AddField(RoleRequestEmbedFields.Email, request.Email);
+		embed.AddField(RoleRequestEmbedFields.OrderInformation, request.OrderInformation);
 
 		return embed.Build();
 	}

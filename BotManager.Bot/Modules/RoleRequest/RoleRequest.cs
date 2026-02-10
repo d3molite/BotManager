@@ -4,7 +4,7 @@ public class RoleRequest
 {
 	public RoleRequestStatus Status { get; set; } = RoleRequestStatus.Open;
 	
-	public required string Email { get; set; }
+	public required string OrderInformation { get; set; }
 	
 	public ulong UserId { get; set; }
 

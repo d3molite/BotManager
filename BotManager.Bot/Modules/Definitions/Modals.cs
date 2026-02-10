@@ -21,7 +21,7 @@ public static class Modals
 	public const string VoiceModalName = nameof(VoiceModalName);
 
 	public const string RoleRequestModalId = nameof(RoleRequestModalId);
-	public const string RoleRequestEmail = nameof(RoleRequestEmail);
+	public const string RoleRequestInfo = nameof(RoleRequestInfo);
 
 	public const string FeedbackModal = nameof(FeedbackModal);
 	public const string FeedbackModalText = nameof(FeedbackModalText);

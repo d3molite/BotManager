@@ -60,7 +60,7 @@ public partial class RoleRequestModule
 		return new RoleRequest()
 		{
 			GuildId = ulong.Parse(embed.Fields.FirstOrDefault(x => x.Name == "Guild").Value),
-			Email = embed.Fields.FirstOrDefault(x => x.Name == RoleRequestEmbedFields.Email).Value,
+			OrderInformation = embed.Fields.FirstOrDefault(x => x.Name == RoleRequestEmbedFields.OrderInformation).Value,
 			UserId = ulong.Parse(embed.Fields.FirstOrDefault(x => x.Name == RoleRequestEmbedFields.UserId).Value),
 			Status = Enum.Parse<RoleRequestStatus>(embed.Fields.FirstOrDefault(x => x.Name == RoleRequestEmbedFields.Status).Value),
 			UserNick = embed.Fields.FirstOrDefault(x => x.Name == RoleRequestEmbedFields.UserNick).Value,
