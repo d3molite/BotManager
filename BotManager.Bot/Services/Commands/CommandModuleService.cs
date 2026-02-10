@@ -19,7 +19,7 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 		try
 		{
 			var refModule = ModuleRegister.TryGetFromRefCommand(command.CommandName, ClientId, command.GuildId!.Value);
-			
+
 			if (refModule != null)
 			{
 				await refModule.ExecuteCommand(command);
@@ -38,9 +38,9 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 	public async Task ExecuteModalResponse(SocketModal modal)
 	{
 		var data = modal.Data.CustomId;
-		
+
 		var refModule = ModuleRegister.TryGetFromRefModal(data, ClientId, modal.GuildId!.Value);
-		
+
 		if (refModule != null)
 		{
 			await refModule.ExecuteModal(modal);
@@ -54,9 +54,15 @@ public partial class CommandModuleService(BotConfig config, DiscordSocketClient 
 	public async Task ExecuteComponentResponse(SocketMessageComponent component)
 	{
 		var data = component.Data.CustomId;
-		
-		var refModule = ModuleRegister.TryGetFromRefComponent(data, ClientId, component.GuildId!.Value);
-		
+
+		var guildId = component.GuildId ?? ulong.Parse(
+			component.Message.Embeds.First()
+				.Fields.First(f => f.Name == "Guild")
+				.Value
+		);
+
+		var refModule = ModuleRegister.TryGetFromRefComponent(data, ClientId, guildId);
+
 		if (refModule != null)
 		{
 			await refModule.ExecuteMessageComponent(component);
